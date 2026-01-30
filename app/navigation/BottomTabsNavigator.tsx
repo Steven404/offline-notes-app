@@ -6,13 +6,15 @@ import {
 } from 'react-native-safe-area-context';
 import Notes from '../features/notes/screens/Notes.tsx';
 import Reminders from '../features/reminders/screens/Reminders.tsx';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Icon from '../components/icon/Icon.tsx';
 import Colors from '../styles/colors.ts';
+import Fonts from '../styles/Fonts.tsx';
 
 type BottomTabsParamList = {
   notes: undefined;
   reminders: undefined;
+  menu: undefined;
 };
 const Tabs = createBottomTabNavigator<BottomTabsParamList>();
 
@@ -22,6 +24,11 @@ const NotesIcon = ({ color, size }: { color: string; size: number }) => (
 const RemindersIcon = ({ color, size }: { color: string; size: number }) => (
   <Icon name="bell" size={size} color={color} />
 );
+const MenuTabIcon = ({ color, size }: { color: string; size: number }) => (
+  <Icon name="bars" size={size} color={color} />
+);
+
+const EmptyComponent = () => <View />;
 
 const BottomTabsNavigator = () => {
   const areaInsets = useSafeAreaInsets();
@@ -32,9 +39,13 @@ const BottomTabsNavigator = () => {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <Tabs.Navigator
         screenOptions={{
+          animation: 'fade',
           headerShown: false,
           tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.4)',
           tabBarActiveTintColor: Colors.white,
+          tabBarLabelStyle: {
+            fontFamily: Fonts.MontserratRegular,
+          },
           tabBarStyle: {
             borderTopWidth: 0,
             elevation: 0,
@@ -58,6 +69,21 @@ const BottomTabsNavigator = () => {
           options={{
             tabBarIcon: RemindersIcon,
             title: 'Reminders',
+          }}
+        />
+        <Tabs.Screen
+          name="menu"
+          component={EmptyComponent}
+          options={{
+            headerShown: false,
+            title: 'Menu',
+            tabBarIcon: MenuTabIcon,
+          }}
+          listeners={{
+            tabPress: e => {
+              e.preventDefault();
+              setIsMenuVisible(true);
+            },
           }}
         />
       </Tabs.Navigator>
