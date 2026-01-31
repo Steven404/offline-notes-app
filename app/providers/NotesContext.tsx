@@ -6,6 +6,7 @@ const NOTES_STORAGE_KEY = 'notes';
 
 interface NotesContextType {
   notes: Note[];
+  isLoading: boolean;
   addNote: (note: Note) => void;
   deleteNote: (id: string) => void;
   updateNote: (id: string, note: Note) => void;
@@ -13,6 +14,7 @@ interface NotesContextType {
 
 const NotesContext = createContext<NotesContextType>({
   notes: [],
+  isLoading: false,
   addNote: () => {},
   deleteNote: () => {},
   updateNote: () => {},
@@ -26,14 +28,22 @@ export const NotesContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadNotes = async () => {
-      const storedNotes = await getDataFromStorage(NOTES_STORAGE_KEY);
-      if (storedNotes) {
-        setNotes(JSON.parse(storedNotes));
+      try {
+        const storedNotes = await getDataFromStorage(NOTES_STORAGE_KEY);
+        if (storedNotes) {
+          setNotes(JSON.parse(storedNotes));
+        }
+      } catch (e) {
+        console.error('Failed to load notes', e);
+      } finally {
+        setIsLoading(false);
       }
     };
+
     loadNotes();
   }, []);
 
@@ -59,6 +69,7 @@ export const NotesContextProvider = ({
     <NotesContext.Provider
       value={{
         notes,
+        isLoading,
         addNote,
         deleteNote,
         updateNote,
