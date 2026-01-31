@@ -1,28 +1,31 @@
 import { StyleSheet, TextInput, View } from 'react-native';
 import Colors from '../../../styles/colors.ts';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
-const NoteTitleInput = () => {
+interface NoteTitleInputProps {
+  title: string;
+  setTitle: (title: string) => void;
+}
+
+const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
   const textInputRef = useRef<TextInput>(null);
   const initialised = useRef(false);
 
   return (
-    <View>
-      <TextInput
-        ref={textInputRef}
-        style={[styles.input]}
-        placeholder={'Title'}
-        placeholderTextColor={Colors.placeholder}
-        onChangeText={text => {
-          // The following if statements fixes input not growing on iOS devices
-          if (!initialised.current && text?.trim()) {
-            initialised.current = true;
-            textInputRef.current?.setNativeProps({ text });
-          }
-        }}
-        multiline
-      />
-    </View>
+    <TextInput
+      ref={textInputRef}
+      style={[styles.input]}
+      placeholder={'Title'}
+      placeholderTextColor={Colors.placeholder}
+      onChangeText={text => {
+        // The following if statements fixes input not growing on iOS devices
+        if (!initialised.current && text?.trim()) {
+          initialised.current = true;
+          textInputRef.current?.setNativeProps({ text });
+        }
+      }}
+      multiline
+    />
   );
 };
 

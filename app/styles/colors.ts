@@ -6,4 +6,6 @@ export default Object.freeze({
   white: '#ffffff',
   placeholder: '#9A9A9A',
   primary: '#ffd048',
+  toolbarBackground: 'rgba(255, 208, 72, 0.8)',
+  toolbarBackgroundActive: '#ffd048',
 });

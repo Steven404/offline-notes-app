@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import Colors from '../../../styles/colors.ts';
 import Icon from '../../../components/icon/Icon.tsx';
@@ -6,22 +6,25 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NoteTitleInput from '../components/NoteTitleInput.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
+import NoteContentInput from '../components/NoteContentInput.tsx';
 
 const NoteEditor = () => {
   const navigation = useNavigation();
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
 
   return (
     <SafeAreaView style={styles.pageWrapper}>
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
+        <TouchableOpacity onPress={navigation.goBack} style={styles.backButton}>
           <Icon name="arrow-left" size={24} color={Colors.white} />
         </TouchableOpacity>
+        <TouchableOpacity onPress={navigation.goBack} style={styles.backButton}>
+          <Icon name="floppy-disk" size={24} color={Colors.white} />
+        </TouchableOpacity>
       </View>
-      <NoteTitleInput />
-      <TextLabel text={'Note content'} />
+      <NoteTitleInput title={title} setTitle={setTitle} />
+      <NoteContentInput />
     </SafeAreaView>
   );
 };
@@ -36,6 +39,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   backButton: {
     padding: 8,
