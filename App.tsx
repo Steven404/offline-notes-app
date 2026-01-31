@@ -15,12 +15,15 @@ library.add(fab, far, fas);
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Navigation from './app/navigation/Navigation.tsx';
+import { NotesContextProvider } from './app/providers/NotesContext.tsx';
 
 function App() {
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={'light-content'} />
-      <Navigation />
+      <NotesContextProvider>
+        <StatusBar barStyle={'light-content'} />
+        <Navigation />
+      </NotesContextProvider>
     </SafeAreaProvider>
   );
 }
