@@ -40,7 +40,7 @@ export const NotesContextProvider = ({
       } catch (e) {
         console.error('Failed to load notes', e);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 2000);
       }
     };
 
