@@ -30,7 +30,7 @@ const Notes = () => {
         <TextLabel text={'Notes'} style={styles.headerText} />
       </View>
       {isLoading ? <SimpleLoading centered /> : pageContent}
-      <AddNoteButton onPress={() => navigation.navigate('newNote')} />
+      <AddNoteButton onPress={() => navigation.navigate('noteEditor')} />
     </View>
   );
 };

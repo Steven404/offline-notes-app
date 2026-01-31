@@ -4,5 +4,6 @@ export default Object.freeze({
   tabBarBackground: '#303030',
   black: '#000000',
   white: '#ffffff',
+  placeholder: '#9A9A9A',
   primary: '#ffd048',
 });

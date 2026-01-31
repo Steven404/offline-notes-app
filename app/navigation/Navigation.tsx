@@ -1,11 +1,11 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import BottomTabsNavigator from './BottomTabsNavigator.tsx';
-import NewNote from '../features/notes/screens/NewNote.tsx';
+import NoteEditor from '../features/notes/screens/NoteEditor.tsx';
 
 export type RootStackParamList = {
   bottomTabsNavigator: undefined;
-  newNote: undefined;
+  noteEditor: undefined;
 };
 
 const RootStack = createStackNavigator<RootStackParamList>();
@@ -22,8 +22,8 @@ const Navigation = () => {
           }}
         />
         <RootStack.Screen
-          name="newNote"
-          component={NewNote}
+          name="noteEditor"
+          component={NoteEditor}
           options={{
             headerShown: false,
           }}
