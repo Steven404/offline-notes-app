@@ -1,6 +1,6 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * Offline Notes app
+ * https://github.com/Steven404/offline-notes-app
  *
  * @format
  */
