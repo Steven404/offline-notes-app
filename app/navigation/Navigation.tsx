@@ -5,7 +5,7 @@ import NoteEditor from '../features/notes/screens/NoteEditor.tsx';
 
 export type RootStackParamList = {
   bottomTabsNavigator: undefined;
-  noteEditor: { noteId: string };
+  noteEditor: { noteId?: string };
 };
 
 const RootStack = createStackNavigator<RootStackParamList>();

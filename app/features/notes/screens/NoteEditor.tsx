@@ -8,21 +8,34 @@ import NoteTitleInput from '../components/NoteTitleInput.tsx';
 import NoteContentInput from '../components/NoteContentInput.tsx';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useNotes } from '../../../providers/NotesContext.tsx';
+import { StackScreenProps } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../navigation/Navigation.tsx';
 
-const NoteEditor = () => {
+type NoteEditorProps = StackScreenProps<RootStackParamList, 'noteEditor'>;
+
+const NoteEditor = ({ route }: NoteEditorProps) => {
   const navigation = useNavigation();
-  const { addNote } = useNotes();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const { addNote, updateNote, notes } = useNotes();
+
+  const [noteId, setNoteId] = useState(route.params?.noteId);
+
+  const currentNote = notes.find(n => n.id === noteId);
+
+  const [title, setTitle] = useState(currentNote?.title || '');
+  const [content, setContent] = useState(currentNote?.content || '');
 
   const handleSave = () => {
-    const newNote = {
+    const noteData = {
       title,
       content,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
     };
-    addNote(newNote);
+
+    if (noteId) {
+      updateNote(noteId, noteData);
+    } else {
+      const newId = addNote(noteData);
+      setNoteId(newId);
+    }
   };
 
   return (

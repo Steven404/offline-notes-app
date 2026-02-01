@@ -31,7 +31,7 @@ const Notes = () => {
       </View>
       {isLoading ? <SimpleLoading centered /> : pageContent}
       <AddNoteButton
-        onPress={() => navigation.navigate('noteEditor', { noteId: '' })}
+        onPress={() => navigation.navigate('noteEditor', { noteId: undefined })}
       />
     </View>
   );

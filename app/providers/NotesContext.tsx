@@ -8,9 +8,12 @@ const NOTES_STORAGE_KEY = 'notes';
 interface NotesContextType {
   notes: Note[];
   isLoading: boolean;
-  addNote: (note: Omit<Note, 'id'>) => string;
+  addNote: (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => string;
   deleteNote: (id: string) => void;
-  updateNote: (id: string, note: Note) => void;
+  updateNote: (
+    id: string,
+    note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>,
+  ) => void;
 }
 
 const NotesContext = createContext<NotesContextType>({
@@ -52,9 +55,10 @@ export const NotesContextProvider = ({
     console.log('Notes changed', notes);
   }, [notes]);
 
-  const addNote = (note: Omit<Note, 'id'>) => {
+  const addNote = (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => {
     const id = uuid.v4();
-    const newNote = { ...note, id };
+    const now = Date.now();
+    const newNote: Note = { ...note, id, createdAt: now, updatedAt: now };
     const updatedNotes = [...notes, newNote];
     setNotes(updatedNotes);
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
@@ -67,8 +71,14 @@ export const NotesContextProvider = ({
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
 
-  const updateNote = (id: string, note: Note) => {
-    const updatedNotes = notes.map(n => (n.id === id ? note : n));
+  const updateNote = (
+    id: string,
+    note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>,
+  ) => {
+    const now = Date.now();
+    const updatedNotes = notes.map(n =>
+      n.id === id ? { ...n, ...note, updatedAt: now } : n,
+    );
     setNotes(updatedNotes);
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
