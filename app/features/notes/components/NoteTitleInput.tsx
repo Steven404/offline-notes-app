@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 import Colors from '../../../styles/colors.ts';
 import { useRef } from 'react';
 
@@ -17,7 +17,9 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
       style={[styles.input]}
       placeholder={'Title'}
       placeholderTextColor={Colors.placeholder}
+      value={title}
       onChangeText={text => {
+        setTitle(text);
         // The following if statements fixes input not growing on iOS devices
         if (!initialised.current && text?.trim()) {
           initialised.current = true;

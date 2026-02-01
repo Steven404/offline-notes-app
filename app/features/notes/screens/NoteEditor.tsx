@@ -25,7 +25,7 @@ const NoteEditor = () => {
       </View>
       <KeyboardAwareScrollView contentContainerStyle={styles.content}>
         <NoteTitleInput title={title} setTitle={setTitle} />
-        <NoteContentInput />
+        <NoteContentInput content={content} setContent={setContent} />
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );

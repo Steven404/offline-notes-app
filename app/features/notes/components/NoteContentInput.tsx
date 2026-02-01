@@ -1,4 +1,4 @@
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
   EnrichedTextInput,
   EnrichedTextInputInstance,
@@ -38,7 +38,12 @@ const DEFAULT_STYLES: StylesState = {
   mention: DEFAULT_STYLE_STATE,
 };
 
-const NoteContentInput = () => {
+interface NoteContentInputProps {
+  content: string;
+  setContent: (content: string) => void;
+}
+
+const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
   const ref = useRef<EnrichedTextInputInstance>(null);
 
   const [stylesState, setStylesState] = useState<StylesState>(DEFAULT_STYLES);
@@ -52,6 +57,8 @@ const NoteContentInput = () => {
         placeholder={'Content'}
         placeholderTextColor={Colors.placeholder}
         onChangeState={e => setStylesState(e.nativeEvent)}
+        onChangeHtml={e => setContent(e.nativeEvent.value)}
+        defaultValue={content}
       />
       <View style={styles.toolbarContainer}>
         <Toolbar
