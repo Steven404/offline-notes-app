@@ -4,7 +4,7 @@ import {
   EnrichedTextInputInstance,
   OnChangeStateEvent,
 } from 'react-native-enriched';
-import { useRef, useState } from 'react';
+import { useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import { Toolbar } from '../../../components/enrichedTextToolbar/Toolbar.tsx';
@@ -38,16 +38,33 @@ const DEFAULT_STYLES: StylesState = {
   mention: DEFAULT_STYLE_STATE,
 };
 
-interface NoteContentInputProps {
-  content: string;
-  setContent: (content: string) => void;
+export interface NoteContentInputInstance {
+  getContent: () => Promise<string>;
 }
 
-const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
-  const ref = useRef<EnrichedTextInputInstance>(null);
+interface NoteContentInputProps {
+  content: string;
+}
+
+const NoteContentInput = forwardRef<
+  NoteContentInputInstance,
+  NoteContentInputProps
+>(({ content }, ref) => {
+  const inputRef = useRef<EnrichedTextInputInstance>(null);
 
   const [stylesState, setStylesState] = useState<StylesState>(DEFAULT_STYLES);
   const [isFocused, setIsFocused] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    getContent: async () => {
+      if (inputRef.current) {
+        return await inputRef.current.getHTML();
+      }
+      return content;
+    },
+  }));
+
+  //TODO: Fix bug that occurs when saving content with list
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
@@ -56,20 +73,19 @@ const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
   return (
     <View style={styles.componentWrapper}>
       <EnrichedTextInput
-        ref={ref}
+        ref={inputRef}
         onBlur={handleBlur}
         onFocus={handleFocus}
         style={styles.input}
         placeholder={'Content'}
         placeholderTextColor={Colors.placeholder}
         onChangeState={e => setStylesState(e.nativeEvent)}
-        onChangeHtml={e => setContent(e.nativeEvent.value)}
         defaultValue={content}
       />
       <View style={styles.toolbarContainer}>
         {isFocused && (
           <Toolbar
-            editorRef={ref}
+            editorRef={inputRef}
             stylesState={stylesState}
             onOpenLinkModal={() => {}}
             onSelectImage={() => {}}
@@ -78,7 +94,7 @@ const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   componentWrapper: { flex: 1 },

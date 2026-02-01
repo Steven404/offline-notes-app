@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import Colors from '../../../styles/colors.ts';
 import Icon from '../../../components/icon/Icon.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NoteTitleInput from '../components/NoteTitleInput.tsx';
-import NoteContentInput from '../components/NoteContentInput.tsx';
+import NoteContentInput, {
+  NoteContentInputInstance,
+} from '../components/NoteContentInput.tsx';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -22,9 +24,10 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
   const currentNote = notes.find(n => n.id === noteId);
 
   const [title, setTitle] = useState(currentNote?.title || '');
-  const [content, setContent] = useState(currentNote?.content || '');
+  const contentRef = useRef<NoteContentInputInstance>(null);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const content = (await contentRef.current?.getContent()) || '';
     const noteData = {
       title,
       content,
@@ -50,7 +53,10 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
       </View>
       <KeyboardAwareScrollView contentContainerStyle={styles.content}>
         <NoteTitleInput title={title} setTitle={setTitle} />
-        <NoteContentInput content={content} setContent={setContent} />
+        <NoteContentInput
+          ref={contentRef}
+          content={currentNote?.content || ''}
+        />
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );
