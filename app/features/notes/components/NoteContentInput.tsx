@@ -47,12 +47,18 @@ const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
   const ref = useRef<EnrichedTextInputInstance>(null);
 
   const [stylesState, setStylesState] = useState<StylesState>(DEFAULT_STYLES);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = () => setIsFocused(false);
 
   //TODO: Check which text features you want to keep in the enriched text
   return (
     <View style={styles.componentWrapper}>
       <EnrichedTextInput
         ref={ref}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
         style={styles.input}
         placeholder={'Content'}
         placeholderTextColor={Colors.placeholder}
@@ -61,12 +67,14 @@ const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
         defaultValue={content}
       />
       <View style={styles.toolbarContainer}>
-        <Toolbar
-          editorRef={ref}
-          stylesState={stylesState}
-          onOpenLinkModal={() => {}}
-          onSelectImage={() => {}}
-        />
+        {isFocused && (
+          <Toolbar
+            editorRef={ref}
+            stylesState={stylesState}
+            onOpenLinkModal={() => {}}
+            onSelectImage={() => {}}
+          />
+        )}
       </View>
     </View>
   );

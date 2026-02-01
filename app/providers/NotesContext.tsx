@@ -1,13 +1,14 @@
 import { Note } from '../features/notes/NoteTypes.ts';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getDataFromStorage, storeData } from '../utils/asyncStorage.ts';
+import uuid from 'react-native-uuid';
 
 const NOTES_STORAGE_KEY = 'notes';
 
 interface NotesContextType {
   notes: Note[];
   isLoading: boolean;
-  addNote: (note: Note) => void;
+  addNote: (note: Omit<Note, 'id'>) => string;
   deleteNote: (id: string) => void;
   updateNote: (id: string, note: Note) => void;
 }
@@ -15,7 +16,7 @@ interface NotesContextType {
 const NotesContext = createContext<NotesContextType>({
   notes: [],
   isLoading: false,
-  addNote: () => {},
+  addNote: () => '',
   deleteNote: () => {},
   updateNote: () => {},
 });
@@ -47,10 +48,17 @@ export const NotesContextProvider = ({
     loadNotes();
   }, []);
 
-  const addNote = (note: Note) => {
-    const updatedNotes = [...notes, note];
+  useEffect(() => {
+    console.log('Notes changed', notes);
+  }, [notes]);
+
+  const addNote = (note: Omit<Note, 'id'>) => {
+    const id = uuid.v4();
+    const newNote = { ...note, id };
+    const updatedNotes = [...notes, newNote];
     setNotes(updatedNotes);
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+    return id;
   };
 
   const deleteNote = (id: string) => {

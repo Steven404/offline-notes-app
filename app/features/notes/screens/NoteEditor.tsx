@@ -7,11 +7,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import NoteTitleInput from '../components/NoteTitleInput.tsx';
 import NoteContentInput from '../components/NoteContentInput.tsx';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { useNotes } from '../../../providers/NotesContext.tsx';
 
 const NoteEditor = () => {
   const navigation = useNavigation();
+  const { addNote } = useNotes();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+
+  const handleSave = () => {
+    const newNote = {
+      title,
+      content,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    addNote(newNote);
+  };
 
   return (
     <SafeAreaView style={styles.pageWrapper}>
@@ -19,7 +31,7 @@ const NoteEditor = () => {
         <TouchableOpacity onPress={navigation.goBack} style={styles.backButton}>
           <Icon name="arrow-left" size={24} color={Colors.white} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={navigation.goBack} style={styles.backButton}>
+        <TouchableOpacity onPress={handleSave} style={styles.backButton}>
           <Icon name="floppy-disk" size={24} color={Colors.white} />
         </TouchableOpacity>
       </View>
