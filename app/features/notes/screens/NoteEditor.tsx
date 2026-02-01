@@ -5,8 +5,8 @@ import Icon from '../../../components/icon/Icon.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NoteTitleInput from '../components/NoteTitleInput.tsx';
-import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import NoteContentInput from '../components/NoteContentInput.tsx';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 const NoteEditor = () => {
   const navigation = useNavigation();
@@ -23,8 +23,10 @@ const NoteEditor = () => {
           <Icon name="floppy-disk" size={24} color={Colors.white} />
         </TouchableOpacity>
       </View>
-      <NoteTitleInput title={title} setTitle={setTitle} />
-      <NoteContentInput />
+      <KeyboardAwareScrollView contentContainerStyle={styles.content}>
+        <NoteTitleInput title={title} setTitle={setTitle} />
+        <NoteContentInput />
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };
@@ -45,9 +47,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexGrow: 1,
   },
 });
 

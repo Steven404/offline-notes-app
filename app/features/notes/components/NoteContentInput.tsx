@@ -44,9 +44,8 @@ const NoteContentInput = () => {
   const [stylesState, setStylesState] = useState<StylesState>(DEFAULT_STYLES);
 
   //TODO: Check which text features you want to keep in the enriched text
-  //TODO: Add KeyboardAwareScrollView and make the toolbar sit at the bottom
   return (
-    <View>
+    <View style={styles.componentWrapper}>
       <EnrichedTextInput
         ref={ref}
         style={styles.input}
@@ -54,22 +53,32 @@ const NoteContentInput = () => {
         placeholderTextColor={Colors.placeholder}
         onChangeState={e => setStylesState(e.nativeEvent)}
       />
-      <Toolbar
-        editorRef={ref}
-        stylesState={stylesState}
-        onOpenLinkModal={() => {}}
-        onSelectImage={() => {}}
-      />
+      <View style={styles.toolbarContainer}>
+        <Toolbar
+          editorRef={ref}
+          stylesState={stylesState}
+          onOpenLinkModal={() => {}}
+          onSelectImage={() => {}}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  componentWrapper: { flex: 1 },
   input: {
     width: '100%',
     fontSize: 20,
     fontFamily: Fonts.MontserratRegular,
     color: Colors.white,
+  },
+  toolbarContainer: {
+    //TODO: Left and right values shouldn't have to be there, but it's a solution for now. Check parents padding (NoteEditor.tsx) and find a way that the toolbar is not affected by them
+    position: 'absolute',
+    bottom: 0,
+    left: -14,
+    right: 0,
   },
 });
 

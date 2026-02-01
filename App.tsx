@@ -16,14 +16,17 @@ import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Navigation from './app/navigation/Navigation.tsx';
 import { NotesContextProvider } from './app/providers/NotesContext.tsx';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 function App() {
   return (
     <SafeAreaProvider>
-      <NotesContextProvider>
-        <StatusBar barStyle={'light-content'} />
-        <Navigation />
-      </NotesContextProvider>
+      <KeyboardProvider>
+        <NotesContextProvider>
+          <StatusBar barStyle={'light-content'} />
+          <Navigation />
+        </NotesContextProvider>
+      </KeyboardProvider>
     </SafeAreaProvider>
   );
 }
