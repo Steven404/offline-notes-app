@@ -24,6 +24,10 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
   const [content, setContent] = useState(currentNote?.content || '');
   const [title, setTitle] = useState(currentNote?.title || '');
 
+  const isSaved = Boolean(
+    noteId && currentNote?.content === content && currentNote?.title === title,
+  );
+
   const handleSave = async () => {
     const noteData = {
       title,
@@ -44,8 +48,16 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
         <TouchableOpacity onPress={navigation.goBack} style={styles.backButton}>
           <Icon name="arrow-left" size={24} color={Colors.white} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleSave} style={styles.backButton}>
-          <Icon name="floppy-disk" size={24} color={Colors.white} />
+        <TouchableOpacity
+          onPress={handleSave}
+          style={styles.backButton}
+          disabled={isSaved || !content.trim() || !title.trim()}
+        >
+          <Icon
+            name="floppy-disk"
+            size={24}
+            color={isSaved ? Colors.placeholder : Colors.white}
+          />
         </TouchableOpacity>
       </View>
       <KeyboardAwareScrollView contentContainerStyle={styles.content}>
