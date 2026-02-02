@@ -4,7 +4,7 @@ import {
   EnrichedTextInputInstance,
   OnChangeStateEvent,
 } from 'react-native-enriched';
-import { useRef, useState, useImperativeHandle, forwardRef } from 'react';
+import { useRef, useState } from 'react';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import { Toolbar } from '../../../components/enrichedTextToolbar/Toolbar.tsx';
@@ -38,33 +38,16 @@ const DEFAULT_STYLES: StylesState = {
   mention: DEFAULT_STYLE_STATE,
 };
 
-export interface NoteContentInputInstance {
-  getContent: () => Promise<string>;
-}
-
 interface NoteContentInputProps {
   content: string;
+  setContent: (content: string) => void;
 }
 
-const NoteContentInput = forwardRef<
-  NoteContentInputInstance,
-  NoteContentInputProps
->(({ content }, ref) => {
+const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
   const inputRef = useRef<EnrichedTextInputInstance>(null);
 
   const [stylesState, setStylesState] = useState<StylesState>(DEFAULT_STYLES);
   const [isFocused, setIsFocused] = useState(false);
-
-  useImperativeHandle(ref, () => ({
-    getContent: async () => {
-      if (inputRef.current) {
-        return await inputRef.current.getHTML();
-      }
-      return content;
-    },
-  }));
-
-  //TODO: Fix bug that occurs when saving content with list
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
@@ -80,7 +63,10 @@ const NoteContentInput = forwardRef<
         placeholder={'Content'}
         placeholderTextColor={Colors.placeholder}
         onChangeState={e => setStylesState(e.nativeEvent)}
-        defaultValue={content}
+        onChangeHtml={e => {
+          setContent(e.nativeEvent.value);
+        }}
+        // defaultValue={content}
       />
       <View style={styles.toolbarContainer}>
         {isFocused && (
@@ -94,7 +80,7 @@ const NoteContentInput = forwardRef<
       </View>
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   componentWrapper: { flex: 1 },
