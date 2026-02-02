@@ -8,6 +8,10 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../navigation/Navigation.tsx';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 import SimpleLoading from '../../../components/simpleLoading/SimpleLoading.tsx';
+import NoteCard from '../components/NoteCard.tsx';
+import { FlatList } from 'react-native';
+
+import { Note } from '../NoteTypes.ts';
 
 const NoNotes = () => {
   return (
@@ -22,7 +26,24 @@ const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { notes, isLoading } = useNotes();
 
-  const pageContent = notes.length > 0 ? <View /> : <NoNotes />;
+  const renderNote = ({ item }: { item: Note }) => (
+    <NoteCard
+      note={item}
+      onPress={() => navigation.navigate('noteEditor', { noteId: item.id })}
+    />
+  );
+
+  const pageContent =
+    notes.length > 0 ? (
+      <FlatList
+        data={notes}
+        renderItem={renderNote}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.listContent}
+      />
+    ) : (
+      <NoNotes />
+    );
 
   return (
     <View style={styles.pageWrapper}>
@@ -50,6 +71,10 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 36,
     fontFamily: Fonts.MontserratSemiBold,
+    marginBottom: 20,
+  },
+  listContent: {
+    paddingBottom: 80,
   },
 });
 

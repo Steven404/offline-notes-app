@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import Colors from '../../../styles/colors.ts';
 import Icon from '../../../components/icon/Icon.tsx';
@@ -18,6 +18,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
   const { addNote, updateNote, notes } = useNotes();
 
   const [noteId, setNoteId] = useState(route.params?.noteId);
+  const [defaultValue, setDefaultValue] = useState('');
 
   const currentNote = notes.find(n => n.id === noteId);
 
@@ -42,6 +43,12 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
     }
   };
 
+  useEffect(() => {
+    if (currentNote && !defaultValue) {
+      setDefaultValue(currentNote.content);
+    }
+  }, [currentNote, defaultValue]);
+
   return (
     <SafeAreaView style={styles.pageWrapper}>
       <View style={styles.header}>
@@ -62,7 +69,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
       </View>
       <KeyboardAwareScrollView contentContainerStyle={styles.content}>
         <NoteTitleInput title={title} setTitle={setTitle} />
-        <NoteContentInput content={content} setContent={setContent} />
+        <NoteContentInput setContent={setContent} defaultValue={defaultValue} />
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );

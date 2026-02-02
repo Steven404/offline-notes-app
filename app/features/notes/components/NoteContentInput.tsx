@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import { Toolbar } from '../../../components/enrichedTextToolbar/Toolbar.tsx';
+import { sanitizeNoteContent } from '../../../utils/functions.ts';
 
 type StylesState = OnChangeStateEvent;
 
@@ -39,11 +40,14 @@ const DEFAULT_STYLES: StylesState = {
 };
 
 interface NoteContentInputProps {
-  content: string;
   setContent: (content: string) => void;
+  defaultValue?: string;
 }
 
-const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
+const NoteContentInput = ({
+  defaultValue,
+  setContent,
+}: NoteContentInputProps) => {
   const inputRef = useRef<EnrichedTextInputInstance>(null);
 
   const [stylesState, setStylesState] = useState<StylesState>(DEFAULT_STYLES);
@@ -66,7 +70,9 @@ const NoteContentInput = ({ content, setContent }: NoteContentInputProps) => {
         onChangeHtml={e => {
           setContent(e.nativeEvent.value);
         }}
-        // defaultValue={content}
+        defaultValue={
+          defaultValue ? sanitizeNoteContent(defaultValue) : undefined
+        }
       />
       <View style={styles.toolbarContainer}>
         {isFocused && (
