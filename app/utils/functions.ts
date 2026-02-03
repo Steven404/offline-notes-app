@@ -15,22 +15,33 @@ export const sanitizeNoteContent = (content: string): string =>
   );
 
 /**
- * Formats a timestamp into a dd/mm/yyyy, hh:mm AM/PM string.
+ * Returns a relative time string from a timestamp.
  * @param timestamp - The timestamp to format.
- * @returns The formatted date string.
+ * @param now - Current timestamp (optional, defaults to Date.now()).
+ * @returns A relative time string.
  */
-export const formatDate = (timestamp: number): string => {
-  const date = new Date(timestamp);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  let hours = date.getHours();
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
+export const getRelativeTime = (
+  timestamp: number,
+  now: number = Date.now(),
+): string => {
+  const diff = now - timestamp;
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30);
 
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  const hoursStr = String(hours).padStart(2, '0');
-
-  return `${day}/${month}/${year} ${hoursStr}:${minutes} ${ampm}`;
+  if (seconds < 60) {
+    return 'Just now';
+  } else if (minutes < 60) {
+    return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+  } else if (hours < 24) {
+    return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+  } else if (days < 30) {
+    return `${days} day${days === 1 ? '' : 's'} ago`;
+  } else if (months < 12) {
+    return `${months} month${months === 1 ? '' : 's'} ago`;
+  } else {
+    return 'Long time ago';
+  }
 };

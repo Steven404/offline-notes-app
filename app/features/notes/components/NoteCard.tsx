@@ -5,7 +5,7 @@ import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
-import { formatDate } from '../../../utils/functions.ts';
+import { getRelativeTime } from '../../../utils/functions.ts';
 
 interface NoteCardProps {
   note: Note;
@@ -19,7 +19,7 @@ const NoteCard = ({ note, onPress }: NoteCardProps) => {
       <View style={styles.lastEdited}>
         <Icon name={'pencil'} size={12} color={Colors.placeholder} />
         <TextLabel
-          text={formatDate(note.updatedAt)}
+          text={getRelativeTime(note.updatedAt)}
           style={styles.lastEditedText}
         />
       </View>
