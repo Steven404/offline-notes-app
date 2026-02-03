@@ -8,4 +8,5 @@ export default Object.freeze({
   primary: '#ffd048',
   toolbarBackground: 'rgba(255, 208, 72, 0.8)',
   toolbarBackgroundActive: '#ffd048',
+  deleteRed: '#FF0000',
 });

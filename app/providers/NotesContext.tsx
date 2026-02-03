@@ -14,6 +14,8 @@ interface NotesContextType {
     id: string,
     note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>,
   ) => void;
+  pinNote: (id: string) => void;
+  unpinNote: (id: string) => void;
 }
 
 const NotesContext = createContext<NotesContextType>({
@@ -22,6 +24,8 @@ const NotesContext = createContext<NotesContextType>({
   addNote: () => '',
   deleteNote: () => {},
   updateNote: () => {},
+  pinNote: () => {},
+  unpinNote: () => {},
 });
 
 export const useNotes = () => useContext(NotesContext);
@@ -55,10 +59,18 @@ export const NotesContextProvider = ({
     console.log('Notes changed', notes);
   }, [notes]);
 
-  const addNote = (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addNote = (
+    note: Omit<Note, 'id' | 'createdAt' | 'updatedAt' | 'isPinned'>,
+  ) => {
     const id = uuid.v4();
     const now = Date.now();
-    const newNote: Note = { ...note, id, createdAt: now, updatedAt: now };
+    const newNote: Note = {
+      ...note,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      isPinned: false,
+    };
     const updatedNotes = [...notes, newNote];
     setNotes(updatedNotes);
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
@@ -83,6 +95,22 @@ export const NotesContextProvider = ({
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
 
+  const pinNote = (id: string) => {
+    const updatedNotes = notes.map(note =>
+      note.id === id ? { ...note, isPinned: true } : note,
+    );
+    setNotes(updatedNotes);
+    storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+  };
+
+  const unpinNote = (id: string) => {
+    const updatedNotes = notes.map(note =>
+      note.id === id ? { ...note, isPinned: false } : note,
+    );
+    setNotes(updatedNotes);
+    storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+  };
+
   return (
     <NotesContext.Provider
       value={{
@@ -91,6 +119,8 @@ export const NotesContextProvider = ({
         addNote,
         deleteNote,
         updateNote,
+        pinNote,
+        unpinNote,
       }}
     >
       {children}

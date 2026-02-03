@@ -1,21 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Note } from '../NoteTypes.ts';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
 import { getRelativeTime } from '../../../utils/functions.ts';
+import { useNotes } from '../../../providers/NotesContext.tsx';
 
 interface NoteCardProps {
   note: Note;
   onPress: () => void;
+  setNoteToDelete: (id: string) => void;
 }
 
-const NoteCard = ({ note, onPress }: NoteCardProps) => {
+const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
+  //TODO: Split the delete view in 2, with either an animated diagonal slash or a linear gradient. One view for delete and one view for setting reminder
+  const { pinNote, unpinNote } = useNotes();
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+
+  const handlePinPress = () => {
+    if (note.isPinned) {
+      unpinNote(note.id);
+    } else {
+      pinNote(note.id);
+    }
+  };
+
+  const handleLongPress = () => setIsDeleteMode(!isDeleteMode);
+
+  const handleDeletePress = () => setNoteToDelete(note.id);
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <TextLabel text={note.title} style={styles.title} />
+    <TouchableOpacity
+      style={styles.container}
+      onPress={!isDeleteMode ? onPress : () => {}}
+      onLongPress={handleLongPress}
+      activeOpacity={1}
+    >
+      {isDeleteMode && (
+        <Animated.View
+          entering={FadeIn.duration(500)}
+          exiting={FadeOut.duration(500)}
+          style={styles.deleteView}
+        >
+          <TouchableOpacity onPress={handleDeletePress}>
+            <Icon name={'trash'} size={25} color={Colors.white} />
+          </TouchableOpacity>
+        </Animated.View>
+      )}
+      <View style={styles.topContainer}>
+        <TextLabel text={note.title} style={styles.title} />
+        <TouchableOpacity onPress={handlePinPress}>
+          <Icon
+            name={'thumbtack'}
+            size={20}
+            color={Colors.white}
+            style={!note.isPinned && styles.unpinnedThumbstack}
+          />
+        </TouchableOpacity>
+      </View>
       <View style={styles.lastEdited}>
         <Icon name={'pencil'} size={12} color={Colors.placeholder} />
         <TextLabel
@@ -28,25 +73,43 @@ const NoteCard = ({ note, onPress }: NoteCardProps) => {
 };
 
 const styles = StyleSheet.create({
+  deleteView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 2,
+    backgroundColor: Colors.deleteRed,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     backgroundColor: Colors.tabBarBackground,
     padding: 16,
     borderRadius: 10,
     marginBottom: 12,
-    maxHeight: 100,
     overflow: 'hidden',
+  },
+  topContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 18,
     fontFamily: Fonts.MontserratSemiBold,
     color: Colors.white,
     marginBottom: 8,
+    maxWidth: '85%',
+  },
+  unpinnedThumbstack: {
+    opacity: 0.5,
   },
   lastEdited: {
     flexDirection: 'row',
     marginTop: 2,
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
   },
   lastEditedText: {
     fontSize: 14,

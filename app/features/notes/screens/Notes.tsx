@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
@@ -9,9 +9,10 @@ import { RootStackParamList } from '../../../navigation/Navigation.tsx';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 import SimpleLoading from '../../../components/simpleLoading/SimpleLoading.tsx';
 import NoteCard from '../components/NoteCard.tsx';
-import { FlatList } from 'react-native';
+import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
 
 import { Note } from '../NoteTypes.ts';
+import { useState } from 'react';
 
 const NoNotes = () => {
   return (
@@ -22,12 +23,17 @@ const NoNotes = () => {
   );
 };
 
+//TODO: Instead of navigating the user directly to the note editor, add a Note.tsx component for displaying the note only. In there add an edit note button
+
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { notes, isLoading } = useNotes();
 
+  const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
+
   const renderNote = ({ item }: { item: Note }) => (
     <NoteCard
+      setNoteToDelete={setNoteToDelete}
       note={item}
       onPress={() => navigation.navigate('noteEditor', { noteId: item.id })}
     />
@@ -53,6 +59,13 @@ const Notes = () => {
       {isLoading ? <SimpleLoading centered /> : pageContent}
       <AddNoteButton
         onPress={() => navigation.navigate('noteEditor', { noteId: undefined })}
+      />
+      <DeleteNoteModal
+        isVisible={Boolean(noteToDelete)}
+        onClose={() => setNoteToDelete(null)}
+        onConfirm={() => {
+          // Logic will be added here later
+        }}
       />
     </View>
   );
