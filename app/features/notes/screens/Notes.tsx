@@ -27,7 +27,7 @@ const NoNotes = () => {
 
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { notes, isLoading } = useNotes();
+  const { notes, isLoading, deleteNote } = useNotes();
 
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
@@ -51,6 +51,11 @@ const Notes = () => {
       <NoNotes />
     );
 
+  const confirmNoteDeletion = () => {
+    deleteNote(noteToDelete!);
+    setNoteToDelete(null);
+  };
+
   return (
     <View style={styles.pageWrapper}>
       <View style={styles.header}>
@@ -63,9 +68,7 @@ const Notes = () => {
       <DeleteNoteModal
         isVisible={Boolean(noteToDelete)}
         onClose={() => setNoteToDelete(null)}
-        onConfirm={() => {
-          // Logic will be added here later
-        }}
+        onConfirm={confirmNoteDeletion}
       />
     </View>
   );

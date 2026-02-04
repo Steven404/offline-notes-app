@@ -26,7 +26,7 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
           textInputRef.current?.setNativeProps({ text });
         }
       }}
-      multiline
+      maxLength={50}
     />
   );
 };

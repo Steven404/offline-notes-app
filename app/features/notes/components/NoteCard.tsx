@@ -33,42 +33,47 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
   const handleDeletePress = () => setNoteToDelete(note.id);
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={!isDeleteMode ? onPress : () => {}}
-      onLongPress={handleLongPress}
-      activeOpacity={1}
+    <Animated.View
+      entering={FadeIn.duration(500)}
+      exiting={FadeOut.duration(500)}
     >
-      {isDeleteMode && (
-        <Animated.View
-          entering={FadeIn.duration(500)}
-          exiting={FadeOut.duration(500)}
-          style={styles.deleteView}
-        >
-          <TouchableOpacity onPress={handleDeletePress}>
-            <Icon name={'trash'} size={25} color={Colors.textColor} />
+      <TouchableOpacity
+        style={styles.container}
+        onPress={!isDeleteMode ? onPress : () => {}}
+        onLongPress={handleLongPress}
+        activeOpacity={1}
+      >
+        {isDeleteMode && (
+          <Animated.View
+            entering={FadeIn.duration(500)}
+            exiting={FadeOut.duration(500)}
+            style={styles.deleteView}
+          >
+            <TouchableOpacity onPress={handleDeletePress}>
+              <Icon name={'trash'} size={25} color={Colors.textColor} />
+            </TouchableOpacity>
+          </Animated.View>
+        )}
+        <View style={styles.topContainer}>
+          <TextLabel text={note.title} style={styles.title} />
+          <TouchableOpacity onPress={handlePinPress}>
+            <Icon
+              name={'thumbtack'}
+              size={20}
+              color={Colors.textColor}
+              style={!note.isPinned && styles.unpinnedThumbstack}
+            />
           </TouchableOpacity>
-        </Animated.View>
-      )}
-      <View style={styles.topContainer}>
-        <TextLabel text={note.title} style={styles.title} />
-        <TouchableOpacity onPress={handlePinPress}>
-          <Icon
-            name={'thumbtack'}
-            size={20}
-            color={Colors.textColor}
-            style={!note.isPinned && styles.unpinnedThumbstack}
+        </View>
+        <View style={styles.lastEdited}>
+          <Icon name={'pencil'} size={12} color={Colors.placeholder} />
+          <TextLabel
+            text={getRelativeTime(note.updatedAt)}
+            style={styles.lastEditedText}
           />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.lastEdited}>
-        <Icon name={'pencil'} size={12} color={Colors.placeholder} />
-        <TextLabel
-          text={getRelativeTime(note.updatedAt)}
-          style={styles.lastEditedText}
-        />
-      </View>
-    </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
