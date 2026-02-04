@@ -81,11 +81,11 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.white,
+    color: Colors.textColor,
   },
   confirmButtonText: {
     fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.white,
+    color: Colors.textColor,
   },
 });
 

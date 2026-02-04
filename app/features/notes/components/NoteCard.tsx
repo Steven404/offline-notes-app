@@ -46,7 +46,7 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
           style={styles.deleteView}
         >
           <TouchableOpacity onPress={handleDeletePress}>
-            <Icon name={'trash'} size={25} color={Colors.white} />
+            <Icon name={'trash'} size={25} color={Colors.textColor} />
           </TouchableOpacity>
         </Animated.View>
       )}
@@ -56,7 +56,7 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
           <Icon
             name={'thumbtack'}
             size={20}
-            color={Colors.white}
+            color={Colors.textColor}
             style={!note.isPinned && styles.unpinnedThumbstack}
           />
         </TouchableOpacity>
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.white,
+    color: Colors.textColor,
     marginBottom: 8,
     maxWidth: '85%',
   },

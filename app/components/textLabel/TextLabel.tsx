@@ -21,7 +21,7 @@ function TextLabel(props: Props) {
 export default TextLabel;
 const styles = StyleSheet.create({
   text: {
-    color: Colors.white,
+    color: Colors.textColor,
     fontSize: 16,
     textAlign: 'left',
   },

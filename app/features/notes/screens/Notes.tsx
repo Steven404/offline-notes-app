@@ -35,7 +35,7 @@ const Notes = () => {
     <NoteCard
       setNoteToDelete={setNoteToDelete}
       note={item}
-      onPress={() => navigation.navigate('noteEditor', { noteId: item.id })}
+      onPress={() => navigation.navigate('note', { noteId: item.id })}
     />
   );
 

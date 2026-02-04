@@ -40,13 +40,15 @@ const DEFAULT_STYLES: StylesState = {
 };
 
 interface NoteContentInputProps {
-  setContent: (content: string) => void;
+  setContent?: (content: string) => void;
   defaultValue?: string;
+  isDisplay?: boolean;
 }
 
 const NoteContentInput = ({
   defaultValue,
   setContent,
+  isDisplay = false,
 }: NoteContentInputProps) => {
   const inputRef = useRef<EnrichedTextInputInstance>(null);
 
@@ -64,15 +66,16 @@ const NoteContentInput = ({
         onBlur={handleBlur}
         onFocus={handleFocus}
         style={styles.input}
+        editable={!isDisplay}
         placeholder={'Content'}
         placeholderTextColor={Colors.placeholder}
         onChangeState={e => setStylesState(e.nativeEvent)}
         onChangeHtml={e => {
-          setContent(e.nativeEvent.value);
+          setContent?.(e.nativeEvent.value);
         }}
         htmlStyle={{
           ul: {
-            bulletColor: Colors.white,
+            bulletColor: Colors.textColor,
           },
         }}
         defaultValue={
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 20,
     fontFamily: Fonts.MontserratRegular,
-    color: Colors.white,
+    color: Colors.textColor,
   },
   toolbarContainer: {
     //TODO: Left and right values shouldn't have to be there, but it's a solution for now. Check parents padding (NoteEditor.tsx) and find a way that the toolbar is not affected by them

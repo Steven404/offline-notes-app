@@ -62,7 +62,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
           <Icon
             name="floppy-disk"
             size={24}
-            color={isSaved ? Colors.placeholder : Colors.white}
+            color={isSaved ? Colors.placeholder : Colors.textColor}
           />
         </TouchableOpacity>
       </View>

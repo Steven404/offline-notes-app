@@ -42,7 +42,7 @@ const BottomTabsNavigator = () => {
           animation: 'fade',
           headerShown: false,
           tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.4)',
-          tabBarActiveTintColor: Colors.white,
+          tabBarActiveTintColor: Colors.textColor,
           tabBarLabelStyle: {
             fontFamily: Fonts.MontserratRegular,
           },

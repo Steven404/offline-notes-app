@@ -12,7 +12,7 @@ const SimpleLoading = ({
 }: SimpleLoadingProps) => {
   return (
     <View style={centered ? styles.centered : {}}>
-      <ActivityIndicator size={size} color={Colors.white} />
+      <ActivityIndicator size={size} color={Colors.textColor} />
     </View>
   );
 };

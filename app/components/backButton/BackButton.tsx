@@ -18,7 +18,7 @@ interface BackButtonProps {
 
 const BackButton = ({
   style,
-  color = Colors.white,
+  color = Colors.textColor,
   size = 24,
   onPress,
 }: BackButtonProps) => {
