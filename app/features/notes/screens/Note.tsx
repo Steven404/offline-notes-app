@@ -37,8 +37,8 @@ const Note = ({ route }: NoteProps) => {
           <Icon name="pen-to-square" size={24} color={Colors.textColor} />
         </TouchableOpacity>
       </View>
+      <Text style={styles.title}>{note?.title}</Text>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>{note?.title}</Text>
         <NoteContentInput defaultValue={note?.content} isDisplay={true} />
       </ScrollView>
     </SafeAreaView>
@@ -61,6 +61,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   content: {
+    borderTopWidth: 0.5,
+    borderTopColor: Colors.placeholder,
     flex: 1,
   },
   title: {
