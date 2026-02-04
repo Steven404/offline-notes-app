@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import Colors from '../../../styles/colors.ts';
 import Icon from '../../../components/icon/Icon.tsx';
+import BackButton from '../../../components/backButton/BackButton.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NoteTitleInput from '../components/NoteTitleInput.tsx';
@@ -14,7 +15,6 @@ import { RootStackParamList } from '../../../navigation/Navigation.tsx';
 type NoteEditorProps = StackScreenProps<RootStackParamList, 'noteEditor'>;
 
 const NoteEditor = ({ route }: NoteEditorProps) => {
-  const navigation = useNavigation();
   const { addNote, updateNote, notes } = useNotes();
 
   const [noteId, setNoteId] = useState(route.params?.noteId);
@@ -36,7 +36,8 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
     };
 
     if (noteId) {
-      updateNote(noteId, noteData);
+      const isPinned = notes.find(n => n.id === noteId)?.isPinned!;
+      updateNote(noteId, { ...noteData, isPinned });
     } else {
       const newId = addNote(noteData);
       setNoteId(newId);
@@ -52,9 +53,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
   return (
     <SafeAreaView style={styles.pageWrapper}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={navigation.goBack} style={styles.backButton}>
-          <Icon name="arrow-left" size={24} color={Colors.white} />
-        </TouchableOpacity>
+        <BackButton />
         <TouchableOpacity
           onPress={handleSave}
           style={styles.backButton}

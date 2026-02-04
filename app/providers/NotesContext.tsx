@@ -8,7 +8,9 @@ const NOTES_STORAGE_KEY = 'notes';
 interface NotesContextType {
   notes: Note[];
   isLoading: boolean;
-  addNote: (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => string;
+  addNote: (
+    note: Omit<Note, 'id' | 'createdAt' | 'updatedAt' | 'isPinned'>,
+  ) => string;
   deleteNote: (id: string) => void;
   updateNote: (
     id: string,

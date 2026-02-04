@@ -70,6 +70,11 @@ const NoteContentInput = ({
         onChangeHtml={e => {
           setContent(e.nativeEvent.value);
         }}
+        htmlStyle={{
+          ul: {
+            bulletColor: Colors.white,
+          },
+        }}
         defaultValue={
           defaultValue ? sanitizeNoteContent(defaultValue) : undefined
         }
