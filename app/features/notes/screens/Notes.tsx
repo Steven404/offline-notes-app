@@ -23,8 +23,6 @@ const NoNotes = () => {
   );
 };
 
-//TODO: Instead of navigating the user directly to the note editor, add a Note.tsx component for displaying the note only. In there add an edit note button
-
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { notes, isLoading, deleteNote } = useNotes();

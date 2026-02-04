@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../../components/backButton/BackButton.tsx';
 import React, { useState } from 'react';
@@ -17,6 +11,9 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import NoteContentInput from '../components/NoteContentInput.tsx';
 import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
+import TextLabel from '../../../components/textLabel/TextLabel.tsx';
+import { formatDate } from '../../../utils.ts';
+import Fonts from '../../../styles/Fonts.tsx';
 
 type NoteProps = StackScreenProps<RootStackParamList, 'note'>;
 
@@ -54,7 +51,23 @@ const Note = ({ route }: NoteProps) => {
           </TouchableOpacity>
         </View>
       </View>
-      <Text style={styles.title}>{note?.title}</Text>
+      <TextLabel text={note?.title} style={styles.title} />
+      <View style={styles.dateContainer}>
+        <View style={styles.dateTag}>
+          <TextLabel text="Created: " style={styles.dateLabel} />
+          <TextLabel
+            text={formatDate(note.createdAt)}
+            style={styles.dateValue}
+          />
+        </View>
+        <View style={styles.dateTag}>
+          <TextLabel text="Edited: " style={styles.dateLabel} />
+          <TextLabel
+            text={formatDate(note.updatedAt)}
+            style={styles.dateValue}
+          />
+        </View>
+      </View>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <NoteContentInput defaultValue={note?.content} isDisplay={true} />
       </ScrollView>
@@ -91,14 +104,39 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   content: {
+    paddingTop: 14,
     borderTopWidth: 0.5,
     borderTopColor: Colors.placeholder,
     flex: 1,
   },
   title: {
     width: '100%',
-    paddingVertical: 14,
-    fontSize: 48,
+    paddingTop: 14,
+    fontSize: 32,
+    fontFamily: Fonts.MontserratSemiBold,
+    color: Colors.textColor,
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    paddingTop: 8,
+    marginBottom: 14,
+    gap: 8,
+  },
+  dateTag: {
+    flexDirection: 'row',
+    backgroundColor: Colors.placeholder + '20',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  dateLabel: {
+    fontSize: 12,
+    color: Colors.placeholder,
+    fontWeight: '600',
+  },
+  dateValue: {
+    fontSize: 13,
     color: Colors.textColor,
   },
 });

@@ -1,6 +1,7 @@
 import { StyleSheet, TextInput } from 'react-native';
 import Colors from '../../../styles/colors.ts';
 import { useRef } from 'react';
+import Fonts from '../../../styles/Fonts.tsx';
 
 interface NoteTitleInputProps {
   title: string;
@@ -20,13 +21,15 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
       value={title}
       onChangeText={text => {
         setTitle(text);
-        // The following if statements fixes input not growing on iOS devices
+        // The following if statements fixes input not growing on iOS devices (applies when multiline={true})
         if (!initialised.current && text?.trim()) {
           initialised.current = true;
           textInputRef.current?.setNativeProps({ text });
         }
       }}
       maxLength={50}
+      multiline={true}
+      numberOfLines={4}
     />
   );
 };
@@ -35,7 +38,8 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     paddingVertical: 14,
-    fontSize: 48,
+    fontSize: 32,
+    fontFamily: Fonts.MontserratSemiBold,
     color: Colors.textColor,
   },
 });
