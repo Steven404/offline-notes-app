@@ -14,6 +14,7 @@ import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
 
 import { Note } from '../NoteTypes.ts';
 import { useState } from 'react';
+import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
 
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -48,9 +49,7 @@ const Notes = () => {
 
   return (
     <View style={styles.pageWrapper}>
-      <View style={styles.header}>
-        <TextLabel text={'Notes'} style={styles.headerText} />
-      </View>
+      <BottomBarHeader title={'Notes'} />
       {isLoading ? <SimpleLoading centered /> : pageContent}
       <AddNoteButton
         onPress={() => navigation.navigate('noteEditor', { noteId: undefined })}
@@ -69,15 +68,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
     padding: 14,
-  },
-  header: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 36,
-    fontFamily: Fonts.MontserratSemiBold,
-    marginBottom: 20,
   },
   listContent: {
     paddingBottom: 80,

@@ -1,12 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useState } from 'react';
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import Notes from '../features/notes/screens/Notes.tsx';
 import Reminders from '../features/reminders/screens/Reminders.tsx';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Icon from '../components/icon/Icon.tsx';
 import Colors from '../styles/colors.ts';
 import Fonts from '../styles/Fonts.tsx';
