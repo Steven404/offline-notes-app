@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+} from 'react-native-reanimated';
 import { Note } from '../NoteTypes.ts';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
@@ -9,6 +13,7 @@ import Icon from '../../../components/icon/Icon.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { getRelativeTime } from '../../../utils/functions.ts';
 import { useNotes } from '../../../providers/NotesContext.tsx';
+import { isPair } from 'yaml';
 
 interface NoteCardProps {
   note: Note;
@@ -35,6 +40,7 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
 
   return (
     <Animated.View
+      layout={LinearTransition}
       entering={FadeIn.duration(500)}
       exiting={FadeOut.duration(500)}
     >
@@ -64,7 +70,7 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
             onPress={handlePinPress}
             name={'thumbtack'}
             size={20}
-            color={Colors.textColor}
+            color={note.isPinned ? Colors.secondary : Colors.mutedOrange}
             iconStyle={!note.isPinned && styles.unpinnedThumbstack}
           />
         </View>

@@ -17,7 +17,7 @@ const SimpleLoading = ({
       exiting={FadeOut.duration(500)}
       style={centered ? styles.centered : {}}
     >
-      <ActivityIndicator size={size} color={Colors.textColor} />
+      <ActivityIndicator size={size} color={Colors.secondary} />
     </Animated.View>
   );
 };

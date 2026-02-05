@@ -10,7 +10,7 @@ type BottomBarHeaderProps = {
   onSearchPress?: () => void;
 };
 
-const BottomBarHeader = ({ title }: BottomBarHeaderProps) => {
+const BottomBarHeader = ({ title, onSearchPress }: BottomBarHeaderProps) => {
   return (
     <View style={styles.container}>
       <IconButton
@@ -20,12 +20,16 @@ const BottomBarHeader = ({ title }: BottomBarHeaderProps) => {
         onPress={() => {}}
       />
       <TextLabel text={title} style={styles.text} />
-      <IconButton
-        name={'search'}
-        size={24}
-        color={Colors.textColor}
-        onPress={() => {}}
-      />
+      {onSearchPress ? (
+        <IconButton
+          name={'search'}
+          size={24}
+          color={Colors.textColor}
+          onPress={onSearchPress}
+        />
+      ) : (
+        <View />
+      )}
     </View>
   );
 };
@@ -36,7 +40,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-
   text: {
     fontSize: 36,
     fontFamily: Fonts.MontserratSemiBold,

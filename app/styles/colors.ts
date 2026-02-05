@@ -6,6 +6,8 @@ export default Object.freeze({
   textColor: '#ffffff',
   placeholder: '#9A9A9A',
   primary: '#ffd048',
+  secondary: '#48D0FF',
+  mutedOrange: '#FF9F48',
   toolbarBackground: 'rgba(255, 208, 72, 0.8)',
   toolbarBackgroundActive: '#ffd048',
   deleteRed: '#FF0000',

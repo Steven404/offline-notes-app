@@ -57,10 +57,6 @@ export const NotesContextProvider = ({
     loadNotes();
   }, []);
 
-  useEffect(() => {
-    console.log('Notes changed', notes);
-  }, [notes]);
-
   const addNote = (
     note: Omit<Note, 'id' | 'createdAt' | 'updatedAt' | 'isPinned'>,
   ) => {

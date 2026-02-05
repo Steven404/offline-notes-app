@@ -1,8 +1,6 @@
-import { StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import NoNotes from '../components/NoNotes.tsx';
-import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
-import Fonts from '../../../styles/Fonts.tsx';
 import AddNoteButton from '../components/AddNoteButton.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -15,10 +13,13 @@ import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
 import { Note } from '../NoteTypes.ts';
 import { useState } from 'react';
 import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
+import SearchNotesScreen from '../components/SearchNotesScreen.tsx';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { notes, isLoading, deleteNote } = useNotes();
+  const [isSearching, setIsSearching] = useState(false);
 
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
@@ -32,7 +33,8 @@ const Notes = () => {
 
   const pageContent =
     notes.length > 0 ? (
-      <FlatList
+      <Animated.FlatList
+        itemLayoutAnimation={LinearTransition}
         data={notes}
         renderItem={renderNote}
         keyExtractor={item => item.id}
@@ -47,9 +49,19 @@ const Notes = () => {
     setNoteToDelete(null);
   };
 
+  const handleSearchPress = () => !isSearching && setIsSearching(true);
+
+  const closeSearchScreen = () => setIsSearching(false);
+
   return (
     <View style={styles.pageWrapper}>
-      <BottomBarHeader title={'Notes'} />
+      {isSearching && (
+        <SearchNotesScreen
+          onBackButtonPress={closeSearchScreen}
+          renderNote={renderNote}
+        />
+      )}
+      <BottomBarHeader title={'Notes'} onSearchPress={handleSearchPress} />
       {isLoading ? <SimpleLoading centered /> : pageContent}
       <AddNoteButton
         onPress={() => navigation.navigate('noteEditor', { noteId: undefined })}
@@ -68,8 +80,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
     padding: 14,
+    zIndex: 1,
   },
   listContent: {
+    marginTop: 20,
     paddingBottom: 80,
   },
 });

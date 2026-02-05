@@ -12,6 +12,8 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
   const textInputRef = useRef<TextInput>(null);
   const initialised = useRef(false);
 
+  //TODO: Enter should take you to the content input instead of a new line in the title
+
   return (
     <TextInput
       ref={textInputRef}
