@@ -1,5 +1,6 @@
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import Colors from '../../styles/colors.ts';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 interface SimpleLoadingProps {
   size?: 'small' | 'large';
@@ -11,9 +12,13 @@ const SimpleLoading = ({
   centered = true,
 }: SimpleLoadingProps) => {
   return (
-    <View style={centered ? styles.centered : {}}>
+    <Animated.View
+      entering={FadeIn.duration(500)}
+      exiting={FadeOut.duration(500)}
+      style={centered ? styles.centered : {}}
+    >
       <ActivityIndicator size={size} color={Colors.textColor} />
-    </View>
+    </Animated.View>
   );
 };
 

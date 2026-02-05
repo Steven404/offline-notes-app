@@ -1,4 +1,5 @@
 import { StyleSheet, View, FlatList } from 'react-native';
+import NoNotes from '../components/NoNotes.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
@@ -13,15 +14,6 @@ import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
 
 import { Note } from '../NoteTypes.ts';
 import { useState } from 'react';
-
-const NoNotes = () => {
-  return (
-    <TextLabel
-      text={'No notes yet'}
-      style={{ fontFamily: Fonts.MontserratRegular }}
-    />
-  );
-};
 
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
