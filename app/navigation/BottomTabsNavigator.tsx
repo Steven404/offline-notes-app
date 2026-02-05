@@ -24,16 +24,9 @@ const NotesIcon = ({ color, size }: { color: string; size: number }) => (
 const RemindersIcon = ({ color, size }: { color: string; size: number }) => (
   <Icon name="bell" size={size} color={color} />
 );
-const MenuTabIcon = ({ color, size }: { color: string; size: number }) => (
-  <Icon name="bars" size={size} color={color} />
-);
-
-const EmptyComponent = () => <View />;
 
 const BottomTabsNavigator = () => {
   const areaInsets = useSafeAreaInsets();
-
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -69,21 +62,6 @@ const BottomTabsNavigator = () => {
           options={{
             tabBarIcon: RemindersIcon,
             title: 'Reminders',
-          }}
-        />
-        <Tabs.Screen
-          name="menu"
-          component={EmptyComponent}
-          options={{
-            headerShown: false,
-            title: 'Menu',
-            tabBarIcon: MenuTabIcon,
-          }}
-          listeners={{
-            tabPress: e => {
-              e.preventDefault();
-              setIsMenuVisible(true);
-            },
           }}
         />
       </Tabs.Navigator>
