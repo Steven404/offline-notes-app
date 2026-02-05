@@ -6,7 +6,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../navigation/Navigation.tsx';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 import Colors from '../../../styles/colors.ts';
-import Icon from '../../../components/icon/Icon.tsx';
+import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import NoteContentInput from '../components/NoteContentInput.tsx';
@@ -37,18 +37,20 @@ const Note = ({ route }: NoteProps) => {
       <View style={styles.header}>
         <BackButton />
         <View style={styles.headerButtons}>
-          <TouchableOpacity
+          <IconButton
             onPress={() => setIsDeleteModalVisible(true)}
-            style={styles.deleteButton}
-          >
-            <Icon name="trash" size={24} color={Colors.deleteRed} />
-          </TouchableOpacity>
-          <TouchableOpacity
+            name="trash"
+            size={24}
+            color={Colors.deleteRed}
+            touchableOpacityProps={{ style: styles.deleteButton }}
+          />
+          <IconButton
             onPress={() => navigation.navigate('noteEditor', { noteId })}
-            style={styles.editButton}
-          >
-            <Icon name="pen-to-square" size={24} color={Colors.textColor} />
-          </TouchableOpacity>
+            name="pen-to-square"
+            size={24}
+            color={Colors.textColor}
+            touchableOpacityProps={{ style: styles.editButton }}
+          />
         </View>
       </View>
       <TextLabel text={note?.title} style={styles.title} />

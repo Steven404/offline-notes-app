@@ -6,6 +6,7 @@ import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
+import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { getRelativeTime } from '../../../utils/functions.ts';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 
@@ -49,21 +50,23 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
             exiting={FadeOut.duration(500)}
             style={styles.deleteView}
           >
-            <TouchableOpacity onPress={handleDeletePress}>
-              <Icon name={'trash'} size={25} color={Colors.textColor} />
-            </TouchableOpacity>
+            <IconButton
+              onPress={handleDeletePress}
+              name={'trash'}
+              size={25}
+              color={Colors.textColor}
+            />
           </Animated.View>
         )}
         <View style={styles.topContainer}>
           <TextLabel text={note.title} style={styles.title} />
-          <TouchableOpacity onPress={handlePinPress}>
-            <Icon
-              name={'thumbtack'}
-              size={20}
-              color={Colors.textColor}
-              style={!note.isPinned && styles.unpinnedThumbstack}
-            />
-          </TouchableOpacity>
+          <IconButton
+            onPress={handlePinPress}
+            name={'thumbtack'}
+            size={20}
+            color={Colors.textColor}
+            iconStyle={!note.isPinned && styles.unpinnedThumbstack}
+          />
         </View>
         <View style={styles.lastEdited}>
           <Icon name={'pencil'} size={12} color={Colors.placeholder} />

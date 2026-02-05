@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import Colors from '../../../styles/colors.ts';
-import Icon from '../../../components/icon/Icon.tsx';
+import IconButton from '../../../components/iconButton/IconButton.tsx';
 import BackButton from '../../../components/backButton/BackButton.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -54,17 +54,16 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
     <SafeAreaView style={styles.pageWrapper}>
       <View style={styles.header}>
         <BackButton />
-        <TouchableOpacity
+        <IconButton
           onPress={handleSave}
-          style={styles.backButton}
-          disabled={isSaved || !content.trim() || !title.trim()}
-        >
-          <Icon
-            name="floppy-disk"
-            size={24}
-            color={isSaved ? Colors.placeholder : Colors.textColor}
-          />
-        </TouchableOpacity>
+          touchableOpacityProps={{
+            style: styles.backButton,
+            disabled: isSaved || !content.trim() || !title.trim(),
+          }}
+          name="floppy-disk"
+          size={24}
+          color={isSaved ? Colors.placeholder : Colors.textColor}
+        />
       </View>
       <KeyboardAwareScrollView contentContainerStyle={styles.content}>
         <NoteTitleInput title={title} setTitle={setTitle} />

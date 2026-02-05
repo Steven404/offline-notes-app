@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from '../icon/Icon.tsx';
+import IconButton from '../iconButton/IconButton.tsx';
 import Colors from '../../styles/colors.ts';
 
 interface BackButtonProps {
@@ -33,9 +33,13 @@ const BackButton = ({
   };
 
   return (
-    <TouchableOpacity onPress={handlePress} style={[styles.backButton, style]}>
-      <Icon name="arrow-left" size={size} color={color} />
-    </TouchableOpacity>
+    <IconButton
+      onPress={handlePress}
+      touchableOpacityProps={{ style: [styles.backButton, style] }}
+      name="arrow-left"
+      size={size}
+      color={color}
+    />
   );
 };
 
