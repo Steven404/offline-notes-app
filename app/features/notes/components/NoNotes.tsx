@@ -14,7 +14,7 @@ const NoNotes = () => {
       style={styles.noNotesContainer}
     >
       <AddNote width={250} height={250} />
-      <TextLabel text={'No notes yet'} style={styles.noNotesText} />
+      <TextLabel text={'No notes created yet!'} style={styles.noNotesText} />
     </Animated.View>
   );
 };

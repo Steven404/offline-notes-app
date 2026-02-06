@@ -16,7 +16,7 @@ const AddNoteButton = ({ onPress }: AddNoteButtonProps) => {
       ]}
       onPress={onPress}
     >
-      <Icon name={['fas', 'plus']} size={30} color={Colors.textColor} />
+      <Icon name={['fas', 'plus']} size={30} color={Colors.secondary} />
     </Pressable>
   );
 };
