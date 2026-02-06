@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '../../../components/backButton/BackButton.tsx';
 import React, { useState } from 'react';
@@ -24,13 +24,17 @@ const Note = ({ route }: NoteProps) => {
 
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const note = notes.find(n => n.id === noteId)!;
+  const note = notes.find(n => n.id === noteId);
 
   const confirmNoteDeletion = () => {
-    deleteNote(noteId);
-    setIsDeleteModalVisible(false);
     navigation.goBack();
+    setTimeout(() => deleteNote(noteId!), 500);
+    setIsDeleteModalVisible(false);
   };
+
+  if (!note) {
+    return null;
+  }
 
   return (
     <SafeAreaView style={styles.pageWrapper}>
