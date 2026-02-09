@@ -74,6 +74,7 @@ const BottomBarHeaderDropdown = () => {
           : 'Show All';
         setShowPinnedOnly(!showPinnedOnly);
         setDropdownOptions(dropdownInitialOptions);
+        dropdownRef.current?.close();
         break;
       case 'title_ascending':
       case 'title_descending':

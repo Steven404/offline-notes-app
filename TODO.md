@@ -1,0 +1,1 @@
+Consider replacing Reminders tab with Tasks

@@ -9,10 +9,10 @@ import { Note } from '../utils/NoteTypes.ts';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
-import Icon from '../../../components/icon/Icon.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
-import { getRelativeTime } from '../../../utils/functions.ts';
+import { formatDateTime } from '../../../utils/functions.ts';
 import { useNotes } from '../../../providers/NotesContext.tsx';
+import RenderHTML, { MixedStyleDeclaration } from 'react-native-render-html';
 
 interface NoteCardProps {
   note: Note;
@@ -65,24 +65,42 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
         )}
         <View style={styles.topContainer}>
           <TextLabel text={note.title} style={styles.title} />
-          <IconButton
-            onPress={handlePinPress}
-            name={'thumbtack'}
-            size={20}
-            color={note.isPinned ? Colors.secondary : Colors.secondary}
-            iconStyle={!note.isPinned && styles.unpinnedThumbstack}
+          <View style={styles.iconContainer}>
+            <IconButton
+              onPress={handlePinPress}
+              name={'thumbtack'}
+              size={20}
+              color={note.isPinned ? Colors.secondary : Colors.secondary}
+              iconStyle={!note.isPinned && styles.unpinnedThumbstack}
+            />
+          </View>
+        </View>
+        <View>
+          <RenderHTML
+            source={{ html: note.content }}
+            baseStyle={contentStyle}
+            defaultTextProps={{
+              numberOfLines: 1,
+              ellipsizeMode: 'tail',
+            }}
           />
         </View>
         <View style={styles.lastEdited}>
-          <Icon name={'pencil'} size={12} color={Colors.placeholder} />
           <TextLabel
-            text={getRelativeTime(note.updatedAt)}
+            text={formatDateTime(note.updatedAt)}
             style={styles.lastEditedText}
           />
         </View>
       </TouchableOpacity>
     </Animated.View>
   );
+};
+
+const contentStyle: MixedStyleDeclaration = {
+  fontSize: 16,
+  fontFamily: Fonts.MontserratRegular,
+  color: Colors.placeholder,
+  maxWidth: '85%',
 };
 
 const styles = StyleSheet.create({
@@ -98,6 +116,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
+    gap: 4,
     backgroundColor: Colors.tabBarBackground,
     padding: 16,
     borderRadius: 10,
@@ -111,11 +130,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
+    lineHeight: 20,
     fontFamily: Fonts.MontserratSemiBold,
     color: Colors.textColor,
-    marginBottom: 8,
     maxWidth: '85%',
   },
+  iconContainer: { maxHeight: 20 },
   unpinnedThumbstack: {
     opacity: 0.5,
   },

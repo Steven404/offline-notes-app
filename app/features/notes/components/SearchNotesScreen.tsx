@@ -34,7 +34,7 @@ const SearchNotesScreen = ({
       );
     }
 
-    return sortNotes(result, sortBy);
+    return sortNotes(result, sortBy, false);
   }, [notes, sortBy, searchTerm]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

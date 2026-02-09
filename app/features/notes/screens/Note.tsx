@@ -12,7 +12,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import NoteContentInput from '../components/NoteContentInput.tsx';
 import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
-import { formatDate } from '../../../utils/utils.ts';
+import { formatDate } from '../../../utils/functions.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 
 type NoteProps = StackScreenProps<RootStackParamList, 'note'>;
