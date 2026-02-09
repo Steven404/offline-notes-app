@@ -45,3 +45,54 @@ export const getRelativeTime = (
     return 'Long time ago';
   }
 };
+
+/**
+ * Formats a timestamp into a readable date string like "Feb 6 2026".
+ * @param timestamp - The timestamp to format.
+ * @returns A formatted date string.
+ */
+export const formatDate = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month} ${day} ${year}`;
+};
+
+/**
+ * Formats a date into a string with the format "dd/mm/yyyy - hh:mm PM/AM".
+ * @param dateInput - The date or timestamp to format.
+ * @returns A formatted date and time string.
+ */
+export const formatDateTime = (dateInput: Date | number): string => {
+  const date = typeof dateInput === 'number' ? new Date(dateInput) : dateInput;
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  const strHours = String(hours).padStart(2, '0');
+
+  return `${day}/${month}/${year} - ${strHours}:${minutes} ${ampm}`;
+};

@@ -1,3 +1,5 @@
+import { Reminder } from '../../../utils/types.ts';
+
 export interface Note {
   id: string;
   title: string;
@@ -5,4 +7,5 @@ export interface Note {
   createdAt: number;
   updatedAt: number;
   isPinned: boolean;
+  reminder?: Reminder;
 }
