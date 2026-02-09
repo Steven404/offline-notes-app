@@ -10,16 +10,21 @@ import SimpleLoading from '../../../components/simpleLoading/SimpleLoading.tsx';
 import NoteCard from '../components/NoteCard.tsx';
 import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
 
-import { Note } from '../NoteTypes.ts';
-import { useState } from 'react';
+import { Note } from '../utils/NoteTypes.ts';
+import { useMemo, useState } from 'react';
 import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
 import SearchNotesScreen from '../components/SearchNotesScreen.tsx';
 import Animated, { LinearTransition } from 'react-native-reanimated';
+import { sortNotes } from '../utils/noteUtils.ts';
 
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { notes, isLoading, deleteNote } = useNotes();
+  const { notes, isLoading, deleteNote, sortBy, showPinnedOnly } = useNotes();
   const [isSearching, setIsSearching] = useState(false);
+
+  const sortedNotes = useMemo(() => {
+    return sortNotes(notes, sortBy, showPinnedOnly);
+  }, [notes, sortBy, showPinnedOnly]);
 
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
@@ -35,7 +40,7 @@ const Notes = () => {
     notes.length > 0 ? (
       <Animated.FlatList
         itemLayoutAnimation={LinearTransition}
-        data={notes}
+        data={sortedNotes}
         renderItem={renderNote}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}

@@ -1,13 +1,24 @@
-import { Note } from '../features/notes/NoteTypes.ts';
+import { Note } from '../features/notes/utils/NoteTypes.ts';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getDataFromStorage, storeData } from '../utils/asyncStorage.ts';
 import uuid from 'react-native-uuid';
 
 const NOTES_STORAGE_KEY = 'notes';
 
+// Date sorting options are based on updatedAt
+export type SortOption =
+  | 'title_ascending'
+  | 'title_descending'
+  | 'createdAt'
+  | 'updatedAt';
+
 interface NotesContextType {
   notes: Note[];
   isLoading: boolean;
+  showPinnedOnly: boolean;
+  setShowPinnedOnly: (showPinnedOnly: boolean) => void;
+  sortBy: SortOption;
+  setSortBy: (option: SortOption) => void;
   addNote: (
     note: Omit<Note, 'id' | 'createdAt' | 'updatedAt' | 'isPinned'>,
   ) => string;
@@ -23,6 +34,10 @@ interface NotesContextType {
 const NotesContext = createContext<NotesContextType>({
   notes: [],
   isLoading: false,
+  sortBy: 'updatedAt',
+  showPinnedOnly: false,
+  setShowPinnedOnly: () => {},
+  setSortBy: () => {},
   addNote: () => '',
   deleteNote: () => {},
   updateNote: () => {},
@@ -39,6 +54,8 @@ export const NotesContextProvider = ({
 }) => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<SortOption>('updatedAt');
+  const [showPinnedOnly, setShowPinnedOnly] = useState(false);
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -114,11 +131,15 @@ export const NotesContextProvider = ({
       value={{
         notes,
         isLoading,
+        sortBy,
+        setSortBy,
         addNote,
         deleteNote,
         updateNote,
         pinNote,
         unpinNote,
+        setShowPinnedOnly,
+        showPinnedOnly,
       }}
     >
       {children}

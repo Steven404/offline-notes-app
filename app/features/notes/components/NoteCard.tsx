@@ -5,7 +5,7 @@ import Animated, {
   FadeOut,
   LinearTransition,
 } from 'react-native-reanimated';
-import { Note } from '../NoteTypes.ts';
+import { Note } from '../utils/NoteTypes.ts';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
   topContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    maxHeight: 30,
   },
   title: {
     fontSize: 18,

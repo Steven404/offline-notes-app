@@ -7,10 +7,11 @@ import Animated, {
 import colors from '../../../styles/colors.ts';
 import Icon from '../../../components/icon/Icon.tsx';
 import BackButton from '../../../components/backButton/BackButton.tsx';
-import { JSX, useCallback, useState } from 'react';
+import { JSX, useCallback, useMemo, useState } from 'react';
 import { useNotes } from '../../../providers/NotesContext.tsx';
-import { Note } from '../NoteTypes.ts';
+import { Note } from '../utils/NoteTypes.ts';
 import { debounce } from 'lodash';
+import { sortNotes } from '../utils/noteUtils.ts';
 
 type SearchNotesScreenProps = {
   onBackButtonPress: () => void;
@@ -21,23 +22,26 @@ const SearchNotesScreen = ({
   onBackButtonPress,
   renderNote,
 }: SearchNotesScreenProps) => {
-  const { notes } = useNotes();
-  const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
+  const { notes, sortBy } = useNotes();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const filterNotes = (text: string) => {
-    if (!text) {
-      setFilteredNotes([]);
-      return;
+  const filteredAndSortedNotes = useMemo(() => {
+    let result = [...notes];
+
+    if (searchTerm) {
+      result = result.filter(note =>
+        note.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
     }
-    setFilteredNotes(
-      notes.filter(note =>
-        note.title.toLowerCase().includes(text.toLowerCase()),
-      ),
-    );
-  };
+
+    return sortNotes(result, sortBy);
+  }, [notes, sortBy, searchTerm]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSearch = useCallback(debounce(filterNotes, 500), [notes]);
+  const handleSearch = useCallback(
+    debounce((text: string) => setSearchTerm(text), 500),
+    [],
+  );
 
   return (
     <Animated.View
@@ -66,7 +70,7 @@ const SearchNotesScreen = ({
       </View>
       <Animated.FlatList
         itemLayoutAnimation={LinearTransition}
-        data={filteredNotes}
+        data={filteredAndSortedNotes}
         renderItem={renderNote}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
@@ -113,6 +117,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   listContent: {
+    padding: 14,
     paddingBottom: 80,
   },
 });

@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Dropdown, IDropdownRef } from 'react-native-element-dropdown';
 import IconButton from '../iconButton/IconButton.tsx';
 import Colors from '../../styles/colors.ts';
-import { useNotes } from '../../providers/NotesContext.tsx';
+import { SortOption, useNotes } from '../../providers/NotesContext.tsx';
 
 interface DropdownOption {
   label: string;
@@ -14,6 +14,10 @@ const dropdownInitialOptions: DropdownOption[] = [
   {
     label: 'Sort By',
     value: 'sort_by',
+  },
+  {
+    label: 'Show Pinned',
+    value: 'show_pinned',
   },
   {
     label: 'Settings',
@@ -32,12 +36,12 @@ const sortByOptions: DropdownOption[] = [
     value: 'title_descending',
   },
   {
-    label: 'Date Ascending',
-    value: 'date_ascending',
+    label: 'Date Created',
+    value: 'createdAt',
   },
   {
-    label: 'Date Descending',
-    value: 'date_descending',
+    label: 'Date Modified',
+    value: 'updatedAt',
   },
 ];
 
@@ -47,7 +51,7 @@ const BottomBarHeaderDropdown = () => {
     dropdownInitialOptions,
   );
 
-  const { setNotes } = useNotes();
+  const { setSortBy, showPinnedOnly, setShowPinnedOnly } = useNotes();
 
   const handleBlur = () => {
     setDropdownOptions(dropdownInitialOptions);
@@ -61,8 +65,24 @@ const BottomBarHeaderDropdown = () => {
         break;
       case 'settings':
         console.log('Settings clicked');
+        dropdownRef.current?.close();
         break;
-      // case 'title_ascending':
+      case 'show_pinned':
+        const newDropdownOptions = [...dropdownOptions];
+        newDropdownOptions[1].label = showPinnedOnly
+          ? 'Show Pinned'
+          : 'Show All';
+        setShowPinnedOnly(!showPinnedOnly);
+        setDropdownOptions(dropdownInitialOptions);
+        break;
+      case 'title_ascending':
+      case 'title_descending':
+      case 'createdAt':
+      case 'updatedAt':
+        setSortBy(value as SortOption);
+        setDropdownOptions(dropdownInitialOptions);
+        dropdownRef.current?.close();
+        break;
     }
   };
 
@@ -100,8 +120,9 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     borderRadius: 10,
     padding: 0,
-    width: 150,
+    width: 160,
   },
+  itemText: { fontSize: 14, color: Colors.background },
 });
 
 export default BottomBarHeaderDropdown;
