@@ -13,7 +13,6 @@ import Icon from '../../../components/icon/Icon.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { getRelativeTime } from '../../../utils/functions.ts';
 import { useNotes } from '../../../providers/NotesContext.tsx';
-import { isPair } from 'yaml';
 
 interface NoteCardProps {
   note: Note;
@@ -70,7 +69,7 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
             onPress={handlePinPress}
             name={'thumbtack'}
             size={20}
-            color={note.isPinned ? Colors.secondary : Colors.mutedOrange}
+            color={note.isPinned ? Colors.secondary : Colors.secondary}
             iconStyle={!note.isPinned && styles.unpinnedThumbstack}
           />
         </View>
@@ -121,7 +120,6 @@ const styles = StyleSheet.create({
   },
   lastEdited: {
     flexDirection: 'row',
-    marginTop: 2,
     alignItems: 'center',
     gap: 8,
   },

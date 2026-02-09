@@ -45,22 +45,24 @@ const SearchNotesScreen = ({
       exiting={SlideOutDown.duration(500)}
       style={styles.container}
     >
-      <BackButton onPress={onBackButtonPress} />
-      <View style={styles.searchBar}>
-        <Icon
-          name={['fas', 'magnifying-glass']}
-          size={18}
-          color={colors.secondary}
-          style={styles.searchIcon}
-        />
-        <TextInput
-          style={styles.input}
-          selectionColor={colors.secondary}
-          placeholder="Search notes..."
-          placeholderTextColor={colors.placeholder}
-          onChangeText={handleSearch}
-          autoFocus
-        />
+      <View style={styles.header}>
+        <BackButton onPress={onBackButtonPress} />
+        <View style={styles.searchBar}>
+          <Icon
+            name={['fas', 'magnifying-glass']}
+            size={18}
+            color={colors.secondary}
+            style={styles.searchIcon}
+          />
+          <TextInput
+            style={styles.input}
+            selectionColor={colors.secondary}
+            placeholder="Search notes..."
+            placeholderTextColor={colors.placeholder}
+            onChangeText={handleSearch}
+            autoFocus
+          />
+        </View>
       </View>
       <Animated.FlatList
         itemLayoutAnimation={LinearTransition}
@@ -83,11 +85,16 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.background,
-    paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingTop: 4,
+    paddingHorizontal: 4,
+  },
+  header: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
   },
   searchBar: {
-    marginTop: 10,
+    width: '87.5%',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.tabBarBackground,

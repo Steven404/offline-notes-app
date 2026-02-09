@@ -47,18 +47,6 @@ const STYLE_ITEMS = [
     text: 'H3',
   },
   {
-    name: 'heading-4',
-    text: 'H4',
-  },
-  {
-    name: 'heading-5',
-    text: 'H5',
-  },
-  {
-    name: 'heading-6',
-    text: 'H6',
-  },
-  {
     name: 'quote',
     icon: 'quote-right',
   },
@@ -73,10 +61,6 @@ const STYLE_ITEMS = [
   {
     name: 'link',
     icon: 'link',
-  },
-  {
-    name: 'mention',
-    icon: 'at',
   },
   {
     name: 'unordered-list',
@@ -133,15 +117,6 @@ export const Toolbar: FC<ToolbarProps> = ({
       case 'heading-3':
         editorRef.current?.toggleH3();
         break;
-      case 'heading-4':
-        editorRef.current?.toggleH4();
-        break;
-      case 'heading-5':
-        editorRef.current?.toggleH5();
-        break;
-      case 'heading-6':
-        editorRef.current?.toggleH6();
-        break;
       case 'code-block':
         editorRef?.current?.toggleCodeBlock();
         break;
@@ -159,9 +134,6 @@ export const Toolbar: FC<ToolbarProps> = ({
         break;
       case 'image':
         onSelectImage();
-        break;
-      case 'mention':
-        editorRef.current?.startMention('@');
         break;
     }
   };
@@ -184,12 +156,6 @@ export const Toolbar: FC<ToolbarProps> = ({
         return stylesState.h2.isBlocking;
       case 'heading-3':
         return stylesState.h3.isBlocking;
-      case 'heading-4':
-        return stylesState.h4.isBlocking;
-      case 'heading-5':
-        return stylesState.h5.isBlocking;
-      case 'heading-6':
-        return stylesState.h6.isBlocking;
       case 'code-block':
         return stylesState.codeBlock.isBlocking;
       case 'quote':
@@ -202,8 +168,6 @@ export const Toolbar: FC<ToolbarProps> = ({
         return stylesState.link.isBlocking;
       case 'image':
         return stylesState.image.isBlocking;
-      case 'mention':
-        return stylesState.mention.isBlocking;
       default:
         return false;
     }
@@ -227,12 +191,6 @@ export const Toolbar: FC<ToolbarProps> = ({
         return stylesState.h2.isActive;
       case 'heading-3':
         return stylesState.h3.isActive;
-      case 'heading-4':
-        return stylesState.h4.isActive;
-      case 'heading-5':
-        return stylesState.h5.isActive;
-      case 'heading-6':
-        return stylesState.h6.isActive;
       case 'code-block':
         return stylesState.codeBlock.isActive;
       case 'quote':
@@ -245,8 +203,6 @@ export const Toolbar: FC<ToolbarProps> = ({
         return stylesState.link.isActive;
       case 'image':
         return stylesState.image.isActive;
-      case 'mention':
-        return stylesState.mention.isActive;
       default:
         return false;
     }

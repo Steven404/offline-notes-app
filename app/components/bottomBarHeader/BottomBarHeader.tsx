@@ -3,6 +3,7 @@ import Colors from '../../styles/colors.ts';
 import IconButton from '../iconButton/IconButton.tsx';
 import Fonts from '../../styles/Fonts.tsx';
 import TextLabel from '../textLabel/TextLabel.tsx';
+import BottomBarHeaderDropdown from './BottomBarHeaderDropdown.tsx';
 
 type BottomBarHeaderProps = {
   title: string;
@@ -13,12 +14,7 @@ type BottomBarHeaderProps = {
 const BottomBarHeader = ({ title, onSearchPress }: BottomBarHeaderProps) => {
   return (
     <View style={styles.container}>
-      <IconButton
-        name={'bars'}
-        size={24}
-        color={Colors.textColor}
-        onPress={() => {}}
-      />
+      <BottomBarHeaderDropdown />
       <TextLabel text={title} style={styles.text} />
       {onSearchPress ? (
         <IconButton
