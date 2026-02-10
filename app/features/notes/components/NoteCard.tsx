@@ -101,6 +101,8 @@ const contentStyle: MixedStyleDeclaration = {
   fontFamily: Fonts.MontserratRegular,
   color: Colors.placeholder,
   maxWidth: '85%',
+  maxHeight: 19.3, // This is needed in case the user hits enter and creates new line manually in the note
+  overflow: 'hidden',
 };
 
 const styles = StyleSheet.create({
