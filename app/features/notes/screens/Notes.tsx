@@ -8,7 +8,7 @@ import { RootStackParamList } from '../../../navigation/Navigation.tsx';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 import SimpleLoading from '../../../components/simpleLoading/SimpleLoading.tsx';
 import NoteCard from '../components/NoteCard.tsx';
-import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
+import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 
 import { Note } from '../utils/NoteTypes.ts';
 import { useMemo, useState } from 'react';
@@ -71,10 +71,15 @@ const Notes = () => {
       <AddNoteButton
         onPress={() => navigation.navigate('noteEditor', { noteId: undefined })}
       />
-      <DeleteNoteModal
+      <SimpleConfirmModal
         isVisible={Boolean(noteToDelete)}
         onClose={() => setNoteToDelete(null)}
         onConfirm={confirmNoteDeletion}
+        title={'Delete note'}
+        iconName={'trash'}
+        text={'Are you sure you want to delete this note?'}
+        confirmText={'Delete'}
+        cancelText={'Cancel'}
       />
     </View>
   );

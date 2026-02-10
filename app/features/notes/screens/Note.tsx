@@ -10,7 +10,7 @@ import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import NoteContentInput from '../components/NoteContentInput.tsx';
-import DeleteNoteModal from '../components/DeleteNoteModal.tsx';
+import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import { formatDate } from '../../../utils/functions.ts';
 import Fonts from '../../../styles/Fonts.tsx';
@@ -77,10 +77,14 @@ const Note = ({ route }: NoteProps) => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <NoteContentInput defaultValue={note?.content} isDisplay={true} />
       </ScrollView>
-      <DeleteNoteModal
+      <SimpleConfirmModal
         isVisible={isDeleteModalVisible}
         onClose={() => setIsDeleteModalVisible(false)}
         onConfirm={confirmNoteDeletion}
+        title={'Delete note'}
+        text={'Are you sure you want to delete this note?'}
+        confirmText={'Delete'}
+        cancelText={'Cancel'}
       />
     </SafeAreaView>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { BackHandler, StyleSheet, View } from 'react-native';
 import Colors from '../../../styles/colors.ts';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import BackButton from '../../../components/backButton/BackButton.tsx';
@@ -19,6 +19,8 @@ import {
   OnChangeStateEvent,
 } from 'react-native-enriched';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
+import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 
 type NoteEditorProps = StackScreenProps<RootStackParamList, 'noteEditor'>;
 
@@ -51,6 +53,8 @@ const DEFAULT_STYLES: OnChangeStateEvent = {
 
 const NoteEditor = ({ route }: NoteEditorProps) => {
   const { addNote, updateNote, notes } = useNotes();
+  const navigation = useNavigation();
+  const [isUnsavedModalVisible, setIsUnsavedModalVisible] = useState(false);
 
   const [noteId, setNoteId] = useState(route.params?.noteId);
   const [defaultValue, setDefaultValue] = useState('');
@@ -90,19 +94,56 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
     }
   }, [currentNote, defaultValue]);
 
+  const hasUnsavedChanges = !isSaved && (content.trim() || title.trim());
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        if (hasUnsavedChanges) {
+          setIsUnsavedModalVisible(true);
+          return true;
+        }
+        return false;
+      },
+    );
+    return () => backHandler.remove();
+  }, [hasUnsavedChanges]);
+
+  const handleBackPress = () => {
+    if (hasUnsavedChanges) {
+      setIsUnsavedModalVisible(true);
+    } else {
+      navigation.goBack();
+    }
+  };
+
+  const handleDiscardAndGoBack = () => {
+    setIsUnsavedModalVisible(false);
+    navigation.goBack();
+  };
+
+  const handleSaveAndGoBack = async () => {
+    setIsUnsavedModalVisible(false);
+    await handleSave();
+    navigation.goBack();
+  };
+
+  const saveButtonDisabled = isSaved || !content.trim() || !title.trim();
+
   return (
     <SafeAreaView style={styles.pageWrapper} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
-        <BackButton />
+        <BackButton onPress={handleBackPress} />
         <IconButton
           onPress={handleSave}
           touchableOpacityProps={{
             style: styles.backButton,
-            disabled: isSaved || !content.trim() || !title.trim(),
+            disabled: saveButtonDisabled,
           }}
           name="floppy-disk"
           size={24}
-          color={isSaved ? Colors.placeholder : Colors.textColor}
+          color={saveButtonDisabled ? Colors.placeholder : Colors.textColor}
         />
       </View>
       <KeyboardAwareScrollView contentContainerStyle={styles.content}>
@@ -127,6 +168,15 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
           </Animated.View>
         </KeyboardStickyView>
       )}
+      <SimpleConfirmModal
+        isVisible={isUnsavedModalVisible}
+        onClose={handleDiscardAndGoBack}
+        onConfirm={handleSaveAndGoBack}
+        text="You have unsaved changes, would you like to save before leaving this screen?"
+        confirmText="Yes"
+        cancelText="No"
+        confirmButtonColor={Colors.primary}
+      />
     </SafeAreaView>
   );
 };
