@@ -39,7 +39,7 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
 const styles = StyleSheet.create({
   input: {
     width: '100%',
-    paddingVertical: 14,
+    padding: 14,
     fontSize: 32,
     fontFamily: Fonts.MontserratSemiBold,
     color: Colors.textColor,

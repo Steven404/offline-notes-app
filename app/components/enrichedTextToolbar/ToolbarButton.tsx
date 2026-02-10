@@ -42,9 +42,20 @@ export const ToolbarButton: FC<ToolbarButtonProps> = ({
       onPress={onPress}
     >
       {icon ? (
-        <Icon name={icon} size={20} color={Colors.black} />
+        <Icon
+          name={icon}
+          size={20}
+          color={isActive ? Colors.primary : Colors.textColor}
+        />
       ) : (
-        <Text style={styles.text}>{text}</Text>
+        <Text
+          style={[
+            styles.text,
+            isActive && { color: Colors.primary, fontWeight: 'bold' },
+          ]}
+        >
+          {text}
+        </Text>
       )}
     </Pressable>
   );
@@ -54,19 +65,20 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 56,
-    height: 56,
-    backgroundColor: Colors.toolbarBackground,
+    width: 44,
+    height: 44,
+    marginHorizontal: 2,
   },
   containerActive: {
-    backgroundColor: Colors.toolbarBackgroundActive,
+    backgroundColor: 'rgba(255, 208, 72, 0.15)',
+    borderRadius: 8,
+    marginVertical: 6,
   },
   containerDisabled: {
-    backgroundColor: Colors.toolbarBackgroundActive,
     opacity: 0.3,
   },
   text: {
-    color: Colors.black,
-    fontSize: 20,
+    color: Colors.textColor,
+    fontSize: 16,
   },
 });

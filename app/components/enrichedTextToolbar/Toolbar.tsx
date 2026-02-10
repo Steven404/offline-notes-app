@@ -5,13 +5,19 @@
  * @format
  */
 
-import { FlatList, type ListRenderItemInfo, StyleSheet } from 'react-native';
+import {
+  FlatList,
+  type ListRenderItemInfo,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 import { ToolbarButton } from './ToolbarButton';
 import type {
   OnChangeStateEvent,
   EnrichedTextInputInstance,
 } from 'react-native-enriched';
 import type { FC } from 'react';
+import Colors from '../../styles/colors.ts';
 
 const STYLE_ITEMS = [
   {
@@ -228,13 +234,20 @@ export const Toolbar: FC<ToolbarProps> = ({
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      showsHorizontalScrollIndicator={false}
     />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    paddingHorizontal: 14,
+    backgroundColor:
+      Platform.OS === 'android' ? Colors.tabBarBackground : Colors.background,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  contentContainer: {
+    paddingHorizontal: 8,
   },
 });

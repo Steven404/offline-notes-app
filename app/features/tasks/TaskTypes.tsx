@@ -1,6 +1,6 @@
 import { Reminder } from '../../utils/types.ts';
 
-interface TaskCore {
+interface SubTask {
   title: string;
   completed: boolean;
 }
@@ -10,7 +10,7 @@ export interface Task {
   title: string;
   completed: boolean;
   reminder?: Reminder;
-  subTasks: TaskCore[];
+  subTasks: SubTask[];
   createdAt: number;
   updatedAt: number;
 }

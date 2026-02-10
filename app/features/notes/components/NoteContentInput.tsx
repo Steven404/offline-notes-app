@@ -4,63 +4,43 @@ import {
   EnrichedTextInputInstance,
   OnChangeStateEvent,
 } from 'react-native-enriched';
-import { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
-import { Toolbar } from '../../../components/enrichedTextToolbar/Toolbar.tsx';
 import { sanitizeNoteContent } from '../../../utils/functions.ts';
-
-type StylesState = OnChangeStateEvent;
-
-const DEFAULT_STYLE_STATE = {
-  isActive: false,
-  isConflicting: false,
-  isBlocking: false,
-};
-
-const DEFAULT_STYLES: StylesState = {
-  bold: DEFAULT_STYLE_STATE,
-  italic: DEFAULT_STYLE_STATE,
-  underline: DEFAULT_STYLE_STATE,
-  strikeThrough: DEFAULT_STYLE_STATE,
-  inlineCode: DEFAULT_STYLE_STATE,
-  h1: DEFAULT_STYLE_STATE,
-  h2: DEFAULT_STYLE_STATE,
-  h3: DEFAULT_STYLE_STATE,
-  h4: DEFAULT_STYLE_STATE,
-  h5: DEFAULT_STYLE_STATE,
-  h6: DEFAULT_STYLE_STATE,
-  blockQuote: DEFAULT_STYLE_STATE,
-  codeBlock: DEFAULT_STYLE_STATE,
-  orderedList: DEFAULT_STYLE_STATE,
-  unorderedList: DEFAULT_STYLE_STATE,
-  link: DEFAULT_STYLE_STATE,
-  image: DEFAULT_STYLE_STATE,
-  mention: DEFAULT_STYLE_STATE,
-};
 
 interface NoteContentInputProps {
   setContent?: (content: string) => void;
   defaultValue?: string;
   isDisplay?: boolean;
+  inputRef?: React.RefObject<EnrichedTextInputInstance | null>;
+  onChangeState?: (state: OnChangeStateEvent) => void;
+  onFocusChange?: (focused: boolean) => void;
 }
 
 const NoteContentInput = ({
   defaultValue,
   setContent,
   isDisplay = false,
+  inputRef: externalRef,
+  onChangeState,
+  onFocusChange,
 }: NoteContentInputProps) => {
-  const inputRef = useRef<EnrichedTextInputInstance>(null);
+  const internalRef = useRef<EnrichedTextInputInstance>(null);
+  const inputRef = externalRef || internalRef;
 
-  const [stylesState, setStylesState] = useState<StylesState>(DEFAULT_STYLES);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const handleFocus = () => setIsFocused(true);
-  const handleBlur = () => setIsFocused(false);
+  const handleFocus = () => onFocusChange?.(true);
+  const handleBlur = () => onFocusChange?.(false);
 
   //TODO: Check which text features you want to keep in the enriched text
+  console.log('isDisplay: ', isDisplay && styles.noHorizontalPadding);
   return (
-    <View style={styles.componentWrapper}>
+    <View
+      style={[
+        styles.componentWrapper,
+        isDisplay ? styles.noHorizontalPadding : styles.withHorizontalPadding,
+      ]}
+    >
       <EnrichedTextInput
         ref={inputRef}
         onBlur={handleBlur}
@@ -69,7 +49,7 @@ const NoteContentInput = ({
         editable={!isDisplay}
         placeholder={'Content'}
         placeholderTextColor={Colors.placeholder}
-        onChangeState={e => setStylesState(e.nativeEvent)}
+        onChangeState={e => onChangeState?.(e.nativeEvent)}
         onChangeHtml={e => {
           setContent?.(e.nativeEvent.value);
         }}
@@ -82,16 +62,6 @@ const NoteContentInput = ({
           defaultValue ? sanitizeNoteContent(defaultValue) : undefined
         }
       />
-      <View style={styles.toolbarContainer}>
-        {isFocused && (
-          <Toolbar
-            editorRef={inputRef}
-            stylesState={stylesState}
-            onOpenLinkModal={() => {}}
-            onSelectImage={() => {}}
-          />
-        )}
-      </View>
     </View>
   );
 };
@@ -104,13 +74,8 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.MontserratRegular,
     color: Colors.textColor,
   },
-  toolbarContainer: {
-    //TODO: Left and right values shouldn't have to be there, but it's a solution for now. Check parents padding (NoteEditor.tsx) and find a way that the toolbar is not affected by them
-    position: 'absolute',
-    bottom: 0,
-    left: -14,
-    right: 0,
-  },
+  noHorizontalPadding: { paddingHorizontal: 0 },
+  withHorizontalPadding: { paddingHorizontal: 14 },
 });
 
 export default NoteContentInput;
