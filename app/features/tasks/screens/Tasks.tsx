@@ -2,10 +2,10 @@ import { StyleSheet, View } from 'react-native';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 
-const Reminders = () => {
+const Tasks = () => {
   return (
     <View style={styles.pageWrapper}>
-      <TextLabel text={'Reminders Screen'} />
+      <TextLabel text={'Tasks Screen'} />
     </View>
   );
 };
@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Reminders;
+export default Tasks;

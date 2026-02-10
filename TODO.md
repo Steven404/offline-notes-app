@@ -1,1 +1,3 @@
-Consider replacing Reminders tab with Tasks
+- [x] Replace Reminders tab with Tasks
+- [ ] Implement Task creation and management
+- [ ] Add reminder support to Tasks

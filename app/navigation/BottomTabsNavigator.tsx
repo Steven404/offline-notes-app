@@ -4,7 +4,7 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import Notes from '../features/notes/screens/Notes.tsx';
-import Reminders from '../features/reminders/screens/Reminders.tsx';
+import Tasks from '../features/tasks/screens/Tasks.tsx';
 import { StyleSheet } from 'react-native';
 import Icon from '../components/icon/Icon.tsx';
 import Colors from '../styles/colors.ts';
@@ -12,7 +12,7 @@ import Fonts from '../styles/Fonts.tsx';
 
 type BottomTabsParamList = {
   notes: undefined;
-  reminders: undefined;
+  tasks: undefined;
   menu: undefined;
 };
 const Tabs = createBottomTabNavigator<BottomTabsParamList>();
@@ -20,8 +20,8 @@ const Tabs = createBottomTabNavigator<BottomTabsParamList>();
 const NotesIcon = ({ color, size }: { color: string; size: number }) => (
   <Icon name="sticky-note" size={size} color={color} />
 );
-const RemindersIcon = ({ color, size }: { color: string; size: number }) => (
-  <Icon name="bell" size={size} color={color} />
+const TasksIcon = ({ color, size }: { color: string; size: number }) => (
+  <Icon name="check-square" size={size} color={color} />
 );
 
 const BottomTabsNavigator = () => {
@@ -56,11 +56,11 @@ const BottomTabsNavigator = () => {
           }}
         />
         <Tabs.Screen
-          name="reminders"
-          component={Reminders}
+          name="tasks"
+          component={Tasks}
           options={{
-            tabBarIcon: RemindersIcon,
-            title: 'Reminders',
+            tabBarIcon: TasksIcon,
+            title: 'Tasks',
           }}
         />
       </Tabs.Navigator>
