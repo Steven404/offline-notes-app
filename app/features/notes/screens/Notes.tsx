@@ -76,7 +76,6 @@ const Notes = () => {
         onClose={() => setNoteToDelete(null)}
         onConfirm={confirmNoteDeletion}
         title={'Delete note'}
-        iconName={'trash'}
         text={'Are you sure you want to delete this note?'}
         confirmText={'Delete'}
         cancelText={'Cancel'}

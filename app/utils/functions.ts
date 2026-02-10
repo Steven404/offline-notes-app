@@ -47,9 +47,9 @@ export const getRelativeTime = (
 };
 
 /**
- * Formats a timestamp into a readable date string like "Feb 6 2026".
+ * Formats a timestamp into a readable date and time string like "Feb 6 2026 09:30".
  * @param timestamp - The timestamp to format.
- * @returns A formatted date string.
+ * @returns A formatted date and time string.
  */
 export const formatDate = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -70,8 +70,10 @@ export const formatDate = (timestamp: number): string => {
   const month = months[date.getMonth()];
   const day = date.getDate();
   const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
 
-  return `${month} ${day} ${year}`;
+  return `${month} ${day} ${year} ${hours}:${minutes}`;
 };
 
 /**
