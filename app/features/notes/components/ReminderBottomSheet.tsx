@@ -16,7 +16,10 @@ import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import { Note } from '../utils/NoteTypes.ts';
-import { createReminderNotification } from '../../../utils/reminders.ts';
+import {
+  createReminderNotification,
+  removeReminderNotification,
+} from '../../../utils/reminders.ts';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
 import colors from '../../../styles/colors.ts';
@@ -32,7 +35,7 @@ const ReminderBottomSheet = ({
   isOpen,
   onClose,
 }: ReminderBottomSheetProps) => {
-  const { setReminder } = useNotes();
+  const { setReminder, removeReminder } = useNotes();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -110,6 +113,14 @@ const ReminderBottomSheet = ({
       });
     }
 
+    resetAndClose();
+  };
+
+  const handleRemove = async () => {
+    if (note.reminder?.id) {
+      await removeReminderNotification(note.reminder.id);
+      removeReminder(note.id);
+    }
     resetAndClose();
   };
 
@@ -200,23 +211,29 @@ const ReminderBottomSheet = ({
         </View>
 
         <View style={styles.buttonsContainer}>
-          <Pressable
-            style={[styles.button, styles.cancelButton]}
-            onPress={resetAndClose}
-          >
-            <TextLabel text="Cancel" style={styles.buttonText} />
-          </Pressable>
-          <Pressable
-            style={[
-              styles.button,
-              styles.saveButton,
-              isSaveDisabled && styles.saveButtonDisabled,
-            ]}
-            onPress={handleSave}
-            disabled={isSaveDisabled}
-          >
-            <TextLabel text="Save" style={styles.buttonText} />
-          </Pressable>
+          {note.reminder && note.reminder.time > Date.now() ? (
+            <Pressable style={styles.removeButton} onPress={handleRemove}>
+              <Icon name={'trash-alt'} size={20} color={colors.deleteRed} />
+              <TextLabel text="Remove" style={styles.removeButtonText} />
+            </Pressable>
+          ) : (
+            <View />
+          )}
+          <View style={styles.rightButtons}>
+            <Pressable onPress={resetAndClose}>
+              <TextLabel text="Cancel" style={styles.textButton} />
+            </Pressable>
+            <Pressable onPress={handleSave} disabled={isSaveDisabled}>
+              <TextLabel
+                text="Save"
+                style={[
+                  styles.textButton,
+                  styles.saveTextButton,
+                  isSaveDisabled && styles.saveTextButtonDisabled,
+                ]}
+              />
+            </Pressable>
+          </View>
         </View>
 
         <DatePicker
@@ -261,7 +278,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
-    paddingBottom: 28,
+    paddingBottom: 42,
   },
   title: {
     fontSize: 20,
@@ -302,28 +319,39 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: 'row',
-    gap: 12,
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 'auto',
   },
-  button: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 10,
+  removeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: Colors.deleteRed + '20',
+    borderRadius: 8,
+  },
+  removeButtonText: {
+    fontSize: 14,
+    fontFamily: Fonts.MontserratSemiBold,
+    color: Colors.deleteRed,
+  },
+  rightButtons: {
+    flexDirection: 'row',
+    gap: 20,
     alignItems: 'center',
   },
-  cancelButton: {
-    backgroundColor: Colors.placeholder + '30',
-  },
-  saveButton: {
-    backgroundColor: Colors.secondary,
-  },
-  saveButtonDisabled: {
-    opacity: 0.4,
-  },
-  buttonText: {
+  textButton: {
     fontSize: 16,
     fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.textColor,
+    color: Colors.placeholder,
+  },
+  saveTextButton: {
+    color: Colors.secondary,
+  },
+  saveTextButtonDisabled: {
+    opacity: 0.4,
   },
 });
 

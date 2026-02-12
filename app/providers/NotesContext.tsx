@@ -31,6 +31,7 @@ interface NotesContextType {
   pinNote: (id: string) => void;
   unpinNote: (id: string) => void;
   setReminder: (noteId: string, reminder: Reminder) => void;
+  removeReminder: (noteId: string) => void;
 }
 
 const NotesContext = createContext<NotesContextType>({
@@ -46,6 +47,7 @@ const NotesContext = createContext<NotesContextType>({
   pinNote: () => {},
   unpinNote: () => {},
   setReminder: () => {},
+  removeReminder: () => {},
 });
 
 export const useNotes = () => useContext(NotesContext);
@@ -137,6 +139,14 @@ export const NotesContextProvider = ({
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
 
+  const removeReminder = (noteId: string) => {
+    const updatedNotes = notes.map(note =>
+      note.id === noteId ? { ...note, reminder: undefined } : note,
+    );
+    setNotes(updatedNotes);
+    storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+  };
+
   return (
     <NotesContext.Provider
       value={{
@@ -150,6 +160,7 @@ export const NotesContextProvider = ({
         pinNote,
         unpinNote,
         setReminder,
+        removeReminder,
         setShowPinnedOnly,
         showPinnedOnly,
       }}

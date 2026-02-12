@@ -43,3 +43,9 @@ export const createReminderNotification = async (
 
   return notificationId;
 };
+
+export const removeReminderNotification = async (
+  notificationId: string,
+): Promise<void> => {
+  await notifee.cancelNotification(notificationId);
+};
