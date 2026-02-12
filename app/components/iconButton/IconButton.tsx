@@ -27,17 +27,11 @@ const IconButton = (props: IconButtonProps) => {
     <TouchableOpacity
       onPress={onPress}
       {...touchableOpacityProps}
-      style={[styles.container, touchableOpacityProps?.style]}
+      style={touchableOpacityProps?.style}
     >
       <Icon style={iconStyle} {...iconProps} />
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 8,
-  },
-});
 
 export default IconButton;

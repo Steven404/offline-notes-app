@@ -40,13 +40,25 @@ const ReminderBottomSheet = ({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  // Store original reminder time to detect changes
+  const originalReminderTime = useRef<number | null>(null);
+
   useEffect(() => {
     if (isOpen) {
+      // Prefill date and time if note has a reminder and it's in the future
+      if (note.reminder && note.reminder.time > Date.now()) {
+        const reminderDate = new Date(note.reminder.time);
+        setSelectedDate(reminderDate);
+        setSelectedTime(reminderDate);
+        originalReminderTime.current = note.reminder.time;
+      } else {
+        originalReminderTime.current = null;
+      }
       bottomSheetRef.current?.present();
     } else {
       bottomSheetRef.current?.dismiss();
     }
-  }, [isOpen]);
+  }, [isOpen, note.reminder]);
 
   const isSaveDisabled = useMemo(() => {
     if (!selectedDate || !selectedTime) {
@@ -59,7 +71,19 @@ const ReminderBottomSheet = ({
     combined.setSeconds(0);
     combined.setMilliseconds(0);
 
-    return combined.getTime() <= Date.now();
+    const combinedTime = combined.getTime();
+
+    // Check if time is in the past
+    if (combinedTime <= Date.now()) {
+      return true;
+    }
+
+    // If editing an existing reminder, disable save unless time has changed
+    if (originalReminderTime.current !== null) {
+      return combinedTime === originalReminderTime.current;
+    }
+
+    return false;
   }, [selectedDate, selectedTime]);
 
   const handleSave = async () => {
@@ -94,6 +118,7 @@ const ReminderBottomSheet = ({
     setSelectedTime(null);
     setShowDatePicker(false);
     setShowTimePicker(false);
+    originalReminderTime.current = null;
     onClose();
   };
 

@@ -47,6 +47,12 @@ const NoteCard = ({
     setReminderNote(note);
   };
 
+  const handleBellIconPress = () => {
+    if (note.reminder) {
+      setReminderNote(note);
+    }
+  };
+
   return (
     <Animated.View
       layout={LinearTransition}
@@ -90,7 +96,7 @@ const NoteCard = ({
               onPress={handlePinPress}
               name={'thumbtack'}
               size={20}
-              color={note.isPinned ? Colors.secondary : Colors.secondary}
+              color={Colors.secondary}
               iconStyle={!note.isPinned && styles.unpinnedThumbstack}
             />
           </View>
@@ -110,6 +116,14 @@ const NoteCard = ({
             text={formatDateTime(note.updatedAt)}
             style={styles.lastEditedText}
           />
+          {note.reminder && note.reminder.time > Date.now() && (
+            <IconButton
+              name="bell"
+              size={20}
+              color={Colors.secondary}
+              onPress={handleBellIconPress}
+            />
+          )}
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -117,11 +131,9 @@ const NoteCard = ({
 };
 
 const contentStyle: MixedStyleDeclaration = {
-  //TODO: Use contentWidth for RenderHTML
   fontSize: 16,
   fontFamily: Fonts.MontserratRegular,
   color: Colors.placeholder,
-  maxWidth: '85%',
   maxHeight: 19.3, // This is needed in case the user hits enter and creates new line manually in the note
   overflow: 'hidden',
 };
@@ -172,7 +184,7 @@ const styles = StyleSheet.create({
   lastEdited: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
   },
   lastEditedText: {
     fontSize: 14,
