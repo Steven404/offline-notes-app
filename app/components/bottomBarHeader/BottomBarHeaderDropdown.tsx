@@ -4,6 +4,9 @@ import { Dropdown, IDropdownRef } from 'react-native-element-dropdown';
 import IconButton from '../iconButton/IconButton.tsx';
 import Colors from '../../styles/colors.ts';
 import { SortOption, useNotes } from '../../providers/NotesContext.tsx';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../navigation/Navigation.tsx';
 
 interface DropdownOption {
   label: string;
@@ -46,6 +49,8 @@ const sortByOptions: DropdownOption[] = [
 ];
 
 const BottomBarHeaderDropdown = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const dropdownRef = useRef<IDropdownRef>(null);
   const [dropdownOptions, setDropdownOptions] = useState<DropdownOption[]>(
     dropdownInitialOptions,
@@ -64,7 +69,7 @@ const BottomBarHeaderDropdown = () => {
         setDropdownOptions(sortByOptions);
         break;
       case 'settings':
-        console.log('Settings clicked');
+        navigation.navigate('settings');
         dropdownRef.current?.close();
         break;
       case 'show_pinned':

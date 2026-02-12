@@ -33,7 +33,6 @@ const NoteContentInput = ({
   const handleBlur = () => onFocusChange?.(false);
 
   //TODO: Check which text features you want to keep in the enriched text
-  console.log('isDisplay: ', isDisplay && styles.noHorizontalPadding);
   return (
     <View
       style={[

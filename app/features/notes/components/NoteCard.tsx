@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, {
   FadeIn,
+  FadeInRight,
   FadeOut,
+  FadeOutRight,
   LinearTransition,
 } from 'react-native-reanimated';
 import { Note } from '../utils/NoteTypes.ts';
@@ -96,7 +98,7 @@ const NoteCard = ({
               onPress={handlePinPress}
               name={'thumbtack'}
               size={20}
-              color={Colors.secondary}
+              color={Colors.primary}
               iconStyle={!note.isPinned && styles.unpinnedThumbstack}
             />
           </View>
@@ -117,12 +119,17 @@ const NoteCard = ({
             style={styles.lastEditedText}
           />
           {note.reminder && note.reminder.time > Date.now() && (
-            <IconButton
-              name="bell"
-              size={20}
-              color={Colors.secondary}
-              onPress={handleBellIconPress}
-            />
+            <Animated.View
+              exiting={FadeOutRight.duration(300)}
+              entering={FadeInRight.duration(300)}
+            >
+              <IconButton
+                name="bell"
+                size={20}
+                color={Colors.secondary}
+                onPress={handleBellIconPress}
+              />
+            </Animated.View>
           )}
         </View>
       </TouchableOpacity>

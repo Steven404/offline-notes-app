@@ -13,7 +13,7 @@ import Fonts from '../styles/Fonts.tsx';
 type BottomTabsParamList = {
   notes: undefined;
   tasks: undefined;
-  menu: undefined;
+  settings: undefined;
 };
 const Tabs = createBottomTabNavigator<BottomTabsParamList>();
 
