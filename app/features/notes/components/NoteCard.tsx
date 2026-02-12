@@ -18,12 +18,17 @@ interface NoteCardProps {
   note: Note;
   onPress: () => void;
   setNoteToDelete: (id: string) => void;
+  setReminderNote: (note: Note) => void;
 }
 
-const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
-  //TODO: Split the delete view in 2, with either an animated diagonal slash or a linear gradient. One view for delete and one view for setting reminder
+const NoteCard = ({
+  note,
+  onPress,
+  setNoteToDelete,
+  setReminderNote,
+}: NoteCardProps) => {
   const { pinNote, unpinNote } = useNotes();
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [isActionsMode, setIsActionsMode] = useState(false);
 
   const handlePinPress = () => {
     if (note.isPinned) {
@@ -33,9 +38,14 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
     }
   };
 
-  const handleLongPress = () => setIsDeleteMode(!isDeleteMode);
+  const handleLongPress = () => setIsActionsMode(!isActionsMode);
 
   const handleDeletePress = () => setNoteToDelete(note.id);
+
+  const handleReminderPress = () => {
+    setIsActionsMode(false);
+    setReminderNote(note);
+  };
 
   return (
     <Animated.View
@@ -45,22 +55,32 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
     >
       <TouchableOpacity
         style={styles.container}
-        onPress={!isDeleteMode ? onPress : () => {}}
+        onPress={!isActionsMode ? onPress : () => {}}
         onLongPress={handleLongPress}
         activeOpacity={1}
       >
-        {isDeleteMode && (
+        {isActionsMode && (
           <Animated.View
             entering={FadeIn.duration(500)}
             exiting={FadeOut.duration(500)}
-            style={styles.deleteView}
+            style={styles.actionsView}
           >
-            <IconButton
-              onPress={handleDeletePress}
-              name={'trash'}
-              size={25}
-              color={Colors.textColor}
-            />
+            <View style={styles.actionButton}>
+              <IconButton
+                onPress={handleReminderPress}
+                name={'bell'}
+                size={25}
+                color={Colors.textColor}
+              />
+            </View>
+            <View style={[styles.actionButton, styles.deleteActionButton]}>
+              <IconButton
+                onPress={handleDeletePress}
+                name={'trash'}
+                size={25}
+                color={Colors.textColor}
+              />
+            </View>
           </Animated.View>
         )}
         <View style={styles.topContainer}>
@@ -97,6 +117,7 @@ const NoteCard = ({ note, onPress, setNoteToDelete }: NoteCardProps) => {
 };
 
 const contentStyle: MixedStyleDeclaration = {
+  //TODO: Use contentWidth for RenderHTML
   fontSize: 16,
   fontFamily: Fonts.MontserratRegular,
   color: Colors.placeholder,
@@ -106,16 +127,23 @@ const contentStyle: MixedStyleDeclaration = {
 };
 
 const styles = StyleSheet.create({
-  deleteView: {
+  actionsView: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
     zIndex: 2,
-    backgroundColor: Colors.deleteRed,
+    flexDirection: 'row',
+  },
+  actionButton: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.secondary,
+  },
+  deleteActionButton: {
+    backgroundColor: Colors.deleteRed,
   },
   container: {
     gap: 4,

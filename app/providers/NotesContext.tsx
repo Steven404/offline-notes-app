@@ -2,6 +2,7 @@ import { Note } from '../features/notes/utils/NoteTypes.ts';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getDataFromStorage, storeData } from '../utils/asyncStorage.ts';
 import uuid from 'react-native-uuid';
+import { Reminder } from '../utils/types.ts';
 
 const NOTES_STORAGE_KEY = 'notes';
 
@@ -29,6 +30,7 @@ interface NotesContextType {
   ) => void;
   pinNote: (id: string) => void;
   unpinNote: (id: string) => void;
+  setReminder: (noteId: string, reminder: Reminder) => void;
 }
 
 const NotesContext = createContext<NotesContextType>({
@@ -43,6 +45,7 @@ const NotesContext = createContext<NotesContextType>({
   updateNote: () => {},
   pinNote: () => {},
   unpinNote: () => {},
+  setReminder: () => {},
 });
 
 export const useNotes = () => useContext(NotesContext);
@@ -126,6 +129,14 @@ export const NotesContextProvider = ({
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
 
+  const setReminder = (noteId: string, reminder: Reminder) => {
+    const updatedNotes = notes.map(note =>
+      note.id === noteId ? { ...note, reminder } : note,
+    );
+    setNotes(updatedNotes);
+    storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+  };
+
   return (
     <NotesContext.Provider
       value={{
@@ -138,6 +149,7 @@ export const NotesContextProvider = ({
         updateNote,
         pinNote,
         unpinNote,
+        setReminder,
         setShowPinnedOnly,
         showPinnedOnly,
       }}

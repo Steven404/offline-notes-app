@@ -12,23 +12,35 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 
 library.add(fab, far, fas);
 
-import { StatusBar } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import Navigation from './app/navigation/Navigation.tsx';
 import { NotesContextProvider } from './app/providers/NotesContext.tsx';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 function App() {
   return (
-    <SafeAreaProvider>
-      <KeyboardProvider>
-        <NotesContextProvider>
-          <StatusBar barStyle={'light-content'} />
-          <Navigation />
-        </NotesContextProvider>
-      </KeyboardProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={styles.container}>
+      <SafeAreaProvider>
+        <KeyboardProvider>
+          <BottomSheetModalProvider>
+            <NotesContextProvider>
+              <StatusBar barStyle={'light-content'} />
+              <Navigation />
+            </NotesContextProvider>
+          </BottomSheetModalProvider>
+        </KeyboardProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default App;

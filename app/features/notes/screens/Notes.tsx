@@ -12,6 +12,7 @@ import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleCon
 
 import { Note } from '../utils/NoteTypes.ts';
 import { useMemo, useState } from 'react';
+import ReminderBottomSheet from '../components/ReminderBottomSheet.tsx';
 import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
 import SearchNotesScreen from '../components/SearchNotesScreen.tsx';
 import Animated, { LinearTransition } from 'react-native-reanimated';
@@ -27,10 +28,12 @@ const Notes = () => {
   }, [notes, sortBy, showPinnedOnly]);
 
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
+  const [reminderNote, setReminderNote] = useState<Note | null>(null);
 
   const renderNote = ({ item }: { item: Note }) => (
     <NoteCard
       setNoteToDelete={setNoteToDelete}
+      setReminderNote={setReminderNote}
       note={item}
       onPress={() => navigation.navigate('note', { noteId: item.id })}
     />
@@ -80,6 +83,13 @@ const Notes = () => {
         confirmText={'Delete'}
         cancelText={'Cancel'}
       />
+      {reminderNote && (
+        <ReminderBottomSheet
+          note={reminderNote}
+          isOpen={Boolean(reminderNote)}
+          onClose={() => setReminderNote(null)}
+        />
+      )}
     </View>
   );
 };
