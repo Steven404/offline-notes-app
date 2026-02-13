@@ -4,7 +4,6 @@ import {
 } from '@sbaiahmed1/react-native-biometrics';
 import { storeData } from './asyncStorage';
 
-//TODO: Use something releated to the app
 export const BIOMETRICS_ENABLED_STORAGE_KEY = 'biometrics_enabled';
 
 /**
@@ -15,8 +14,8 @@ export const isBiometricSensorAvailable = async (): Promise<boolean> => {
   try {
     const { available } = await isSensorAvailable();
     return available;
-  } catch (error) {
-    console.error('Error checking biometric sensor availability:', error);
+  } catch (e) {
+    console.log(e);
     return false;
   }
 };
@@ -32,7 +31,7 @@ export const promptBiometricAuth = async (
     const { success } = await simplePrompt(promptMessage);
     return success;
   } catch (error) {
-    console.error('Error during biometric prompt:', error);
+    console.log('Error during biometric prompt:', error);
     return false;
   }
 };
@@ -49,7 +48,6 @@ export const enableBiometricsWithPrompt = async (): Promise<boolean> => {
     return false;
   }
 
-  //TODO: Use keychain/keystore storage for this
-  await storeData(BIOMETRICS_ENABLED_STORAGE_KEY, JSON.stringify(true));
+  await storeData(BIOMETRICS_ENABLED_STORAGE_KEY, 'true');
   return true;
 };

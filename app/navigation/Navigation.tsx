@@ -1,23 +1,37 @@
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import BottomTabsNavigator from './BottomTabsNavigator.tsx';
 import NoteEditor from '../features/notes/screens/NoteEditor.tsx';
 import Note from '../features/notes/screens/Note.tsx';
 import Settings from '../features/settings/screens/Settings.tsx';
+import BiometricLogin from '../features/auth/screens/BiometricLogin.tsx';
 
 export type RootStackParamList = {
   bottomTabsNavigator: undefined;
   noteEditor: { noteId?: string };
   note: { noteId: string };
   settings: undefined;
+  biometricLogin: { onSuccess: () => void };
 };
 
 const RootStack = createStackNavigator<RootStackParamList>();
 
-const Navigation = () => {
+interface NavigationProps {
+  initialRouteName: keyof RootStackParamList;
+}
+
+const Navigation = ({ initialRouteName }: NavigationProps) => {
   return (
     <NavigationContainer>
-      <RootStack.Navigator>
+      <RootStack.Navigator initialRouteName={initialRouteName}>
+        <RootStack.Screen
+          name="biometricLogin"
+          component={BiometricLogin}
+          options={{
+            headerShown: false,
+          }}
+        />
         <RootStack.Screen
           name="bottomTabsNavigator"
           component={BottomTabsNavigator}

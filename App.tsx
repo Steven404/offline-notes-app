@@ -12,15 +12,39 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 
 library.add(fab, far, fas);
 
-import { StatusBar, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import Navigation from './app/navigation/Navigation.tsx';
+import Navigation, {
+  RootStackParamList,
+} from './app/navigation/Navigation.tsx';
 import { NotesContextProvider } from './app/providers/NotesContext.tsx';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { getDataFromStorage } from './app/utils/asyncStorage.ts';
+import SimpleLoading from './app/components/simpleLoading/SimpleLoading.tsx';
 
 function App() {
+  const [isAppReady, setIsAppReady] = useState(false);
+  const [initialRouteName, setInitialRouteName] = useState<
+    keyof RootStackParamList | ''
+  >('');
+
+  useEffect(() => {
+    const checkBiometrics = async () => {
+      const enabled = await getDataFromStorage('biometrics_enabled');
+      if (enabled === 'true') {
+        setInitialRouteName('biometricLogin');
+      } else {
+        setInitialRouteName('bottomTabsNavigator');
+      }
+      setIsAppReady(true);
+    };
+
+    checkBiometrics();
+  }, []);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
@@ -28,7 +52,13 @@ function App() {
           <BottomSheetModalProvider>
             <NotesContextProvider>
               <StatusBar barStyle={'light-content'} />
-              <Navigation />
+              {isAppReady && initialRouteName ? (
+                <Navigation initialRouteName={initialRouteName} />
+              ) : (
+                <View style={styles.container}>
+                  <SimpleLoading />
+                </View>
+              )}
             </NotesContextProvider>
           </BottomSheetModalProvider>
         </KeyboardProvider>
