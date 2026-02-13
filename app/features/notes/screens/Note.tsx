@@ -73,6 +73,15 @@ const Note = ({ route }: NoteProps) => {
             style={styles.dateValue}
           />
         </View>
+        {note.reminder && note.reminder.time > Date.now() && (
+          <View style={styles.dateTag}>
+            <TextLabel text="Reminder: " style={styles.dateLabel} />
+            <TextLabel
+              text={formatDate(note.reminder.time)}
+              style={styles.dateValue}
+            />
+          </View>
+        )}
       </View>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <NoteContentInput defaultValue={note?.content} isDisplay={true} />
@@ -128,6 +137,7 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     paddingTop: 8,
     marginBottom: 14,
     gap: 8,
