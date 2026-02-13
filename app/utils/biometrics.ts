@@ -2,7 +2,7 @@ import {
   isSensorAvailable,
   simplePrompt,
 } from '@sbaiahmed1/react-native-biometrics';
-import { storeData } from './asyncStorage';
+import { getDataFromStorage, storeData } from './asyncStorage';
 
 export const BIOMETRICS_ENABLED_STORAGE_KEY = 'biometrics_enabled';
 
@@ -50,4 +50,31 @@ export const enableBiometricsWithPrompt = async (): Promise<boolean> => {
 
   await storeData(BIOMETRICS_ENABLED_STORAGE_KEY, 'true');
   return true;
+};
+
+/**
+ * Read stored biometrics enabled flag
+ */
+export const getBiometricsEnabled = async (): Promise<boolean> => {
+  try {
+    const storedValue = await getDataFromStorage(
+      BIOMETRICS_ENABLED_STORAGE_KEY,
+    );
+    console.log('storedValue:', storedValue);
+    return storedValue === 'true';
+  } catch (error) {
+    console.log('Error reading biometrics enabled flag:', error);
+    return false;
+  }
+};
+
+/**
+ * Set biometrics enabled flag
+ */
+export const setBiometricsEnabled = async (enabled: boolean): Promise<void> => {
+  try {
+    await storeData(BIOMETRICS_ENABLED_STORAGE_KEY, enabled ? 'true' : 'false');
+  } catch (error) {
+    console.log('Error setting biometrics enabled flag:', error);
+  }
 };

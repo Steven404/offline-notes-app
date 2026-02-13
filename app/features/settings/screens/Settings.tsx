@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../../styles/colors';
 import SettingsSection from '../components/SettingsSection';
@@ -8,17 +8,25 @@ import SimpleBackHeader from '../../../components/simpleBackHeader/SimpleBackHea
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 import {
   enableBiometricsWithPrompt,
+  getBiometricsEnabled,
   isBiometricSensorAvailable,
+  promptBiometricAuth,
+  setBiometricsEnabled,
 } from '../../../utils/biometrics';
 
 const Settings = () => {
   const [hasBiometricSensor, setHasBiometricSensor] = useState(false);
   const [isBiometricModalVisible, setIsBiometricModalVisible] = useState(false);
+  const [isBiometricsEnabled, setIsBiometricsEnabledState] = useState(false);
 
   useEffect(() => {
     const checkBiometricAvailability = async () => {
       const isAvailable = await isBiometricSensorAvailable();
       setHasBiometricSensor(isAvailable);
+      if (isAvailable) {
+        const isEnabled = await getBiometricsEnabled();
+        setIsBiometricsEnabledState(isEnabled);
+      }
     };
 
     checkBiometricAvailability();
@@ -30,7 +38,28 @@ const Settings = () => {
 
   const handleBiometricConfirm = async () => {
     setIsBiometricModalVisible(false);
-    await enableBiometricsWithPrompt();
+    if (isBiometricsEnabled) {
+      const isAuthenticated = await promptBiometricAuth(
+        'Disable biometrics check?',
+      );
+
+      if (isAuthenticated) {
+        await setBiometricsEnabled(false);
+        setIsBiometricsEnabledState(false);
+        Alert.alert('Biometrics check on app launch is now disabled.');
+        return;
+      }
+      Alert.alert('Biometrics check fail.');
+
+      return;
+    }
+
+    const didEnable = await enableBiometricsWithPrompt();
+    if (didEnable) {
+      Alert.alert('Biometric check on app launch is now enabled.');
+
+      setIsBiometricsEnabledState(true);
+    }
   };
 
   const handleBiometricCancel = () => {
@@ -48,7 +77,7 @@ const Settings = () => {
   const handleFeedbackPress = () => {
     // TODO: Implement feedback/feature request logic
   };
-
+  console.log('isBiometricsEnabled', isBiometricsEnabled);
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <SimpleBackHeader title={'Settings'} />
@@ -91,7 +120,11 @@ const Settings = () => {
         isVisible={isBiometricModalVisible}
         onClose={handleBiometricCancel}
         onConfirm={handleBiometricConfirm}
-        text="Enable biometrics check on app launch?"
+        text={
+          isBiometricsEnabled
+            ? 'Disable biometrics?'
+            : 'Enable biometrics check on app launch?'
+        }
         iconName={'fingerprint'}
         confirmText="Yes"
         cancelText="No"
