@@ -18,7 +18,12 @@ const BiometricLogin = () => {
     if (success) {
       navigation.replace('bottomTabsNavigator');
     } else {
-      Alert.alert('Authentication Failed', 'Please try again.');
+      const isSensorAvailable = await isSensorAvailable();
+      if (isSensorAvailable) {
+        Alert.alert('Authentication Failed', 'Please try again.');
+      } else {
+        Alert.alert('Authentication Failed', 'Biometrics sensor not available');
+      }
     }
   };
 

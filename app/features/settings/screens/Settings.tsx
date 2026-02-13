@@ -46,17 +46,20 @@ const Settings = () => {
       if (isAuthenticated) {
         await setBiometricsEnabled(false);
         setIsBiometricsEnabledState(false);
-        Alert.alert('Biometrics check on app launch is now disabled.');
+        Alert.alert(
+          'Success',
+          'Biometrics check on app launch is now disabled.',
+        );
         return;
       }
-      Alert.alert('Biometrics check fail.');
+      Alert.alert('Error', 'Biometrics check fail.');
 
       return;
     }
 
     const didEnable = await enableBiometricsWithPrompt();
     if (didEnable) {
-      Alert.alert('Biometric check on app launch is now enabled.');
+      Alert.alert('Success', 'Biometric check on app launch is now enabled.');
 
       setIsBiometricsEnabledState(true);
     }
