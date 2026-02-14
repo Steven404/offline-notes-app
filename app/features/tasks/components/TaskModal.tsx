@@ -17,9 +17,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import Icon from '../../../components/icon/Icon.tsx';
 
-interface AddTaskModalProps {
+import { Task } from '../TaskTypes.tsx';
+
+interface TaskModalProps {
   isVisible: boolean;
   onClose: () => void;
+  taskToEdit?: Task;
 }
 
 interface SubTaskDraft {
@@ -27,33 +30,55 @@ interface SubTaskDraft {
   completed: boolean;
 }
 
-const AddTaskModal: React.FC<AddTaskModalProps> = ({ isVisible, onClose }) => {
+const TaskModal: React.FC<TaskModalProps> = ({
+  isVisible,
+  onClose,
+  taskToEdit,
+}) => {
   const [taskTitle, setTaskTitle] = useState('');
+  const [taskCompleted, setTaskCompleted] = useState(false);
   const [subTasks, setSubTasks] = useState<SubTaskDraft[]>([]);
-  const { addTask } = useTasks();
+  const { addTask, updateTask } = useTasks();
 
   const titleRef = useRef<TextInput>(null);
   const subTaskRefs = useRef<(TextInput | null)[]>([]);
 
+  React.useEffect(() => {
+    if (isVisible) {
+      if (taskToEdit) {
+        setTaskTitle(taskToEdit.title);
+        setTaskCompleted(taskToEdit.completed);
+        setSubTasks(taskToEdit.subTasks.map(st => ({ ...st })));
+      } else {
+        setTaskTitle('');
+        setTaskCompleted(false);
+        setSubTasks([]);
+      }
+    }
+  }, [isVisible, taskToEdit]);
+
   const handleClose = () => {
-    setTaskTitle('');
-    setSubTasks([]);
     onClose();
   };
 
-  const handleAddTask = () => {
+  const handleSaveTask = () => {
     if (taskTitle.trim()) {
-      addTask({
+      const taskData = {
         title: taskTitle.trim(),
-        completed: false,
+        completed: taskCompleted,
         subTasks: subTasks.filter(st => st.title.trim() !== ''),
-      });
+      };
+
+      if (taskToEdit) {
+        updateTask(taskToEdit.id, taskData);
+      } else {
+        addTask(taskData);
+      }
       handleClose();
     }
   };
 
   const addSubTaskField = () => {
-    //Logic behind this: If there are subtasks and are all completed, mark the task as completed on the get go. If there are no subtasks or there are subtasks that are not complete then the task is not complete
     const complete =
       Boolean(subTasks.length) &&
       subTasks.filter(st => !st.completed).length === 0;
@@ -64,7 +89,6 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isVisible, onClose }) => {
     const newSubTasks = subTasks.filter((_, i) => i !== index);
     setSubTasks(newSubTasks);
 
-    // Focus previous input
     if (index === 0) {
       titleRef.current?.focus();
     } else {
@@ -80,7 +104,18 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isVisible, onClose }) => {
 
   const toggleSubTask = (index: number) => {
     const newSubTasks = [...subTasks];
-    newSubTasks[index].completed = !newSubTasks[index].completed;
+    const newCompletedStatus = !newSubTasks[index].completed;
+    newSubTasks[index].completed = newCompletedStatus;
+
+    if (!newCompletedStatus) {
+      setTaskCompleted(false);
+    } else {
+      const allCompleted = newSubTasks.every(st => st.completed);
+      if (allCompleted) {
+        setTaskCompleted(true);
+      }
+    }
+
     setSubTasks(newSubTasks);
   };
 
@@ -98,8 +133,8 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isVisible, onClose }) => {
         <Animated.View layout={LinearTransition} style={styles.modalContent}>
           <TextInput
             ref={titleRef}
-            style={styles.input}
-            placeholder="Press enter to creat subtasks"
+            style={[styles.input, taskCompleted && styles.completedText]}
+            placeholder="Press enter to create subtasks"
             placeholderTextColor={Colors.placeholder}
             value={taskTitle}
             onChangeText={setTaskTitle}
@@ -172,13 +207,15 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isVisible, onClose }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.addButton,
-                !taskTitle.trim() && styles.addButtonDisabled,
+                styles.saveButton,
+                !taskTitle.trim() && styles.saveButtonDisabled,
               ]}
-              onPress={handleAddTask}
+              onPress={handleSaveTask}
               disabled={!taskTitle.trim()}
             >
-              <Text style={styles.addButtonText}>Add Task</Text>
+              <Text style={styles.saveButtonText}>
+                {taskToEdit ? 'Update Task' : 'Add Task'}
+              </Text>
             </TouchableOpacity>
           </Animated.View>
         </Animated.View>
@@ -240,6 +277,10 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     color: Colors.placeholder,
   },
+  completedText: {
+    textDecorationLine: 'line-through',
+    color: Colors.placeholder,
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -255,21 +296,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Montserrat-Medium',
   },
-  addButton: {
+  saveButton: {
     backgroundColor: Colors.primary,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
   },
-  addButtonDisabled: {
+  saveButtonDisabled: {
     backgroundColor: Colors.placeholder,
     opacity: 0.5,
   },
-  addButtonText: {
+  saveButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Montserrat-Bold',
   },
 });
 
-export default AddTaskModal;
+export default TaskModal;
