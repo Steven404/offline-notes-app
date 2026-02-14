@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import NoNotes from '../components/NoNotes.tsx';
 import Colors from '../../../styles/colors.ts';
-import AddNoteButton from '../components/AddNoteButton.tsx';
+import AddItemButton from '../../../components/addItemButton/AddItemButton.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../navigation/Navigation.tsx';
@@ -71,7 +71,7 @@ const Notes = () => {
       )}
       <BottomBarHeader title={'Notes'} onSearchPress={handleSearchPress} />
       {isLoading ? <SimpleLoading centered /> : pageContent}
-      <AddNoteButton
+      <AddItemButton
         onPress={() => navigation.navigate('noteEditor', { noteId: undefined })}
       />
       <SimpleConfirmModal

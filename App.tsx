@@ -24,6 +24,7 @@ import { NotesContextProvider } from './app/providers/NotesContext.tsx';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { getDataFromStorage } from './app/utils/asyncStorage.ts';
 import SimpleLoading from './app/components/simpleLoading/SimpleLoading.tsx';
+import { TasksContextProvider } from './app/providers/TasksContext.tsx';
 
 function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -50,16 +51,18 @@ function App() {
       <SafeAreaProvider>
         <KeyboardProvider>
           <BottomSheetModalProvider>
-            <NotesContextProvider>
-              <StatusBar barStyle={'light-content'} />
-              {isAppReady && initialRouteName ? (
-                <Navigation initialRouteName={initialRouteName} />
-              ) : (
-                <View style={styles.container}>
-                  <SimpleLoading />
-                </View>
-              )}
-            </NotesContextProvider>
+            <StatusBar barStyle={'light-content'} />
+            {isAppReady && initialRouteName ? (
+              <NotesContextProvider>
+                <TasksContextProvider>
+                  <Navigation initialRouteName={initialRouteName} />
+                </TasksContextProvider>
+              </NotesContextProvider>
+            ) : (
+              <View style={styles.container}>
+                <SimpleLoading />
+              </View>
+            )}
           </BottomSheetModalProvider>
         </KeyboardProvider>
       </SafeAreaProvider>

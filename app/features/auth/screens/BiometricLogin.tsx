@@ -54,7 +54,7 @@ const BiometricLogin = () => {
           onPress={handleBiometricAuth}
           activeOpacity={0.7}
         >
-          <TextLabel text="Login with Biometrics" style={styles.buttonText} />
+          <TextLabel text="Unlock" style={styles.buttonText} />
         </TouchableOpacity>
       </View>
     </View>

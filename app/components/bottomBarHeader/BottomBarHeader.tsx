@@ -24,7 +24,7 @@ const BottomBarHeader = ({ title, onSearchPress }: BottomBarHeaderProps) => {
           onPress={onSearchPress}
         />
       ) : (
-        <View />
+        <View style={styles.emptyView} />
       )}
     </View>
   );
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.MontserratSemiBold,
     color: Colors.textColor,
   },
+  emptyView: { width: 24 },
 });
 
 export default BottomBarHeader;
