@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { promptBiometricAuth } from '../../../utils/biometrics';
+import {
+  isBiometricSensorAvailable,
+  promptBiometricAuth,
+} from '../../../utils/biometrics';
 import Colors from '../../../styles/colors';
 import Fonts from '../../../styles/Fonts';
 import Icon from '../../../components/icon/Icon';
@@ -18,7 +21,7 @@ const BiometricLogin = () => {
     if (success) {
       navigation.replace('bottomTabsNavigator');
     } else {
-      const isSensorAvailable = await isSensorAvailable();
+      const isSensorAvailable = await isBiometricSensorAvailable();
       if (isSensorAvailable) {
         Alert.alert('Authentication Failed', 'Please try again.');
       } else {
