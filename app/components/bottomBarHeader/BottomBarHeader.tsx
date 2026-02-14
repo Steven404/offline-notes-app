@@ -7,14 +7,19 @@ import BottomBarHeaderDropdown from './BottomBarHeaderDropdown.tsx';
 
 type BottomBarHeaderProps = {
   title: string;
+  showFilters?: boolean;
   onMenuPress?: () => void;
   onSearchPress?: () => void;
 };
 
-const BottomBarHeader = ({ title, onSearchPress }: BottomBarHeaderProps) => {
+const BottomBarHeader = ({
+  title,
+  showFilters,
+  onSearchPress,
+}: BottomBarHeaderProps) => {
   return (
     <View style={styles.container}>
-      <BottomBarHeaderDropdown />
+      <BottomBarHeaderDropdown showFilters={showFilters} />
       <TextLabel text={title} style={styles.text} />
       {onSearchPress ? (
         <IconButton

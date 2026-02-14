@@ -69,7 +69,11 @@ const Notes = () => {
           renderNote={renderNote}
         />
       )}
-      <BottomBarHeader title={'Notes'} onSearchPress={handleSearchPress} />
+      <BottomBarHeader
+        title={'Notes'}
+        onSearchPress={handleSearchPress}
+        showFilters={true}
+      />
       {isLoading ? <SimpleLoading centered /> : pageContent}
       <AddItemButton
         onPress={() => navigation.navigate('noteEditor', { noteId: undefined })}

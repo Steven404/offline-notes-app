@@ -10,7 +10,7 @@ const Tasks = () => {
 
   return (
     <View style={styles.pageWrapper}>
-      <BottomBarHeader title={'Tasks'} />
+      <BottomBarHeader title={'Tasks'} showFilters={false} />
       <AddItemButton onPress={() => setIsModalVisible(true)} />
       <AddTaskModal
         isVisible={isModalVisible}

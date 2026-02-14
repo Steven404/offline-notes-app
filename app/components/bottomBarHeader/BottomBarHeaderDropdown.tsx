@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Dropdown, IDropdownRef } from 'react-native-element-dropdown';
 import IconButton from '../iconButton/IconButton.tsx';
@@ -8,19 +8,26 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/Navigation.tsx';
 
+type Props = {
+  showFilters?: boolean;
+};
+
 interface DropdownOption {
   label: string;
   value: string;
+  isFilterOption?: boolean;
 }
 
 const dropdownInitialOptions: DropdownOption[] = [
   {
     label: 'Sort By',
     value: 'sort_by',
+    isFilterOption: true,
   },
   {
     label: 'Show Pinned',
     value: 'show_pinned',
+    isFilterOption: true,
   },
   {
     label: 'Settings',
@@ -48,7 +55,10 @@ const sortByOptions: DropdownOption[] = [
   },
 ];
 
-const BottomBarHeaderDropdown = () => {
+const dropdownOptionsWithoutFilters: DropdownOption[] =
+  dropdownInitialOptions.filter(item => !item.isFilterOption);
+
+const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const dropdownRef = useRef<IDropdownRef>(null);
@@ -58,8 +68,11 @@ const BottomBarHeaderDropdown = () => {
 
   const { setSortBy, showPinnedOnly, setShowPinnedOnly } = useNotes();
 
+  const getInitialOptions = () =>
+    showFilters ? dropdownInitialOptions : dropdownOptionsWithoutFilters;
+
   const handleBlur = () => {
-    setDropdownOptions(dropdownInitialOptions);
+    setDropdownOptions(getInitialOptions());
   };
 
   const handleChange = (option: DropdownOption) => {
@@ -78,7 +91,7 @@ const BottomBarHeaderDropdown = () => {
           ? 'Show Pinned'
           : 'Show All';
         setShowPinnedOnly(!showPinnedOnly);
-        setDropdownOptions(dropdownInitialOptions);
+        setDropdownOptions(getInitialOptions());
         dropdownRef.current?.close();
         break;
       case 'title_ascending':
@@ -86,11 +99,15 @@ const BottomBarHeaderDropdown = () => {
       case 'createdAt':
       case 'updatedAt':
         setSortBy(value as SortOption);
-        setDropdownOptions(dropdownInitialOptions);
+        setDropdownOptions(getInitialOptions());
         dropdownRef.current?.close();
         break;
     }
   };
+
+  useEffect(() => {
+    setDropdownOptions(getInitialOptions());
+  }, [getInitialOptions, showFilters]);
 
   return (
     <View>
