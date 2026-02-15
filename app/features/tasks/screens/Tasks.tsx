@@ -7,20 +7,60 @@ import TaskModal from '../components/TaskModal.tsx';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import TaskCard from '../components/TaskCard.tsx';
 import { Task } from '../TaskTypes.tsx';
+import ReminderBottomSheet from '../../notes/components/ReminderBottomSheet.tsx';
+import { Reminder } from '../../../utils/types.ts';
 
 const Tasks = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
+  const [reminder, setReminder] = useState<Reminder | undefined>(undefined);
+  const [isReminderSheetOpen, setIsReminderSheetOpen] = useState(false);
   const { tasks } = useTasks();
 
   const handleEditTask = (task: Task) => {
     setTaskToEdit(task);
+    setReminder(task.reminder);
     setIsModalVisible(true);
   };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setTaskToEdit(undefined);
+    setReminder(undefined);
+  };
+
+  const handleOpenReminder = (currentReminder?: Reminder) => {
+    setIsModalVisible(false);
+    setReminder(currentReminder);
+    setTimeout(() => {
+      setIsReminderSheetOpen(true);
+    }, 500);
+  };
+
+  const handleSaveReminder = (reminderData: { id: string; time: number }) => {
+    setReminder({
+      ...reminderData,
+      noteId: taskToEdit?.id || '',
+    });
+    setIsReminderSheetOpen(false);
+    setTimeout(() => {
+      setIsModalVisible(true);
+    }, 500);
+  };
+
+  const handleRemoveReminder = () => {
+    setReminder(undefined);
+    setIsReminderSheetOpen(false);
+    setTimeout(() => {
+      setIsModalVisible(true);
+    }, 500);
+  };
+
+  const handleCloseReminder = () => {
+    setIsReminderSheetOpen(false);
+    setTimeout(() => {
+      setIsModalVisible(true);
+    }, 500);
   };
 
   return (
@@ -37,11 +77,28 @@ const Tasks = () => {
         showsVerticalScrollIndicator={false}
       />
 
-      <AddItemButton onPress={() => setIsModalVisible(true)} />
+      <AddItemButton
+        onPress={() => {
+          setTaskToEdit(undefined);
+          setReminder(undefined);
+          setIsModalVisible(true);
+        }}
+      />
       <TaskModal
         isVisible={isModalVisible}
         onClose={handleCloseModal}
         taskToEdit={taskToEdit}
+        onOpenReminder={handleOpenReminder}
+        reminder={reminder}
+      />
+      <ReminderBottomSheet
+        title={taskToEdit?.title || 'Task Reminder'}
+        content="Don't forget to complete your task!"
+        reminder={reminder}
+        isOpen={isReminderSheetOpen}
+        onClose={handleCloseReminder}
+        onSave={handleSaveReminder}
+        onRemove={handleRemoveReminder}
       />
     </View>
   );

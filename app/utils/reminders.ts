@@ -4,14 +4,14 @@ import notifee, {
   TriggerType,
 } from '@notifee/react-native';
 import uuid from 'react-native-uuid';
-import { Note } from '../features/notes/utils/NoteTypes';
 
 export const stripHtmlTags = (html: string): string => {
   return html.replace(/<[^>]*>/g, '');
 };
 
 export const createReminderNotification = async (
-  note: Note,
+  title: string,
+  body: string,
   timestamp: number,
 ): Promise<string | undefined> => {
   const notificationPermission = await notifee.requestPermission();
@@ -32,8 +32,8 @@ export const createReminderNotification = async (
   await notifee.createTriggerNotification(
     {
       id: notificationId,
-      title: note.title,
-      body: stripHtmlTags(note.content).substring(0, 40),
+      title: title,
+      body: body,
       // android: {
       //   channelId: 'your-channel-id', // Ensure you've created this channel
       // },

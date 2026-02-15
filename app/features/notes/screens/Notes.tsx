@@ -17,10 +17,19 @@ import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader
 import SearchNotesScreen from '../components/SearchNotesScreen.tsx';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import { sortNotes } from '../utils/noteUtils.ts';
+import { stripHtmlTags } from '../../../utils/reminders.ts';
 
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { notes, isLoading, deleteNote, sortBy, showPinnedOnly } = useNotes();
+  const {
+    notes,
+    isLoading,
+    deleteNote,
+    sortBy,
+    showPinnedOnly,
+    setReminder,
+    removeReminder,
+  } = useNotes();
   const [isSearching, setIsSearching] = useState(false);
 
   const sortedNotes = useMemo(() => {
@@ -89,9 +98,20 @@ const Notes = () => {
       />
       {reminderNote && (
         <ReminderBottomSheet
-          note={reminderNote}
+          title={reminderNote.title}
+          content={stripHtmlTags(reminderNote.content)}
+          reminder={reminderNote.reminder}
           isOpen={Boolean(reminderNote)}
           onClose={() => setReminderNote(null)}
+          onSave={reminderData => {
+            setReminder(reminderNote.id, {
+              ...reminderData,
+              noteId: reminderNote.id,
+            });
+          }}
+          onRemove={() => {
+            removeReminder(reminderNote.id);
+          }}
         />
       )}
     </View>

@@ -6,12 +6,15 @@ import {
   Platform,
   TouchableOpacity,
   Text,
+  View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Colors from '../../../styles/colors.ts';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import SubTaskItem from './SubTaskItem.tsx';
+import IconButton from '../../../components/iconButton/IconButton.tsx';
+import { Reminder } from '../../../utils/types.ts';
 
 import { Task } from '../TaskTypes.tsx';
 
@@ -19,6 +22,8 @@ interface TaskModalProps {
   isVisible: boolean;
   onClose: () => void;
   taskToEdit?: Task;
+  onOpenReminder: (currentReminder?: Reminder) => void;
+  reminder?: Reminder;
 }
 
 interface SubTaskDraft {
@@ -30,6 +35,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
   isVisible,
   onClose,
   taskToEdit,
+  onOpenReminder,
+  reminder,
 }) => {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskCompleted, setTaskCompleted] = useState(false);
@@ -63,6 +70,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
         title: taskTitle.trim(),
         completed: taskCompleted,
         subTasks: subTasks.filter(st => st.title.trim() !== ''),
+        reminder,
       };
 
       if (taskToEdit) {
@@ -72,6 +80,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
       }
       handleClose();
     }
+  };
+
+  const handleOpenReminderSheet = () => {
+    onOpenReminder(reminder);
   };
 
   const addSubTaskField = () => {
@@ -165,21 +177,34 @@ const TaskModal: React.FC<TaskModalProps> = ({
             layout={LinearTransition}
             style={styles.buttonContainer}
           >
-            <TouchableOpacity style={styles.cancelButton} onPress={handleClose}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.saveButton,
-                !taskTitle.trim() && styles.saveButtonDisabled,
-              ]}
-              onPress={handleSaveTask}
-              disabled={!taskTitle.trim()}
-            >
-              <Text style={styles.saveButtonText}>
-                {taskToEdit ? 'Update' : 'Add'}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.leftButtons}>
+              <IconButton
+                onPress={handleOpenReminderSheet}
+                name="bell"
+                size={20}
+                color={reminder ? Colors.primary : Colors.placeholder}
+              />
+            </View>
+            <View style={styles.rightButtons}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={handleClose}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.saveButton,
+                  !taskTitle.trim() && styles.saveButtonDisabled,
+                ]}
+                onPress={handleSaveTask}
+                disabled={!taskTitle.trim()}
+              >
+                <Text style={styles.saveButtonText}>
+                  {taskToEdit ? 'Update' : 'Add'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </Animated.View>
         </Animated.View>
       </KeyboardAvoidingView>
@@ -226,9 +251,18 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 10,
+  },
+  leftButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rightButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   cancelButton: {
     paddingVertical: 10,

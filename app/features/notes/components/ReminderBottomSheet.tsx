@@ -15,27 +15,33 @@ import DatePicker from 'react-native-date-picker';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
-import { Note } from '../utils/NoteTypes.ts';
 import {
   createReminderNotification,
   removeReminderNotification,
 } from '../../../utils/reminders.ts';
-import { useNotes } from '../../../providers/NotesContext.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
 import colors from '../../../styles/colors.ts';
+import { Reminder } from '../../../utils/types.ts';
 
 interface ReminderBottomSheetProps {
-  note: Note;
+  title: string;
+  content: string;
+  reminder?: Reminder;
   isOpen: boolean;
   onClose: () => void;
+  onSave: (reminder: { id: string; time: number }) => void;
+  onRemove: () => void;
 }
 
 const ReminderBottomSheet = ({
-  note,
+  title,
+  content,
+  reminder,
   isOpen,
   onClose,
+  onSave,
+  onRemove,
 }: ReminderBottomSheetProps) => {
-  const { setReminder, removeReminder } = useNotes();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -48,12 +54,12 @@ const ReminderBottomSheet = ({
 
   useEffect(() => {
     if (isOpen) {
-      // Prefill date and time if note has a reminder and it's in the future
-      if (note.reminder && note.reminder.time > Date.now()) {
-        const reminderDate = new Date(note.reminder.time);
+      // Prefill date and time if reminder exists and it's in the future
+      if (reminder && reminder.time > Date.now()) {
+        const reminderDate = new Date(reminder.time);
         setSelectedDate(reminderDate);
         setSelectedTime(reminderDate);
-        originalReminderTime.current = note.reminder.time;
+        originalReminderTime.current = reminder.time;
       } else {
         originalReminderTime.current = null;
       }
@@ -61,7 +67,7 @@ const ReminderBottomSheet = ({
     } else {
       bottomSheetRef.current?.dismiss();
     }
-  }, [isOpen, note.reminder]);
+  }, [isOpen, reminder]);
 
   const isSaveDisabled = useMemo(() => {
     if (!selectedDate || !selectedTime) {
@@ -101,14 +107,14 @@ const ReminderBottomSheet = ({
     combined.setMilliseconds(0);
 
     const notificationId = await createReminderNotification(
-      note,
+      title,
+      content.substring(0, 40),
       combined.getTime(),
     );
 
     if (notificationId) {
-      setReminder(note.id, {
+      onSave({
         id: notificationId,
-        noteId: note.id,
         time: combined.getTime(),
       });
     }
@@ -117,9 +123,9 @@ const ReminderBottomSheet = ({
   };
 
   const handleRemove = async () => {
-    if (note.reminder?.id) {
-      await removeReminderNotification(note.reminder.id);
-      removeReminder(note.id);
+    if (reminder?.id) {
+      await removeReminderNotification(reminder.id);
+      onRemove();
     }
     resetAndClose();
   };
@@ -211,7 +217,7 @@ const ReminderBottomSheet = ({
         </View>
 
         <View style={styles.buttonsContainer}>
-          {note.reminder && note.reminder.time > Date.now() ? (
+          {reminder && reminder.time > Date.now() ? (
             <Pressable style={styles.removeButton} onPress={handleRemove}>
               <Icon name={'trash-alt'} size={20} color={colors.deleteRed} />
               <TextLabel text="Remove" style={styles.removeButtonText} />
@@ -291,23 +297,13 @@ const styles = StyleSheet.create({
     gap: 16,
     marginBottom: 24,
   },
-  inputGroup: {
-    gap: 8,
-  },
-  inputLabel: {
-    fontSize: 14,
-    fontFamily: Fonts.MontserratMedium,
-    color: Colors.placeholder,
-  },
   inputTouchable: {
-    backgroundColor: Colors.placeholder + '20',
-    borderWidth: 1,
-    borderColor: Colors.placeholder + '40',
-    borderRadius: 10,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
     flexDirection: 'row',
-    gap: 8,
+    alignItems: 'center',
+    backgroundColor: Colors.darkerBackground,
+    padding: 16,
+    borderRadius: 12,
+    gap: 12,
   },
   inputText: {
     fontSize: 16,
@@ -321,37 +317,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 'auto',
-  },
-  removeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    backgroundColor: Colors.deleteRed + '20',
-    borderRadius: 8,
-  },
-  removeButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.deleteRed,
   },
   rightButtons: {
     flexDirection: 'row',
-    gap: 20,
+    gap: 16,
     alignItems: 'center',
   },
   textButton: {
     fontSize: 16,
     fontFamily: Fonts.MontserratSemiBold,
     color: Colors.placeholder,
+    padding: 8,
   },
   saveTextButton: {
-    color: Colors.secondary,
+    color: Colors.primary,
   },
   saveTextButtonDisabled: {
-    opacity: 0.4,
+    color: Colors.placeholder,
+    opacity: 0.5,
+  },
+  removeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  removeButtonText: {
+    fontSize: 16,
+    fontFamily: Fonts.MontserratSemiBold,
+    color: Colors.deleteRed,
   },
 });
 

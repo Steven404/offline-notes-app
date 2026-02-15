@@ -9,6 +9,7 @@ import Fonts from '../../../styles/Fonts.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
+import { formatDateTime } from '../../../utils/functions.ts';
 
 interface TaskCardProps {
   task: Task;
@@ -23,6 +24,9 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
   const totalSubTasks = task.subTasks.length;
   const hasSubTasks = totalSubTasks > 0;
 
+  const hasActiveReminder =
+    task.reminder && task.reminder.time > Date.now() && !task.completed;
+
   const handleToggleExpand = () => {
     if (hasSubTasks) {
       setIsCollapsed(!isCollapsed);
@@ -31,7 +35,6 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
 
   return (
     <Animated.View
-      // layout={LinearTransition}
       entering={FadeIn.duration(500)}
       exiting={FadeOut.duration(500)}
       style={styles.cardWrapper}
@@ -49,6 +52,15 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
             text={task.title}
             style={[styles.title, task.completed && styles.completedText]}
           />
+          {hasActiveReminder && (
+            <View style={styles.reminderContainer}>
+              <Icon name="bell" size={12} color={Colors.secondary} />
+              <TextLabel
+                text={formatDateTime(task.reminder!.time)}
+                style={styles.reminderText}
+              />
+            </View>
+          )}
         </TouchableOpacity>
         {hasSubTasks && (
           <TouchableOpacity
@@ -102,10 +114,12 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
 const styles = StyleSheet.create({
   cardWrapper: {
     backgroundColor: Colors.tabBarBackground,
-    padding: 16,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
     borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 12,
+    height: 60,
   },
   mainRow: {
     flexDirection: 'row',
@@ -125,6 +139,17 @@ const styles = StyleSheet.create({
   completedText: {
     textDecorationLine: 'line-through',
     color: Colors.placeholder,
+  },
+  reminderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    gap: 4,
+  },
+  reminderText: {
+    fontSize: 12,
+    fontFamily: Fonts.MontserratRegular,
+    color: Colors.secondary,
   },
   rightContainer: {
     flexDirection: 'row',
