@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Collapsible from 'react-native-collapsible';
-import Animated, {
-  FadeIn,
-  FadeOut,
-  LinearTransition,
-} from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Task } from '../TaskTypes.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
