@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Collapsible from 'react-native-collapsible';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+} from 'react-native-reanimated';
 import { Task } from '../TaskTypes.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import Colors from '../../../styles/colors.ts';
@@ -10,6 +14,7 @@ import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
+import { AnimatedView } from 'react-native-reanimated/src/component/View.ts';
 
 interface TaskCardProps {
   task: Task;
@@ -19,6 +24,10 @@ interface TaskCardProps {
 const TaskCard = ({ task, onEdit }: TaskCardProps) => {
   const { toggleTaskComplete, updateSubTask } = useTasks();
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const animatedViewRef = useRef<AnimatedView>(null);
+  const [animatedViewStyles, setAnimatedViewStyles] = useState<ViewStyle[]>([
+    styles.cardWrapper,
+  ]);
 
   const completedSubTasks = task.subTasks.filter(st => st.completed).length;
   const totalSubTasks = task.subTasks.length;
@@ -33,11 +42,27 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
     }
   };
 
+  useEffect(() => {
+    if (!isCollapsed) {
+      //styles.cardWrapper has no paddingVertical, it aligns items in the center so we need some padding added when the height is > 60
+      setAnimatedViewStyles([
+        styles.cardWrapper,
+        styles.cardWrapperPaddingVertical,
+      ]);
+    } else {
+      // Removing this timeout makes the collapse animation junky/note smooth
+      setTimeout(() => {
+        setAnimatedViewStyles([styles.cardWrapper]);
+      }, 300);
+    }
+  }, [isCollapsed]);
+
   return (
     <Animated.View
+      ref={animatedViewRef}
       entering={FadeIn.duration(500)}
       exiting={FadeOut.duration(500)}
-      style={styles.cardWrapper}
+      style={animatedViewStyles}
     >
       <View style={styles.mainRow}>
         <IconButton
@@ -119,7 +144,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 12,
-    height: 60,
+    minHeight: 60,
+  },
+  cardWrapperPaddingVertical: {
+    paddingVertical: 18,
   },
   mainRow: {
     flexDirection: 'row',
