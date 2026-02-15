@@ -107,7 +107,7 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
 
   useEffect(() => {
     setDropdownOptions(getInitialOptions());
-  }, [getInitialOptions, showFilters]);
+  }, [showFilters]);
 
   return (
     <View>

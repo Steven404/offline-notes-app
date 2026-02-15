@@ -19,7 +19,11 @@ interface TasksContextType {
   setReminder: (taskId: string, reminder: Reminder) => void;
   removeReminder: (taskId: string) => void;
   addSubTask: (taskId: string, title: string) => void;
-  updateSubTask: (taskId: string, subTaskIndex: number, completed: boolean) => void;
+  updateSubTask: (
+    taskId: string,
+    subTaskIndex: number,
+    completed: boolean,
+  ) => void;
   deleteSubTask: (taskId: string, subTaskIndex: number) => void;
 }
 
@@ -98,11 +102,21 @@ export const TasksContextProvider = ({
   };
 
   const toggleTaskComplete = (id: string) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === id
-        ? { ...task, completed: !task.completed, updatedAt: Date.now() }
-        : task,
-    );
+    const updatedTasks = tasks.map(task => {
+      if (task.id === id) {
+        const newCompletedStatus = !task.completed;
+        return {
+          ...task,
+          completed: newCompletedStatus,
+          subTasks: task.subTasks.map(subTask => ({
+            ...subTask,
+            completed: newCompletedStatus,
+          })),
+          updatedAt: Date.now(),
+        };
+      }
+      return task;
+    });
     setTasks(updatedTasks);
     storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
   };
@@ -128,10 +142,7 @@ export const TasksContextProvider = ({
       task.id === taskId
         ? {
             ...task,
-            subTasks: [
-              ...task.subTasks,
-              { title, completed: false },
-            ],
+            subTasks: [...task.subTasks, { title, completed: false }],
             updatedAt: Date.now(),
           }
         : task,
@@ -145,17 +156,33 @@ export const TasksContextProvider = ({
     subTaskIndex: number,
     completed: boolean,
   ) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === taskId
-        ? {
-            ...task,
-            subTasks: task.subTasks.map((subTask, index) =>
-              index === subTaskIndex ? { ...subTask, completed } : subTask,
-            ),
-            updatedAt: Date.now(),
+    const updatedTasks = tasks.map(task => {
+      if (task.id === taskId) {
+        const updatedSubTasks = task.subTasks.map((subTask, index) =>
+          index === subTaskIndex ? { ...subTask, completed } : subTask,
+        );
+
+        let newCompletedStatus = task.completed;
+        if (completed) {
+          // If subtask is completed, check if all subtasks are now completed
+          const allCompleted = updatedSubTasks.every(st => st.completed);
+          if (allCompleted) {
+            newCompletedStatus = true;
           }
-        : task,
-    );
+        } else {
+          // If subtask is unchecked, the parent task must be unchecked
+          newCompletedStatus = false;
+        }
+
+        return {
+          ...task,
+          completed: newCompletedStatus,
+          subTasks: updatedSubTasks,
+          updatedAt: Date.now(),
+        };
+      }
+      return task;
+    });
     setTasks(updatedTasks);
     storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
   };

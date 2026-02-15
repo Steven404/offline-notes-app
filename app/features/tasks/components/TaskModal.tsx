@@ -10,12 +10,8 @@ import {
 import Modal from 'react-native-modal';
 import Colors from '../../../styles/colors.ts';
 import { useTasks } from '../../../providers/TasksContext.tsx';
-import Animated, {
-  FadeInUp,
-  FadeOutDown,
-  LinearTransition,
-} from 'react-native-reanimated';
-import Icon from '../../../components/icon/Icon.tsx';
+import Animated, { LinearTransition } from 'react-native-reanimated';
+import SubTaskItem from './SubTaskItem.tsx';
 
 import { Task } from '../TaskTypes.tsx';
 
@@ -138,7 +134,6 @@ const TaskModal: React.FC<TaskModalProps> = ({
             placeholderTextColor={Colors.placeholder}
             value={taskTitle}
             onChangeText={setTaskTitle}
-            autoFocus={true}
             onSubmitEditing={() => {
               if (taskTitle.trim()) {
                 addSubTaskField();
@@ -148,54 +143,22 @@ const TaskModal: React.FC<TaskModalProps> = ({
           />
 
           {subTasks.map((subTask, index) => (
-            <Animated.View
+            <SubTaskItem
               key={index}
-              layout={LinearTransition}
-              entering={FadeInUp.duration(200)}
-              exiting={FadeOutDown.duration(200)}
-              style={styles.subTaskContainer}
-            >
-              <TouchableOpacity
-                onPress={() => toggleSubTask(index)}
-                style={styles.checkbox}
-              >
-                <Icon
-                  name={
-                    subTask.completed
-                      ? ['fas', 'check-square']
-                      : ['far', 'square']
-                  }
-                  size={20}
-                  color={
-                    subTask.completed ? Colors.primary : Colors.placeholder
-                  }
-                />
-              </TouchableOpacity>
-              <TextInput
-                //@ts-ignore
-                ref={el => (subTaskRefs.current[index] = el)}
-                style={[
-                  styles.subTaskInput,
-                  subTask.completed && styles.subTaskInputCompleted,
-                ]}
-                placeholder="Add subtask..."
-                placeholderTextColor={Colors.placeholder}
-                value={subTask.title}
-                onChangeText={text => updateSubTaskTitle(index, text)}
-                autoFocus={true}
-                onSubmitEditing={() => {
-                  if (subTasks[index].title) {
-                    addSubTaskField();
-                  }
-                }}
-                onKeyPress={({ nativeEvent }) => {
-                  if (nativeEvent.key === 'Backspace' && subTask.title === '') {
-                    removeSubTaskField(index);
-                  }
-                }}
-                blurOnSubmit={false}
-              />
-            </Animated.View>
+              ref={el => {
+                subTaskRefs.current[index] = el;
+              }}
+              title={subTask.title}
+              completed={subTask.completed}
+              onToggle={() => toggleSubTask(index)}
+              onChangeText={text => updateSubTaskTitle(index, text)}
+              onSubmitEditing={() => {
+                if (subTasks[index].title) {
+                  addSubTaskField();
+                }
+              }}
+              onRemove={() => removeSubTaskField(index)}
+            />
           ))}
 
           <Animated.View
@@ -214,7 +177,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
               disabled={!taskTitle.trim()}
             >
               <Text style={styles.saveButtonText}>
-                {taskToEdit ? 'Update Task' : 'Add Task'}
+                {taskToEdit ? 'Update' : 'Add'}
               </Text>
             </TouchableOpacity>
           </Animated.View>
@@ -256,26 +219,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 10,
     fontFamily: 'Montserrat-Regular',
-  },
-  subTaskContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingLeft: 10,
-  },
-  checkbox: {
-    marginRight: 10,
-  },
-  subTaskInput: {
-    flex: 1,
-    fontSize: 16,
-    color: Colors.textColor,
-    fontFamily: 'Montserrat-Regular',
-    paddingVertical: 5,
-  },
-  subTaskInputCompleted: {
-    textDecorationLine: 'line-through',
-    color: Colors.placeholder,
   },
   completedText: {
     textDecorationLine: 'line-through',
