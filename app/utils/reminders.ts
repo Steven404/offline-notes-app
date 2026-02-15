@@ -44,6 +44,8 @@ export const createReminderNotification = async (
   return notificationId;
 };
 
+//TODO: Add an update notification function OR when updating a notification time, remove the existing one and create a new one
+
 export const removeReminderNotification = async (
   notificationId: string,
 ): Promise<void> => {

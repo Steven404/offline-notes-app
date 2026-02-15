@@ -127,6 +127,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
     setSubTasks(newSubTasks);
   };
 
+  const isReminderInThePast = reminder && reminder.time < Date.now();
+
   return (
     <Modal
       isVisible={isVisible}
@@ -182,7 +184,11 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 onPress={handleOpenReminderSheet}
                 name="bell"
                 size={20}
-                color={reminder ? Colors.primary : Colors.placeholder}
+                color={
+                  reminder && !isReminderInThePast
+                    ? Colors.secondary
+                    : Colors.placeholder
+                }
               />
             </View>
             <View style={styles.rightButtons}>

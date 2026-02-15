@@ -9,6 +9,7 @@ import TaskCard from '../components/TaskCard.tsx';
 import { Task } from '../TaskTypes.tsx';
 import ReminderBottomSheet from '../../notes/components/ReminderBottomSheet.tsx';
 import { Reminder } from '../../../utils/types.ts';
+import Consts from '../../../utils/consts.ts';
 
 const Tasks = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -93,7 +94,7 @@ const Tasks = () => {
       />
       <ReminderBottomSheet
         title={taskToEdit?.title || 'Task Reminder'}
-        content="Don't forget to complete your task!"
+        content={Consts.taskNotificationBody}
         reminder={reminder}
         isOpen={isReminderSheetOpen}
         onClose={handleCloseReminder}

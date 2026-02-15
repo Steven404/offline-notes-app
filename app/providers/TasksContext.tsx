@@ -3,6 +3,11 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { getDataFromStorage, storeData } from '../utils/asyncStorage.ts';
 import uuid from 'react-native-uuid';
 import { Reminder } from '../utils/types.ts';
+import {
+  createReminderNotification,
+  removeReminderNotification,
+} from '../utils/reminders.ts';
+import Consts from '../utils/consts.ts';
 
 const TASKS_STORAGE_KEY = 'tasks';
 
@@ -89,14 +94,29 @@ export const TasksContextProvider = ({
     storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
   };
 
-  const updateTask = (
+  const updateTask = async (
     id: string,
     task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>,
   ) => {
+    let reminder: Reminder | undefined;
+    if (task.reminder) {
+      const reminderId = await createReminderNotification(
+        task.title,
+        Consts.taskNotificationBody,
+        task.reminder.time,
+      );
+      reminder = {
+        id: reminderId!,
+        taskId: id,
+        time: task.reminder.time,
+      };
+      await removeReminderNotification(task.reminder.id);
+    }
     const now = Date.now();
     const updatedTasks = tasks.map(t =>
-      t.id === id ? { ...t, ...task, updatedAt: now } : t,
+      t.id === id ? { ...t, ...task, updatedAt: now, reminder } : t,
     );
+
     setTasks(updatedTasks);
     storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
   };
@@ -129,12 +149,12 @@ export const TasksContextProvider = ({
     storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
   };
 
-  const removeReminder = (taskId: string) => {
+  const removeReminder = async (taskId: string) => {
     const updatedTasks = tasks.map(task =>
       task.id === taskId ? { ...task, reminder: undefined } : task,
     );
     setTasks(updatedTasks);
-    storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
+    await storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
   };
 
   const addSubTask = (taskId: string, title: string) => {
