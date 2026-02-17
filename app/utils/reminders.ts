@@ -6,7 +6,7 @@ import notifee, {
 import uuid from 'react-native-uuid';
 
 export const stripHtmlTags = (html: string): string => {
-  return html.replace(/<[^>]*>/g, '');
+  return html.replace(/<[^>]*>/g, '').trim();
 };
 
 export const createReminderNotification = async (

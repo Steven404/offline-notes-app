@@ -6,6 +6,7 @@ import { Reminder } from '../utils/types.ts';
 import {
   createReminderNotification,
   removeReminderNotification,
+  stripHtmlTags,
 } from '../utils/reminders.ts';
 
 const NOTES_STORAGE_KEY = 'notes';
@@ -115,7 +116,7 @@ export const NotesContextProvider = ({
     if (note.reminder) {
       const reminderId = await createReminderNotification(
         note.title,
-        note.content.substring(0, 40),
+        stripHtmlTags(note.content).substring(0, 40),
         note.reminder.time,
       );
       reminder = {
