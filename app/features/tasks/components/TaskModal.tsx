@@ -24,6 +24,7 @@ interface TaskModalProps {
   taskToEdit?: Task;
   onOpenReminder: (currentReminder?: Reminder) => void;
   reminder?: Reminder;
+  onDelete?: () => void;
 }
 
 interface SubTaskDraft {
@@ -37,6 +38,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   taskToEdit,
   onOpenReminder,
   reminder,
+  onDelete,
 }) => {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskCompleted, setTaskCompleted] = useState(false);
@@ -190,6 +192,14 @@ const TaskModal: React.FC<TaskModalProps> = ({
                     : Colors.placeholder
                 }
               />
+              {taskToEdit && onDelete && (
+                <IconButton
+                  onPress={onDelete}
+                  name="trash"
+                  size={20}
+                  color={Colors.deleteRed}
+                />
+              )}
             </View>
             <View style={styles.rightButtons}>
               <TouchableOpacity
@@ -264,6 +274,7 @@ const styles = StyleSheet.create({
   leftButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 10,
   },
   rightButtons: {
     flexDirection: 'row',

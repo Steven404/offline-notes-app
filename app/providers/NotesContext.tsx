@@ -103,6 +103,10 @@ export const NotesContextProvider = ({
   };
 
   const deleteNote = (id: string) => {
+    const note = notes.find(n => n.id === id)!;
+    if (note.reminder) {
+      removeReminderNotification(note.reminder.id);
+    }
     const updatedNotes = notes.filter(note => note.id !== id);
     setNotes(updatedNotes);
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));

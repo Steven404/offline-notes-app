@@ -60,7 +60,7 @@ const Notes = () => {
   const pageContent =
     notes.length > 0 ? (
       <Animated.FlatList
-        itemLayoutAnimation={LinearTransition}
+        itemLayoutAnimation={LinearTransition.delay(500)} //this delay is added to compensate the exiting animation of NotesCard.tsx
         data={sortedNotes}
         renderItem={renderNote}
         keyExtractor={item => item.id}

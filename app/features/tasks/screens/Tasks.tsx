@@ -8,15 +8,18 @@ import { useTasks } from '../../../providers/TasksContext.tsx';
 import TaskCard from '../components/TaskCard.tsx';
 import { Task } from '../TaskTypes.tsx';
 import ReminderBottomSheet from '../../notes/components/ReminderBottomSheet.tsx';
+import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 import { Reminder } from '../../../utils/types.ts';
 import Consts from '../../../utils/consts.ts';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 const Tasks = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
   const [reminder, setReminder] = useState<Reminder | undefined>(undefined);
   const [isReminderSheetOpen, setIsReminderSheetOpen] = useState(false);
-  const { tasks } = useTasks();
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const { tasks, deleteTask } = useTasks();
 
   const [, setTick] = useState(0);
 
@@ -74,11 +77,35 @@ const Tasks = () => {
     }, 500);
   };
 
+  const handleDeletePress = () => {
+    setIsModalVisible(false);
+    setTimeout(() => {
+      setIsDeleteModalVisible(true);
+    }, 500);
+  };
+
+  const confirmTaskDeletion = () => {
+    if (taskToEdit) {
+      deleteTask(taskToEdit.id);
+      setIsDeleteModalVisible(false);
+      setTaskToEdit(undefined);
+      setReminder(undefined);
+    }
+  };
+
+  const cancelTaskDeletion = () => {
+    setIsDeleteModalVisible(false);
+    setTimeout(() => {
+      setIsModalVisible(true);
+    }, 500);
+  };
+
   return (
     <View style={styles.pageWrapper}>
       <BottomBarHeader title={'Tasks'} showFilters={false} />
 
-      <FlatList
+      <Animated.FlatList
+        itemLayoutAnimation={LinearTransition.delay(500)} //this delay is added to compensate the exiting animation of TaskCard.tsx
         data={tasks}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
@@ -101,6 +128,16 @@ const Tasks = () => {
         taskToEdit={taskToEdit}
         onOpenReminder={handleOpenReminder}
         reminder={reminder}
+        onDelete={handleDeletePress}
+      />
+      <SimpleConfirmModal
+        isVisible={isDeleteModalVisible}
+        onClose={cancelTaskDeletion}
+        onConfirm={confirmTaskDeletion}
+        title={'Delete task'}
+        text={'Are you sure you want to delete this task?'}
+        confirmText={'Delete'}
+        cancelText={'Cancel'}
       />
       <ReminderBottomSheet
         title={taskToEdit?.title || 'Task Reminder'}
