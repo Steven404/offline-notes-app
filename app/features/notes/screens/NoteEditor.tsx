@@ -74,14 +74,18 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
   );
 
   const handleSave = async () => {
-    const noteData = {
+    let noteData = {
       title,
       content,
     };
 
     if (noteId) {
-      const isPinned = notes.find(n => n.id === noteId)?.isPinned!;
-      updateNote(noteId, { ...noteData, isPinned });
+      const oldNoteData = notes.find(n => n.id === noteId)!;
+      updateNote(noteId, {
+        ...noteData,
+        reminder: oldNoteData.reminder,
+        isPinned: oldNoteData.isPinned,
+      });
     } else {
       const newId = addNote(noteData);
       setNoteId(newId);

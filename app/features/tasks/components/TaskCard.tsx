@@ -40,7 +40,6 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
 
   useEffect(() => {
     if (!isCollapsed) {
-      //styles.cardWrapper has no paddingVertical, it aligns items in the center so we need some padding added when the height is > 60
       setAnimatedViewStyles([
         styles.cardWrapper,
         styles.cardWrapperPaddingVertical,

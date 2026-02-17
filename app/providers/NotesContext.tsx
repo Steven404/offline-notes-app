@@ -1,8 +1,12 @@
 import { Note } from '../features/notes/utils/NoteTypes.ts';
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getDataFromStorage, storeData } from '../utils/asyncStorage.ts';
 import uuid from 'react-native-uuid';
 import { Reminder } from '../utils/types.ts';
+import {
+  createReminderNotification,
+  removeReminderNotification,
+} from '../utils/reminders.ts';
 
 const NOTES_STORAGE_KEY = 'notes';
 
@@ -27,11 +31,11 @@ interface NotesContextType {
   updateNote: (
     id: string,
     note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>,
-  ) => void;
+  ) => Promise<void>;
   pinNote: (id: string) => void;
   unpinNote: (id: string) => void;
-  setReminder: (noteId: string, reminder: Reminder) => void;
-  removeReminder: (noteId: string) => void;
+  setReminder: (noteId: string, reminder: Reminder) => Promise<void>;
+  removeReminder: (noteId: string) => Promise<void>;
 }
 
 const NotesContext = createContext<NotesContextType>({
@@ -43,11 +47,11 @@ const NotesContext = createContext<NotesContextType>({
   setSortBy: () => {},
   addNote: () => '',
   deleteNote: () => {},
-  updateNote: () => {},
+  updateNote: async () => {},
   pinNote: () => {},
   unpinNote: () => {},
-  setReminder: () => {},
-  removeReminder: () => {},
+  setReminder: async () => {},
+  removeReminder: async () => {},
 });
 
 export const useNotes = () => useContext(NotesContext);
@@ -103,13 +107,27 @@ export const NotesContextProvider = ({
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
 
-  const updateNote = (
+  const updateNote = async (
     id: string,
     note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>,
   ) => {
+    let reminder: Reminder | undefined;
+    if (note.reminder) {
+      const reminderId = await createReminderNotification(
+        note.title,
+        note.content.substring(0, 40),
+        note.reminder.time,
+      );
+      reminder = {
+        id: reminderId!,
+        noteId: id,
+        time: note.reminder.time,
+      };
+      await removeReminderNotification(note.reminder.id);
+    }
     const now = Date.now();
     const updatedNotes = notes.map(n =>
-      n.id === id ? { ...n, ...note, updatedAt: now } : n,
+      n.id === id ? { ...n, ...note, updatedAt: now, reminder } : n,
     );
     setNotes(updatedNotes);
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
@@ -131,7 +149,7 @@ export const NotesContextProvider = ({
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
 
-  const setReminder = (noteId: string, reminder: Reminder) => {
+  const setReminder = async (noteId: string, reminder: Reminder) => {
     const updatedNotes = notes.map(note =>
       note.id === noteId ? { ...note, reminder } : note,
     );
@@ -139,9 +157,13 @@ export const NotesContextProvider = ({
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
 
-  const removeReminder = (noteId: string) => {
-    const updatedNotes = notes.map(note =>
-      note.id === noteId ? { ...note, reminder: undefined } : note,
+  const removeReminder = async (noteId: string) => {
+    const note = notes.find(n => n.id === noteId);
+    if (note?.reminder) {
+      await removeReminderNotification(note.reminder.id);
+    }
+    const updatedNotes = notes.map(n =>
+      n.id === noteId ? { ...n, reminder: undefined } : n,
     );
     setNotes(updatedNotes);
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
