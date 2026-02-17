@@ -89,6 +89,10 @@ export const TasksContextProvider = ({
   };
 
   const deleteTask = (id: string) => {
+    const task = tasks.find(task => task.id === id)!;
+    if (task.reminder) {
+      removeReminderNotification(task.id);
+    }
     const updatedTasks = tasks.filter(task => task.id !== id);
     setTasks(updatedTasks);
     storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
