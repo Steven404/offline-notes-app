@@ -11,7 +11,7 @@ import NoteCard from '../components/NoteCard.tsx';
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 
 import { Note } from '../utils/NoteTypes.ts';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ReminderBottomSheet from '../components/ReminderBottomSheet.tsx';
 import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
 import SearchNotesScreen from '../components/SearchNotesScreen.tsx';
@@ -31,6 +31,15 @@ const Notes = () => {
     removeReminder,
   } = useNotes();
   const [isSearching, setIsSearching] = useState(false);
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick(prev => prev + 1);
+    }, 5000); // Refresh every 5 seconds for notification bell in to go away if needed
+
+    return () => clearInterval(interval);
+  }, []);
 
   const sortedNotes = useMemo(() => {
     return sortNotes(notes, sortBy, showPinnedOnly);

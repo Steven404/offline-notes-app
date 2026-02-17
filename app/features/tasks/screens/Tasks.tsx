@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
 import Colors from '../../../styles/colors.ts';
 import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
@@ -17,6 +17,16 @@ const Tasks = () => {
   const [reminder, setReminder] = useState<Reminder | undefined>(undefined);
   const [isReminderSheetOpen, setIsReminderSheetOpen] = useState(false);
   const { tasks } = useTasks();
+
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick(prev => prev + 1);
+    }, 5000); // Refresh every 5 seconds for notification bell in to go away if needed
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleEditTask = (task: Task) => {
     setTaskToEdit(task);
