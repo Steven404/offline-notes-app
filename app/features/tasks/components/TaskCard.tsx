@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Task } from '../TaskTypes.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
-import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
 import { AnimatedView } from 'react-native-reanimated/src/component/View.ts';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 interface TaskCardProps {
   task: Task;
@@ -19,11 +20,18 @@ interface TaskCardProps {
 
 const TaskCard = ({ task, onEdit }: TaskCardProps) => {
   const { toggleTaskComplete, updateSubTask } = useTasks();
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const animatedViewRef = useRef<AnimatedView>(null);
   const [animatedViewStyles, setAnimatedViewStyles] = useState<ViewStyle[]>([
     styles.cardWrapper,
   ]);
+
+  useEffect(() => {
+    // the background colour of the wrapper does not change on theme change without this
+    setAnimatedViewStyles([styles.cardWrapper]);
+  }, [styles.cardWrapper, theme]);
 
   const completedSubTasks = task.subTasks.filter(st => st.completed).length;
   const totalSubTasks = task.subTasks.length;
@@ -42,7 +50,9 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
     if (!isCollapsed) {
       setAnimatedViewStyles([
         styles.cardWrapper,
-        styles.cardWrapperPaddingVertical,
+        hasActiveReminder
+          ? styles.cardWrapperPaddingVerticalWithReminder
+          : styles.cardWrapperPaddingVertical,
       ]);
     } else {
       // Removing this timeout makes the collapse animation junky/note smooth
@@ -64,7 +74,7 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
           onPress={() => toggleTaskComplete(task.id)}
           name={task.completed ? 'square-check' : 'square'}
           size={24}
-          color={task.completed ? Colors.primary : Colors.darkerBackground}
+          color={task.completed ? theme.primary : theme.darkerBackground}
           iconStyle={styles.checkbox}
         />
         <TouchableOpacity onPress={onEdit} style={styles.titleTouchableOpacity}>
@@ -74,7 +84,7 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
           />
           {hasActiveReminder && (
             <View style={styles.reminderContainer}>
-              <Icon name="bell" size={12} color={Colors.secondary} />
+              <Icon name="bell" size={12} color={theme.secondary} />
               <TextLabel
                 text={formatDateTime(task.reminder!.time)}
                 style={styles.reminderText}
@@ -95,7 +105,7 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
             <Icon
               name={!isCollapsed ? 'chevron-up' : 'chevron-down'}
               size={16}
-              color={Colors.placeholder}
+              color={theme.placeholder}
             />
           </TouchableOpacity>
         )}
@@ -112,7 +122,7 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
                 name={subTask.completed ? 'square-check' : 'square'}
                 size={20}
                 color={
-                  subTask.completed ? Colors.primary : Colors.darkerBackground
+                  subTask.completed ? theme.primary : theme.darkerBackground
                 }
                 iconStyle={styles.subCheckbox}
               />
@@ -131,79 +141,83 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  cardWrapper: {
-    backgroundColor: Colors.tabBarBackground,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginBottom: 12,
-    minHeight: 60,
-  },
-  cardWrapperPaddingVertical: {
-    paddingVertical: 18,
-  },
-  mainRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkbox: {
-    marginRight: 12,
-  },
-  titleTouchableOpacity: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 16,
-    fontFamily: Fonts.MontserratMedium,
-    color: Colors.textColor,
-  },
-  completedText: {
-    textDecorationLine: 'line-through',
-    color: Colors.placeholder,
-  },
-  reminderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-    gap: 4,
-  },
-  reminderText: {
-    fontSize: 12,
-    fontFamily: Fonts.MontserratRegular,
-    color: Colors.secondary,
-  },
-  rightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  subTaskCount: {
-    fontSize: 14,
-    fontFamily: Fonts.MontserratRegular,
-    color: Colors.placeholder,
-  },
-  subTasksContainer: {
-    paddingLeft: 16,
-    paddingTop: 16,
-    borderTopWidth: 0.5,
-    borderTopColor: Colors.placeholder + '40',
-    marginTop: 12,
-  },
-  subTaskRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  subCheckbox: {
-    marginRight: 10,
-  },
-  subTaskTitle: {
-    fontSize: 14,
-    fontFamily: Fonts.MontserratRegular,
-    color: Colors.textColor,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    cardWrapper: {
+      backgroundColor: theme.tabBarBackground,
+      paddingHorizontal: 16,
+      justifyContent: 'center',
+      borderRadius: 10,
+      overflow: 'hidden',
+      marginBottom: 12,
+      minHeight: 60,
+    },
+    cardWrapperPaddingVertical: {
+      paddingVertical: 18,
+    },
+    cardWrapperPaddingVerticalWithReminder: {
+      paddingVertical: 11,
+    },
+    mainRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    checkbox: {
+      marginRight: 12,
+    },
+    titleTouchableOpacity: {
+      flex: 1,
+    },
+    title: {
+      fontSize: 16,
+      fontFamily: Fonts.MontserratMedium,
+      color: theme.textColor,
+    },
+    completedText: {
+      textDecorationLine: 'line-through',
+      color: theme.placeholder,
+    },
+    reminderContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 4,
+      gap: 4,
+    },
+    reminderText: {
+      fontSize: 12,
+      fontFamily: Fonts.MontserratRegular,
+      color: theme.secondary,
+    },
+    rightContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    subTaskCount: {
+      fontSize: 14,
+      fontFamily: Fonts.MontserratRegular,
+      color: theme.placeholder,
+    },
+    subTasksContainer: {
+      paddingLeft: 16,
+      paddingTop: 16,
+      borderTopWidth: 0.5,
+      borderTopColor: theme.placeholder + '40',
+      marginTop: 12,
+    },
+    subTaskRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    subCheckbox: {
+      marginRight: 10,
+    },
+    subTaskTitle: {
+      fontSize: 14,
+      fontFamily: Fonts.MontserratRegular,
+      color: theme.textColor,
+    },
+  });
 
 export default TaskCard;

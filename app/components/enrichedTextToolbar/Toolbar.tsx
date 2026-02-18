@@ -16,8 +16,9 @@ import type {
   OnChangeStateEvent,
   EnrichedTextInputInstance,
 } from 'react-native-enriched';
-import type { FC } from 'react';
-import Colors from '../../styles/colors.ts';
+import { useMemo, type FC } from 'react';
+import { useTheme } from '../../providers/ThemeContext.tsx';
+import { Theme } from '../../styles/themes.ts';
 
 const STYLE_ITEMS = [
   {
@@ -94,6 +95,9 @@ export const Toolbar: FC<ToolbarProps> = ({
   onOpenLinkModal,
   onSelectImage,
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   const handlePress = (item: Item) => {
     const currentRef = editorRef?.current;
     if (!currentRef) return;
@@ -240,14 +244,15 @@ export const Toolbar: FC<ToolbarProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor:
-      Platform.OS === 'android' ? Colors.tabBarBackground : Colors.background,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  contentContainer: {
-    paddingHorizontal: 8,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor:
+        Platform.OS === 'android' ? theme.tabBarBackground : theme.background,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    contentContainer: {
+      paddingHorizontal: 8,
+    },
+  });

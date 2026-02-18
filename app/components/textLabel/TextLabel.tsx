@@ -1,6 +1,8 @@
 import { StyleSheet, TextProps } from 'react-native';
-import Colors from '../../styles/colors.ts';
 import Animated, { EntryOrExitLayoutType } from 'react-native-reanimated';
+import { useTheme } from '../../providers/ThemeContext.tsx';
+import { Theme } from '../../styles/themes.ts';
+import { useMemo } from 'react';
 
 interface Props extends TextProps {
   text: string;
@@ -10,6 +12,9 @@ interface Props extends TextProps {
 
 function TextLabel(props: Props) {
   const { text, style, numberOfLines, ...rest } = props;
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   return (
     <Animated.Text
       numberOfLines={numberOfLines !== undefined ? numberOfLines : 10}
@@ -22,10 +27,12 @@ function TextLabel(props: Props) {
 }
 
 export default TextLabel;
-const styles = StyleSheet.create({
-  text: {
-    color: Colors.textColor,
-    fontSize: 16,
-    textAlign: 'left',
-  },
-});
+
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    text: {
+      color: theme.textColor,
+      fontSize: 16,
+      textAlign: 'left',
+    },
+  });

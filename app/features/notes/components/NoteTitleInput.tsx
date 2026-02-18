@@ -1,7 +1,8 @@
 import { StyleSheet, TextInput } from 'react-native';
-import Colors from '../../../styles/colors.ts';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import Fonts from '../../../styles/Fonts.tsx';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 interface NoteTitleInputProps {
   title: string;
@@ -9,6 +10,8 @@ interface NoteTitleInputProps {
 }
 
 const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const textInputRef = useRef<TextInput>(null);
   const initialised = useRef(false);
 
@@ -19,7 +22,7 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
       ref={textInputRef}
       style={[styles.input]}
       placeholder={'Title'}
-      placeholderTextColor={Colors.placeholder}
+      placeholderTextColor={theme.placeholder}
       value={title}
       onChangeText={text => {
         setTitle(text);
@@ -36,14 +39,15 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  input: {
-    width: '100%',
-    padding: 14,
-    fontSize: 32,
-    fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.textColor,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    input: {
+      width: '100%',
+      padding: 14,
+      fontSize: 32,
+      fontFamily: Fonts.MontserratSemiBold,
+      color: theme.textColor,
+    },
+  });
 
 export default NoteTitleInput;

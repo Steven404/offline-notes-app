@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Dropdown, IDropdownRef } from 'react-native-element-dropdown';
 import IconButton from '../iconButton/IconButton.tsx';
-import Colors from '../../styles/colors.ts';
 import { SortOption, useNotes } from '../../providers/NotesContext.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/Navigation.tsx';
+import { useTheme } from '../../providers/ThemeContext.tsx';
+import { Theme } from '../../styles/themes.ts';
 
 type Props = {
   showFilters?: boolean;
@@ -55,11 +56,18 @@ const sortByOptions: DropdownOption[] = [
   },
 ];
 
-const dropdownOptionsWithoutFilters: DropdownOption[] =
-  dropdownInitialOptions.filter(item => !item.isFilterOption);
+const dropdownOptionsWithoutFilters: DropdownOption[] = [
+  // This used to be a nice filter function but it wasn't working with theme change
+  {
+    label: 'Settings',
+    value: 'settings',
+  },
+];
 
 const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
 
   const dropdownRef = useRef<IDropdownRef>(null);
   const [dropdownOptions, setDropdownOptions] = useState<DropdownOption[]>(
@@ -114,7 +122,7 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
       <IconButton
         name={'ellipsis-vertical'}
         size={24}
-        color={Colors.textColor}
+        color={theme.textColor}
         onPress={() => {
           dropdownRef.current?.open();
         }}
@@ -126,6 +134,7 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
         iconStyle={styles.hidden}
         selectedTextStyle={styles.hidden}
         containerStyle={styles.dropdownContainer}
+        itemTextStyle={styles.itemText}
         ref={dropdownRef}
         data={dropdownOptions}
         onChange={handleChange}
@@ -136,16 +145,18 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  hidden: {
-    display: 'none',
-  },
-  dropdownContainer: {
-    borderRadius: 10,
-    padding: 0,
-    width: 160,
-  },
-  itemText: { fontSize: 14, color: Colors.background },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    hidden: {
+      display: 'none',
+    },
+    dropdownContainer: {
+      borderRadius: 10,
+      padding: 0,
+      width: 160,
+      backgroundColor: theme.tabBarBackground,
+    },
+    itemText: { fontSize: 14, color: theme.textColor },
+  });
 
 export default BottomBarHeaderDropdown;

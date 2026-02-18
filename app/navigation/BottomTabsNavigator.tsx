@@ -7,8 +7,10 @@ import Notes from '../features/notes/screens/Notes.tsx';
 import Tasks from '../features/tasks/screens/Tasks.tsx';
 import { StyleSheet } from 'react-native';
 import Icon from '../components/icon/Icon.tsx';
-import Colors from '../styles/colors.ts';
 import Fonts from '../styles/Fonts.tsx';
+import { useTheme } from '../providers/ThemeContext.tsx';
+import { Theme } from '../styles/themes.ts';
+import { useMemo } from 'react';
 
 type BottomTabsParamList = {
   notes: undefined;
@@ -26,6 +28,8 @@ const TasksIcon = ({ color, size }: { color: string; size: number }) => (
 
 const BottomTabsNavigator = () => {
   const areaInsets = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -33,8 +37,8 @@ const BottomTabsNavigator = () => {
         screenOptions={{
           animation: 'fade',
           headerShown: false,
-          tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.4)',
-          tabBarActiveTintColor: Colors.textColor,
+          tabBarInactiveTintColor: theme.placeholder2,
+          tabBarActiveTintColor: theme.textColor,
           tabBarLabelStyle: {
             fontFamily: Fonts.MontserratRegular,
           },
@@ -43,7 +47,7 @@ const BottomTabsNavigator = () => {
             elevation: 0,
             height: 60 + areaInsets.bottom,
             paddingTop: 14,
-            backgroundColor: Colors.tabBarBackground,
+            backgroundColor: theme.tabBarBackground,
           },
         }}
       >
@@ -68,11 +72,12 @@ const BottomTabsNavigator = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.background,
+    },
+  });
 
 export default BottomTabsNavigator;

@@ -1,8 +1,9 @@
-import { type FC } from 'react';
+import { useMemo, type FC } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import Icon from '../icon/Icon.tsx';
 import { IconName } from '@fortawesome/free-solid-svg-icons';
-import Colors from '../../styles/colors.ts';
+import { useTheme } from '../../providers/ThemeContext.tsx';
+import { Theme } from '../../styles/themes.ts';
 
 interface ToolbarButtonIconProps {
   text?: never;
@@ -31,6 +32,9 @@ export const ToolbarButton: FC<ToolbarButtonProps> = ({
   isDisabled,
   onPress,
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   return (
     <Pressable
       style={[
@@ -45,13 +49,13 @@ export const ToolbarButton: FC<ToolbarButtonProps> = ({
         <Icon
           name={icon}
           size={20}
-          color={isActive ? Colors.primary : Colors.textColor}
+          color={isActive ? theme.primary : theme.textColor}
         />
       ) : (
         <Text
           style={[
             styles.text,
-            isActive && { color: Colors.primary, fontWeight: 'bold' },
+            isActive && { color: theme.primary, fontWeight: 'bold' },
           ]}
         >
           {text}
@@ -61,24 +65,25 @@ export const ToolbarButton: FC<ToolbarButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 44,
-    height: 44,
-    marginHorizontal: 2,
-  },
-  containerActive: {
-    backgroundColor: 'rgba(255, 208, 72, 0.15)',
-    borderRadius: 8,
-    marginVertical: 6,
-  },
-  containerDisabled: {
-    opacity: 0.3,
-  },
-  text: {
-    color: Colors.textColor,
-    fontSize: 16,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 44,
+      height: 44,
+      marginHorizontal: 2,
+    },
+    containerActive: {
+      backgroundColor: 'rgba(255, 208, 72, 0.15)',
+      borderRadius: 8,
+      marginVertical: 6,
+    },
+    containerDisabled: {
+      opacity: 0.3,
+    },
+    text: {
+      color: theme.textColor,
+      fontSize: 16,
+    },
+  });

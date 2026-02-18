@@ -5,6 +5,7 @@ export type Theme = {
   black: string;
   textColor: string;
   placeholder: string;
+  placeholder2: string;
   primary: string;
   secondary: string;
   mutedOrange: string;
@@ -22,6 +23,7 @@ export const darkTheme: Theme = {
   black: '#000000',
   textColor: '#ffffff',
   placeholder: '#9A9A9A',
+  placeholder2: '#6B6B6B50',
   primary: '#ffd048',
   secondary: '#48D0FF',
   mutedOrange: '#FF9F48',
@@ -37,8 +39,9 @@ export const lightTheme: Theme = {
   black: '#000000',
   textColor: '#1a1a1a',
   placeholder: '#6B6B6B',
-  primary: '#e6b800',
-  secondary: '#0099cc',
+  placeholder2: '#6B6B6B50',
+  primary: '#F2C94C',
+  secondary: '#007ACC',
   mutedOrange: '#e07b00',
   toolbarBackground: 'rgba(230, 184, 0, 0.8)',
   toolbarBackgroundActive: '#e6b800',

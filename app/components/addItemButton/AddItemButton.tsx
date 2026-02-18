@@ -1,8 +1,8 @@
 import React from 'react';
 import { Pressable, StyleSheet, ViewStyle } from 'react-native';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import Colors from '../../styles/colors.ts';
 import Icon from '../icon/Icon.tsx';
+import { useTheme } from '../../providers/ThemeContext.tsx';
 
 interface AddItemButtonProps {
   onPress: () => void;
@@ -17,21 +17,27 @@ const AddItemButton: React.FC<AddItemButtonProps> = ({
   onPress,
   iconName = ['fas', 'plus'] as IconProp,
   size = 30,
-  buttonColor = Colors.background,
-  iconColor = Colors.primary,
+  buttonColor,
+  iconColor,
   style,
 }) => {
+  const { theme } = useTheme();
+
   return (
     <Pressable
       style={({ pressed }) => [
         styles.addButton,
-        { backgroundColor: buttonColor },
+        { backgroundColor: buttonColor || theme.background },
         pressed && styles.addButtonPressed,
         style,
       ]}
       onPress={onPress}
     >
-      <Icon name={iconName} size={size} color={iconColor} />
+      <Icon
+        name={iconName}
+        size={size}
+        color={iconColor || theme.primary}
+      />
     </Pressable>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, {
   FadeIn,
@@ -9,12 +9,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Note } from '../utils/NoteTypes.ts';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
-import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 import RenderHTML, { MixedStyleDeclaration } from 'react-native-render-html';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 interface NoteCardProps {
   note: Note;
@@ -30,6 +31,9 @@ const NoteCard = ({
   setReminderNote,
 }: NoteCardProps) => {
   const { pinNote, unpinNote } = useNotes();
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+  const contentStyle = useMemo(() => makeContentStyle(theme), [theme]);
   const [isActionsMode, setIsActionsMode] = useState(false);
 
   const handlePinPress = () => {
@@ -78,7 +82,7 @@ const NoteCard = ({
                 onPress={handleReminderPress}
                 name={'bell'}
                 size={25}
-                color={Colors.textColor}
+                color={theme.textColor}
               />
             </View>
             <View style={[styles.actionButton, styles.deleteActionButton]}>
@@ -86,7 +90,7 @@ const NoteCard = ({
                 onPress={handleDeletePress}
                 name={'trash'}
                 size={25}
-                color={Colors.textColor}
+                color={theme.textColor}
               />
             </View>
           </Animated.View>
@@ -98,7 +102,7 @@ const NoteCard = ({
               onPress={handlePinPress}
               name={'thumbtack'}
               size={20}
-              color={Colors.primary}
+              color={theme.primary}
               iconStyle={!note.isPinned && styles.unpinnedThumbstack}
             />
           </View>
@@ -126,7 +130,7 @@ const NoteCard = ({
               <IconButton
                 name="bell"
                 size={20}
-                color={Colors.secondary}
+                color={theme.secondary}
                 onPress={handleBellIconPress}
               />
             </Animated.View>
@@ -137,67 +141,68 @@ const NoteCard = ({
   );
 };
 
-const contentStyle: MixedStyleDeclaration = {
+const makeContentStyle = (theme: Theme): MixedStyleDeclaration => ({
   fontSize: 16,
   fontFamily: Fonts.MontserratRegular,
-  color: Colors.placeholder,
+  color: theme.placeholder,
   maxHeight: 19.3, // This is needed in case the user hits enter and creates new line manually in the note
   overflow: 'hidden',
-};
-
-const styles = StyleSheet.create({
-  actionsView: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 2,
-    flexDirection: 'row',
-  },
-  actionButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.secondary,
-  },
-  deleteActionButton: {
-    backgroundColor: Colors.deleteRed,
-  },
-  container: {
-    gap: 4,
-    backgroundColor: Colors.tabBarBackground,
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 12,
-    overflow: 'hidden',
-  },
-  topContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    maxHeight: 30,
-  },
-  title: {
-    fontSize: 18,
-    lineHeight: 20,
-    fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.textColor,
-    maxWidth: '85%',
-  },
-  iconContainer: { maxHeight: 20 },
-  unpinnedThumbstack: {
-    opacity: 0.5,
-  },
-  lastEdited: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  lastEditedText: {
-    fontSize: 14,
-    fontFamily: Fonts.MontserratRegular,
-    color: Colors.placeholder,
-  },
 });
+
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    actionsView: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 2,
+      flexDirection: 'row',
+    },
+    actionButton: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.secondary,
+    },
+    deleteActionButton: {
+      backgroundColor: theme.deleteRed,
+    },
+    container: {
+      gap: 4,
+      backgroundColor: theme.tabBarBackground,
+      padding: 16,
+      borderRadius: 10,
+      marginBottom: 12,
+      overflow: 'hidden',
+    },
+    topContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      maxHeight: 30,
+    },
+    title: {
+      fontSize: 18,
+      lineHeight: 20,
+      fontFamily: Fonts.MontserratSemiBold,
+      color: theme.textColor,
+      maxWidth: '85%',
+    },
+    iconContainer: { maxHeight: 20 },
+    unpinnedThumbstack: {
+      opacity: 0.5,
+    },
+    lastEdited: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    lastEditedText: {
+      fontSize: 14,
+      fontFamily: Fonts.MontserratRegular,
+      color: theme.placeholder,
+    },
+  });
 
 export default NoteCard;

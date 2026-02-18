@@ -57,7 +57,7 @@ const makeStyles = (theme: Theme) =>
       width: 32,
       height: 32,
       borderRadius: 8,
-      backgroundColor: theme.darkerBackground,
+      backgroundColor: theme.background,
       justifyContent: 'center',
       alignItems: 'center',
     },

@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -12,7 +12,8 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 import Icon from '../../../components/icon/Icon.tsx';
-import Colors from '../../../styles/colors.ts';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 interface SubTaskItemProps {
   title: string;
@@ -28,6 +29,9 @@ const SubTaskItem = forwardRef<TextInput, SubTaskItemProps>(
     { title, completed, onToggle, onChangeText, onSubmitEditing, onRemove },
     ref,
   ) => {
+    const { theme } = useTheme();
+    const styles = useMemo(() => makeStyles(theme), [theme]);
+
     const handleKeyPress = ({
       nativeEvent,
     }: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
@@ -47,7 +51,7 @@ const SubTaskItem = forwardRef<TextInput, SubTaskItemProps>(
           <Icon
             name={completed ? ['fas', 'check-square'] : ['far', 'square']}
             size={20}
-            color={completed ? Colors.primary : Colors.placeholder}
+            color={completed ? theme.primary : theme.placeholder}
           />
         </TouchableOpacity>
         <TextInput
@@ -57,7 +61,7 @@ const SubTaskItem = forwardRef<TextInput, SubTaskItemProps>(
             completed && styles.subTaskInputCompleted,
           ]}
           placeholder="Add subtask..."
-          placeholderTextColor={Colors.placeholder}
+          placeholderTextColor={theme.placeholder}
           value={title}
           onChangeText={onChangeText}
           autoFocus={true}
@@ -70,27 +74,28 @@ const SubTaskItem = forwardRef<TextInput, SubTaskItemProps>(
   },
 );
 
-const styles = StyleSheet.create({
-  subTaskContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingLeft: 10,
-  },
-  checkbox: {
-    marginRight: 10,
-  },
-  subTaskInput: {
-    flex: 1,
-    fontSize: 16,
-    color: Colors.textColor,
-    fontFamily: 'Montserrat-Regular',
-    paddingVertical: 5,
-  },
-  subTaskInputCompleted: {
-    textDecorationLine: 'line-through',
-    color: Colors.placeholder,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    subTaskContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 5,
+      paddingLeft: 10,
+    },
+    checkbox: {
+      marginRight: 10,
+    },
+    subTaskInput: {
+      flex: 1,
+      fontSize: 16,
+      color: theme.textColor,
+      fontFamily: 'Montserrat-Regular',
+      paddingVertical: 5,
+    },
+    subTaskInputCompleted: {
+      textDecorationLine: 'line-through',
+      color: theme.placeholder,
+    },
+  });
 
 export default SubTaskItem;

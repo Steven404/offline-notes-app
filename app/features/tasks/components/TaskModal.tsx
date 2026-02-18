@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import Colors from '../../../styles/colors.ts';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import SubTaskItem from './SubTaskItem.tsx';
@@ -17,6 +16,8 @@ import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { Reminder } from '../../../utils/types.ts';
 
 import { Task } from '../TaskTypes.tsx';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 interface TaskModalProps {
   isVisible: boolean;
@@ -40,6 +41,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
   reminder,
   onDelete,
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const [taskTitle, setTaskTitle] = useState('');
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [subTasks, setSubTasks] = useState<SubTaskDraft[]>([]);
@@ -147,7 +150,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
             ref={titleRef}
             style={[styles.input, taskCompleted && styles.completedText]}
             placeholder="Press enter to create subtasks"
-            placeholderTextColor={Colors.placeholder}
+            placeholderTextColor={theme.placeholder}
             value={taskTitle}
             onChangeText={setTaskTitle}
             onSubmitEditing={() => {
@@ -188,8 +191,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 size={20}
                 color={
                   reminder && !isReminderInThePast
-                    ? Colors.secondary
-                    : Colors.placeholder
+                    ? theme.secondary
+                    : theme.placeholder
                 }
               />
               {taskToEdit && onDelete && (
@@ -197,7 +200,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                   onPress={onDelete}
                   name="trash"
                   size={20}
-                  color={Colors.deleteRed}
+                  color={theme.deleteRed}
                 />
               )}
             </View>
@@ -228,83 +231,84 @@ const TaskModal: React.FC<TaskModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modal: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: 50,
-    width: '100%',
-    margin: 0,
-  },
-  keyboardAvoidingView: {
-    width: '100%',
-  },
-  modalContent: {
-    backgroundColor: Colors.background,
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: -2,
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    modal: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      paddingBottom: 50,
+      width: '100%',
+      margin: 0,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  input: {
-    fontSize: 18,
-    color: Colors.textColor,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.primary,
-    paddingVertical: 10,
-    marginBottom: 10,
-    fontFamily: 'Montserrat-Regular',
-  },
-  completedText: {
-    textDecorationLine: 'line-through',
-    color: Colors.placeholder,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  leftButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  rightButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  cancelButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  cancelButtonText: {
-    color: Colors.placeholder,
-    fontSize: 16,
-    fontFamily: 'Montserrat-Medium',
-  },
-  saveButton: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  saveButtonDisabled: {
-    backgroundColor: Colors.placeholder,
-    opacity: 0.5,
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontFamily: 'Montserrat-Bold',
-  },
-});
+    keyboardAvoidingView: {
+      width: '100%',
+    },
+    modalContent: {
+      backgroundColor: theme.background,
+      borderRadius: 20,
+      padding: 20,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: -2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    input: {
+      fontSize: 18,
+      color: theme.textColor,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.primary,
+      paddingVertical: 10,
+      marginBottom: 10,
+      fontFamily: 'Montserrat-Regular',
+    },
+    completedText: {
+      textDecorationLine: 'line-through',
+      color: theme.placeholder,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    leftButtons: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+    },
+    rightButtons: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+    },
+    cancelButton: {
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+    },
+    cancelButtonText: {
+      color: theme.placeholder,
+      fontSize: 16,
+      fontFamily: 'Montserrat-Medium',
+    },
+    saveButton: {
+      backgroundColor: theme.primary,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+    },
+    saveButtonDisabled: {
+      backgroundColor: theme.placeholder,
+      opacity: 0.5,
+    },
+    saveButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontFamily: 'Montserrat-Bold',
+    },
+  });
 
 export default TaskModal;

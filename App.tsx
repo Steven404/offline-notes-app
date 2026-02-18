@@ -48,28 +48,28 @@ function App() {
   }, []);
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <SafeAreaProvider>
-        <KeyboardProvider>
-          <BottomSheetModalProvider>
-            <StatusBar barStyle={'light-content'} />
-            {isAppReady && initialRouteName ? (
-              <ThemeContextProvider>
+    <ThemeContextProvider>
+      <GestureHandlerRootView style={styles.container}>
+        <SafeAreaProvider>
+          <KeyboardProvider>
+            <BottomSheetModalProvider>
+              <StatusBar barStyle={'light-content'} />
+              {isAppReady && initialRouteName ? (
                 <NotesContextProvider>
                   <TasksContextProvider>
                     <Navigation initialRouteName={initialRouteName} />
                   </TasksContextProvider>
                 </NotesContextProvider>
-              </ThemeContextProvider>
-            ) : (
-              <View style={styles.container}>
-                <SimpleLoading />
-              </View>
-            )}
-          </BottomSheetModalProvider>
-        </KeyboardProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+              ) : (
+                <View style={styles.container}>
+                  <SimpleLoading />
+                </View>
+              )}
+            </BottomSheetModalProvider>
+          </KeyboardProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </ThemeContextProvider>
   );
 }
 

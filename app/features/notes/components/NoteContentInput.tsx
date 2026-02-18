@@ -4,10 +4,11 @@ import {
   EnrichedTextInputInstance,
   OnChangeStateEvent,
 } from 'react-native-enriched';
-import React, { useRef } from 'react';
-import Colors from '../../../styles/colors.ts';
+import React, { useMemo, useRef } from 'react';
 import Fonts from '../../../styles/Fonts.tsx';
 import { sanitizeNoteContent } from '../../../utils/functions.ts';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 interface NoteContentInputProps {
   setContent?: (content: string) => void;
@@ -26,6 +27,8 @@ const NoteContentInput = ({
   onChangeState,
   onFocusChange,
 }: NoteContentInputProps) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const internalRef = useRef<EnrichedTextInputInstance>(null);
   const inputRef = externalRef || internalRef;
 
@@ -47,14 +50,14 @@ const NoteContentInput = ({
         style={styles.input}
         editable={!isDisplay}
         placeholder={'Content'}
-        placeholderTextColor={Colors.placeholder}
+        placeholderTextColor={theme.placeholder}
         onChangeState={e => onChangeState?.(e.nativeEvent)}
         onChangeHtml={e => {
           setContent?.(e.nativeEvent.value);
         }}
         htmlStyle={{
           ul: {
-            bulletColor: Colors.textColor,
+            bulletColor: theme.textColor,
           },
         }}
         defaultValue={
@@ -65,16 +68,17 @@ const NoteContentInput = ({
   );
 };
 
-const styles = StyleSheet.create({
-  componentWrapper: { flex: 1 },
-  input: {
-    width: '100%',
-    fontSize: 20,
-    fontFamily: Fonts.MontserratRegular,
-    color: Colors.textColor,
-  },
-  noHorizontalPadding: { paddingHorizontal: 0 },
-  withHorizontalPadding: { paddingHorizontal: 14 },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    componentWrapper: { flex: 1 },
+    input: {
+      width: '100%',
+      fontSize: 20,
+      fontFamily: Fonts.MontserratRegular,
+      color: theme.textColor,
+    },
+    noHorizontalPadding: { paddingHorizontal: 0 },
+    withHorizontalPadding: { paddingHorizontal: 14 },
+  });
 
 export default NoteContentInput;

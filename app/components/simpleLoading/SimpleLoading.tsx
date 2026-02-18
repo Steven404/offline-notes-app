@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet } from 'react-native';
-import Colors from '../../styles/colors.ts';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useTheme } from '../../providers/ThemeContext.tsx';
 
 interface SimpleLoadingProps {
   size?: 'small' | 'large';
@@ -11,13 +11,15 @@ const SimpleLoading = ({
   size = 'large',
   centered = true,
 }: SimpleLoadingProps) => {
+  const { theme } = useTheme();
+
   return (
     <Animated.View
       entering={FadeIn.duration(500)}
       exiting={FadeOut.duration(500)}
       style={centered ? styles.centered : {}}
     >
-      <ActivityIndicator size={size} color={Colors.secondary} />
+      <ActivityIndicator size={size} color={theme.secondary} />
     </Animated.View>
   );
 };

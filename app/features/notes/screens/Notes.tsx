@@ -1,6 +1,5 @@
 import { StyleSheet, View } from 'react-native';
 import NoNotes from '../components/NoNotes.tsx';
-import Colors from '../../../styles/colors.ts';
 import AddItemButton from '../../../components/addItemButton/AddItemButton.tsx';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -18,9 +17,13 @@ import SearchNotesScreen from '../components/SearchNotesScreen.tsx';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import { sortNotes } from '../utils/noteUtils.ts';
 import { stripHtmlTags } from '../../../utils/reminders.ts';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 const Notes = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const {
     notes,
     isLoading,
@@ -127,17 +130,18 @@ const Notes = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  pageWrapper: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    padding: 14,
-    zIndex: 1,
-  },
-  listContent: {
-    marginTop: 20,
-    paddingBottom: 80,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    pageWrapper: {
+      flex: 1,
+      backgroundColor: theme.background,
+      padding: 14,
+      zIndex: 1,
+    },
+    listContent: {
+      marginTop: 20,
+      paddingBottom: 80,
+    },
+  });
 
 export default Notes;

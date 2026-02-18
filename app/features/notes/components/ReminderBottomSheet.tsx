@@ -13,15 +13,15 @@ import {
 } from '@gorhom/bottom-sheet';
 import DatePicker from 'react-native-date-picker';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
-import Colors from '../../../styles/colors.ts';
 import Fonts from '../../../styles/Fonts.tsx';
 import {
   createReminderNotification,
   removeReminderNotification,
 } from '../../../utils/reminders.ts';
 import Icon from '../../../components/icon/Icon.tsx';
-import colors from '../../../styles/colors.ts';
 import { Reminder } from '../../../utils/types.ts';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme, ThemeName } from '../../../styles/themes.ts';
 
 interface ReminderBottomSheetProps {
   title: string;
@@ -42,6 +42,8 @@ const ReminderBottomSheet = ({
   onSave,
   onRemove,
 }: ReminderBottomSheetProps) => {
+  const { theme, themeName } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -191,7 +193,7 @@ const ReminderBottomSheet = ({
             style={styles.inputTouchable}
             onPress={() => setShowDatePicker(true)}
           >
-            <Icon name={'calendar-alt'} size={20} color={colors.placeholder} />
+            <Icon name={'calendar-alt'} size={20} color={theme.placeholder} />
             <TextLabel
               text={formatDate(selectedDate)}
               style={[
@@ -205,7 +207,7 @@ const ReminderBottomSheet = ({
             style={styles.inputTouchable}
             onPress={() => setShowTimePicker(true)}
           >
-            <Icon name={'clock'} size={20} color={colors.placeholder} />
+            <Icon name={'clock'} size={20} color={theme.placeholder} />
             <TextLabel
               text={formatTime(selectedTime)}
               style={[
@@ -219,7 +221,7 @@ const ReminderBottomSheet = ({
         <View style={styles.buttonsContainer}>
           {reminder && reminder.time > Date.now() ? (
             <Pressable style={styles.removeButton} onPress={handleRemove}>
-              <Icon name={'trash-alt'} size={20} color={colors.deleteRed} />
+              <Icon name={'trash-alt'} size={20} color={theme.deleteRed} />
               <TextLabel text="Remove" style={styles.removeButtonText} />
             </Pressable>
           ) : (
@@ -253,7 +255,7 @@ const ReminderBottomSheet = ({
           onCancel={() => setShowDatePicker(false)}
           mode="date"
           minimumDate={today}
-          theme="dark"
+          theme={themeName}
         />
 
         <DatePicker
@@ -267,85 +269,86 @@ const ReminderBottomSheet = ({
           }}
           onCancel={() => setShowTimePicker(false)}
           mode="time"
-          theme="dark"
+          theme={themeName}
         />
       </BottomSheetView>
     </BottomSheetModal>
   );
 };
 
-const styles = StyleSheet.create({
-  sheetBackground: {
-    backgroundColor: Colors.tabBarBackground,
-  },
-  handleIndicator: {
-    backgroundColor: Colors.placeholder,
-  },
-  content: {
-    flex: 1,
-    padding: 16,
-    paddingBottom: 42,
-  },
-  title: {
-    fontSize: 20,
-    fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.textColor,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  inputsContainer: {
-    gap: 16,
-    marginBottom: 24,
-  },
-  inputTouchable: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.darkerBackground,
-    padding: 16,
-    borderRadius: 12,
-    gap: 12,
-  },
-  inputText: {
-    fontSize: 16,
-    fontFamily: Fonts.MontserratMedium,
-    color: Colors.textColor,
-  },
-  placeholderText: {
-    color: Colors.placeholder,
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  rightButtons: {
-    flexDirection: 'row',
-    gap: 16,
-    alignItems: 'center',
-  },
-  textButton: {
-    fontSize: 16,
-    fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.placeholder,
-    padding: 8,
-  },
-  saveTextButton: {
-    color: Colors.primary,
-  },
-  saveTextButtonDisabled: {
-    color: Colors.placeholder,
-    opacity: 0.5,
-  },
-  removeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  removeButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.MontserratSemiBold,
-    color: Colors.deleteRed,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    sheetBackground: {
+      backgroundColor: theme.tabBarBackground,
+    },
+    handleIndicator: {
+      backgroundColor: theme.placeholder,
+    },
+    content: {
+      flex: 1,
+      padding: 16,
+      paddingBottom: 42,
+    },
+    title: {
+      fontSize: 20,
+      fontFamily: Fonts.MontserratSemiBold,
+      color: theme.textColor,
+      textAlign: 'center',
+      marginBottom: 24,
+    },
+    inputsContainer: {
+      gap: 16,
+      marginBottom: 24,
+    },
+    inputTouchable: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.darkerBackground,
+      padding: 16,
+      borderRadius: 12,
+      gap: 12,
+    },
+    inputText: {
+      fontSize: 16,
+      fontFamily: Fonts.MontserratMedium,
+      color: theme.textColor,
+    },
+    placeholderText: {
+      color: theme.placeholder,
+    },
+    buttonsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    rightButtons: {
+      flexDirection: 'row',
+      gap: 16,
+      alignItems: 'center',
+    },
+    textButton: {
+      fontSize: 16,
+      fontFamily: Fonts.MontserratSemiBold,
+      color: theme.placeholder,
+      padding: 8,
+    },
+    saveTextButton: {
+      color: theme.primary,
+    },
+    saveTextButtonDisabled: {
+      color: theme.placeholder,
+      opacity: 0.5,
+    },
+    removeButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    removeButtonText: {
+      fontSize: 16,
+      fontFamily: Fonts.MontserratSemiBold,
+      color: theme.deleteRed,
+    },
+  });
 
 export default ReminderBottomSheet;

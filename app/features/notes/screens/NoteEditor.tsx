@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BackHandler, StyleSheet, View } from 'react-native';
-import Colors from '../../../styles/colors.ts';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import BackButton from '../../../components/backButton/BackButton.tsx';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,6 +20,8 @@ import {
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 type NoteEditorProps = StackScreenProps<RootStackParamList, 'noteEditor'>;
 
@@ -53,6 +54,8 @@ const DEFAULT_STYLES: OnChangeStateEvent = {
 
 const NoteEditor = ({ route }: NoteEditorProps) => {
   const { addNote, updateNote, notes } = useNotes();
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const navigation = useNavigation();
   const [isUnsavedModalVisible, setIsUnsavedModalVisible] = useState(false);
 
@@ -147,7 +150,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
           }}
           name="floppy-disk"
           size={24}
-          color={saveButtonDisabled ? Colors.placeholder : Colors.textColor}
+          color={saveButtonDisabled ? theme.placeholder : theme.textColor}
         />
       </View>
       <KeyboardAwareScrollView contentContainerStyle={styles.content}>
@@ -179,31 +182,32 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
         text="You have unsaved changes, would you like to save before leaving this screen?"
         confirmText="Yes"
         cancelText="No"
-        confirmButtonColor={Colors.primary}
+        confirmButtonColor={theme.primary}
       />
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  pageWrapper: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    paddingBottom: 0,
-  },
-  header: {
-    padding: 14,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    padding: 8,
-  },
-  content: {
-    flexGrow: 1,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    pageWrapper: {
+      flex: 1,
+      backgroundColor: theme.background,
+      paddingBottom: 0,
+    },
+    header: {
+      padding: 14,
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    backButton: {
+      padding: 8,
+    },
+    content: {
+      flexGrow: 1,
+    },
+  });
 
 export default NoteEditor;

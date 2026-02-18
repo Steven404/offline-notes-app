@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, FlatList } from 'react-native';
-import Colors from '../../../styles/colors.ts';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
 import AddItemButton from '../../../components/addItemButton/AddItemButton.tsx';
 import TaskModal from '../components/TaskModal.tsx';
@@ -12,14 +11,20 @@ import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleCon
 import { Reminder } from '../../../utils/types.ts';
 import Consts from '../../../utils/consts.ts';
 import Animated, { LinearTransition } from 'react-native-reanimated';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
+import { Theme } from '../../../styles/themes.ts';
 
 const Tasks = () => {
+  const { tasks, deleteTask } = useTasks();
+
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
   const [reminder, setReminder] = useState<Reminder | undefined>(undefined);
   const [isReminderSheetOpen, setIsReminderSheetOpen] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-  const { tasks, deleteTask } = useTasks();
 
   const [, setTick] = useState(0);
 
@@ -105,7 +110,6 @@ const Tasks = () => {
       <BottomBarHeader title={'Tasks'} showFilters={false} />
 
       <Animated.FlatList
-        itemLayoutAnimation={LinearTransition.delay(500)} //this delay is added to compensate the exiting animation of TaskCard.tsx
         data={tasks}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
@@ -152,17 +156,18 @@ const Tasks = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  pageWrapper: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    padding: 14,
-    zIndex: 1,
-  },
-  listContent: {
-    paddingTop: 14,
-    paddingBottom: 80, // Space for AddItemButton
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    pageWrapper: {
+      flex: 1,
+      backgroundColor: theme.background,
+      padding: 14,
+      zIndex: 1,
+    },
+    listContent: {
+      paddingTop: 14,
+      paddingBottom: 80, // Space for AddItemButton
+    },
+  });
 
 export default Tasks;
