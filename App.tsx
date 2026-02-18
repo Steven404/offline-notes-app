@@ -21,6 +21,7 @@ import Navigation, {
   RootStackParamList,
 } from './app/navigation/Navigation.tsx';
 import { NotesContextProvider } from './app/providers/NotesContext.tsx';
+import { ThemeContextProvider } from './app/providers/ThemeContext.tsx';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { getDataFromStorage } from './app/utils/asyncStorage.ts';
 import SimpleLoading from './app/components/simpleLoading/SimpleLoading.tsx';
@@ -53,11 +54,13 @@ function App() {
           <BottomSheetModalProvider>
             <StatusBar barStyle={'light-content'} />
             {isAppReady && initialRouteName ? (
-              <NotesContextProvider>
-                <TasksContextProvider>
-                  <Navigation initialRouteName={initialRouteName} />
-                </TasksContextProvider>
-              </NotesContextProvider>
+              <ThemeContextProvider>
+                <NotesContextProvider>
+                  <TasksContextProvider>
+                    <Navigation initialRouteName={initialRouteName} />
+                  </TasksContextProvider>
+                </NotesContextProvider>
+              </ThemeContextProvider>
             ) : (
               <View style={styles.container}>
                 <SimpleLoading />

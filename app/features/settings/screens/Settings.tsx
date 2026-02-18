@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../../styles/colors';
@@ -13,8 +13,13 @@ import {
   promptBiometricAuth,
   setBiometricsEnabled,
 } from '../../../utils/biometrics';
+import { Theme } from '../../../styles/themes.ts';
+import { useTheme } from '../../../providers/ThemeContext.tsx';
 
 const Settings = () => {
+  const { theme, setTheme, themeName } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   const [hasBiometricSensor, setHasBiometricSensor] = useState(false);
   const [isBiometricModalVisible, setIsBiometricModalVisible] = useState(false);
   const [isBiometricsEnabled, setIsBiometricsEnabledState] = useState(false);
@@ -70,7 +75,7 @@ const Settings = () => {
   };
 
   const handleAppearancePress = () => {
-    // TODO: Implement appearance logic
+    setTheme(themeName === 'light' ? 'dark' : 'light');
   };
 
   const handleAboutPress = () => {
@@ -137,20 +142,20 @@ const Settings = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 32,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.background,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingHorizontal: 20,
+      paddingTop: 24,
+      paddingBottom: 32,
+    },
+  });
 
 export default Settings;

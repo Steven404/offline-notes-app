@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -8,6 +8,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import IconButton from '../iconButton/IconButton.tsx';
 import Colors from '../../styles/colors.ts';
+import { useTheme } from '../../providers/ThemeContext.tsx';
+import { Theme } from '../../styles/themes.ts';
 
 interface BackButtonProps {
   style?: StyleProp<ViewStyle>;
@@ -18,10 +20,13 @@ interface BackButtonProps {
 
 const BackButton = ({
   style,
-  color = Colors.textColor,
+  color = '',
   size = 24,
   onPress,
 }: BackButtonProps) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   const navigation = useNavigation();
 
   const handlePress = () => {
@@ -38,15 +43,16 @@ const BackButton = ({
       touchableOpacityProps={{ style: [styles.backButton, style] }}
       name="arrow-left"
       size={size}
-      color={color}
+      color={color ? color : theme.textColor}
     />
   );
 };
 
-const styles = StyleSheet.create({
-  backButton: {
-    padding: 8,
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    backButton: {
+      padding: 8,
+    },
+  });
 
 export default BackButton;
