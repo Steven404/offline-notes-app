@@ -8,6 +8,7 @@ import {
   removeReminderNotification,
   stripHtmlTags,
 } from '../utils/reminders.ts';
+import { testNotes } from '../utils/consts.ts';
 
 const NOTES_STORAGE_KEY = 'notes';
 
@@ -37,6 +38,7 @@ interface NotesContextType {
   unpinNote: (id: string) => void;
   setReminder: (noteId: string, reminder: Reminder) => Promise<void>;
   removeReminder: (noteId: string) => Promise<void>;
+  addTestNotes: () => void;
 }
 
 const NotesContext = createContext<NotesContextType>({
@@ -53,6 +55,7 @@ const NotesContext = createContext<NotesContextType>({
   unpinNote: () => {},
   setReminder: async () => {},
   removeReminder: async () => {},
+  addTestNotes: () => {},
 });
 
 export const useNotes = () => useContext(NotesContext);
@@ -174,6 +177,12 @@ export const NotesContextProvider = ({
     storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
   };
 
+  const addTestNotes = () => {
+    const updatedNotes = [...notes, ...testNotes];
+    setNotes(updatedNotes);
+    storeData(NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+  };
+
   return (
     <NotesContext.Provider
       value={{
@@ -190,6 +199,7 @@ export const NotesContextProvider = ({
         removeReminder,
         setShowPinnedOnly,
         showPinnedOnly,
+        addTestNotes,
       }}
     >
       {children}

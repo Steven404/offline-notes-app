@@ -7,7 +7,7 @@ import {
   createReminderNotification,
   removeReminderNotification,
 } from '../utils/reminders.ts';
-import Consts from '../utils/consts.ts';
+import Consts, { testTasks } from '../utils/consts.ts';
 
 const TASKS_STORAGE_KEY = 'tasks';
 
@@ -30,6 +30,7 @@ interface TasksContextType {
     completed: boolean,
   ) => void;
   deleteSubTask: (taskId: string, subTaskIndex: number) => void;
+  addTestTasks: () => void;
 }
 
 const TasksContext = createContext<TasksContextType>({
@@ -44,6 +45,7 @@ const TasksContext = createContext<TasksContextType>({
   addSubTask: () => {},
   updateSubTask: () => {},
   deleteSubTask: () => {},
+  addTestTasks: () => {},
 });
 
 export const useTasks = () => useContext(TasksContext);
@@ -227,6 +229,12 @@ export const TasksContextProvider = ({
     storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
   };
 
+  const addTestTasks = () => {
+    const updatedTasks = [...tasks, ...testTasks];
+    setTasks(updatedTasks);
+    storeData(TASKS_STORAGE_KEY, JSON.stringify(updatedTasks));
+  };
+
   return (
     <TasksContext.Provider
       value={{
@@ -241,6 +249,7 @@ export const TasksContextProvider = ({
         addSubTask,
         updateSubTask,
         deleteSubTask,
+        addTestTasks,
       }}
     >
       {children}

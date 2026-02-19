@@ -74,6 +74,9 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
     dropdownInitialOptions,
   );
 
+  // Value is always reset to undefined to prevent any visual selection in the dropdown
+  const [value, setValue] = useState<DropdownOption | undefined>(undefined);
+
   const { setSortBy, showPinnedOnly, setShowPinnedOnly } = useNotes();
 
   const getInitialOptions = () =>
@@ -85,13 +88,14 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
 
   const handleChange = (option: DropdownOption) => {
     const { value } = option;
+    setValue(option);
     switch (value) {
       case 'sort_by':
         setDropdownOptions(sortByOptions);
         break;
       case 'settings':
-        navigation.navigate('settings');
         dropdownRef.current?.close();
+        navigation.navigate('settings');
         break;
       case 'show_pinned':
         const newDropdownOptions = [...dropdownOptions];
@@ -117,6 +121,13 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
     setDropdownOptions(getInitialOptions());
   }, [showFilters]);
 
+  // Reset value immediately after it's set to prevent dropdown selection
+  useEffect(() => {
+    if (value !== undefined) {
+      setValue(undefined);
+    }
+  }, [value]);
+
   return (
     <View>
       <IconButton
@@ -128,6 +139,7 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
         }}
       />
       <Dropdown
+        value={value}
         closeModalWhenSelectedItem={false}
         onBlur={handleBlur}
         placeholderStyle={styles.hidden}

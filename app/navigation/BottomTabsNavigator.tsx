@@ -35,7 +35,7 @@ const BottomTabsNavigator = () => {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <Tabs.Navigator
         screenOptions={{
-          animation: 'fade',
+          // animation: 'shift',
           headerShown: false,
           tabBarInactiveTintColor: theme.placeholder2,
           tabBarActiveTintColor: theme.textColor,

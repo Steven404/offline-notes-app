@@ -126,6 +126,7 @@ const NoteCard = ({
             <Animated.View
               exiting={FadeOutRight.duration(300)}
               entering={FadeInRight.duration(300)}
+              style={styles.iconContainer}
             >
               <IconButton
                 name="bell"
@@ -189,13 +190,13 @@ const makeStyles = (theme: Theme) =>
       color: theme.textColor,
       maxWidth: '85%',
     },
-    iconContainer: { maxHeight: 20 },
+    iconContainer: { maxHeight: 15 },
     unpinnedThumbstack: {
       opacity: 0.5,
     },
     lastEdited: {
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       justifyContent: 'space-between',
     },
     lastEditedText: {
