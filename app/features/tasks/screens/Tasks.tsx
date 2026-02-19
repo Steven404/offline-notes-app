@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
 import AddItemButton from '../../../components/addItemButton/AddItemButton.tsx';
@@ -10,7 +10,7 @@ import ReminderBottomSheet from '../../notes/components/ReminderBottomSheet.tsx'
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 import { Reminder } from '../../../utils/types.ts';
 import Consts from '../../../utils/consts.ts';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
 
@@ -105,6 +105,13 @@ const Tasks = () => {
     }, 500);
   };
 
+  const renderItem = useCallback(
+    ({ item }: { item: Task }) => (
+      <TaskCard task={item} onEdit={() => handleEditTask(item)} />
+    ),
+    [],
+  );
+
   return (
     <View style={styles.pageWrapper}>
       <BottomBarHeader title={'Tasks'} showFilters={false} />
@@ -112,9 +119,7 @@ const Tasks = () => {
       <Animated.FlatList
         data={tasks}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <TaskCard task={item} onEdit={() => handleEditTask(item)} />
-        )}
+        renderItem={renderItem}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />

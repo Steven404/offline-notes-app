@@ -85,7 +85,7 @@ const Settings = () => {
   const handleFeedbackPress = () => {
     // TODO: Implement feedback/feature request logic
   };
-  console.log('isBiometricsEnabled', isBiometricsEnabled);
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <SimpleBackHeader title={'Settings'} />

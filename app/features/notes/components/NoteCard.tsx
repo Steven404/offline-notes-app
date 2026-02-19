@@ -148,6 +148,7 @@ const makeContentStyle = (theme: Theme): MixedStyleDeclaration => ({
   color: theme.placeholder,
   maxHeight: 19.3, // This is needed in case the user hits enter and creates new line manually in the note
   overflow: 'hidden',
+  width: '90%',
 });
 
 const makeStyles = (theme: Theme) =>

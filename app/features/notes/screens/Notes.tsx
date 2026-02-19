@@ -10,7 +10,7 @@ import NoteCard from '../components/NoteCard.tsx';
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 
 import { Note } from '../utils/NoteTypes.ts';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReminderBottomSheet from '../components/ReminderBottomSheet.tsx';
 import BottomBarHeader from '../../../components/bottomBarHeader/BottomBarHeader.tsx';
 import SearchNotesScreen from '../components/SearchNotesScreen.tsx';
@@ -51,13 +51,16 @@ const Notes = () => {
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
   const [reminderNote, setReminderNote] = useState<Note | null>(null);
 
-  const renderNote = ({ item }: { item: Note }) => (
-    <NoteCard
-      setNoteToDelete={setNoteToDelete}
-      setReminderNote={setReminderNote}
-      note={item}
-      onPress={() => navigation.navigate('note', { noteId: item.id })}
-    />
+  const renderNote = useCallback(
+    ({ item }: { item: Note }) => (
+      <NoteCard
+        setNoteToDelete={setNoteToDelete}
+        setReminderNote={setReminderNote}
+        note={item}
+        onPress={() => navigation.navigate('note', { noteId: item.id })}
+      />
+    ),
+    [navigation],
   );
 
   const pageContent =
