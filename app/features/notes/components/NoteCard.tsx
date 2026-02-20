@@ -146,7 +146,7 @@ const makeContentStyle = (theme: Theme): MixedStyleDeclaration => ({
   fontSize: 16,
   fontFamily: Fonts.MontserratRegular,
   color: theme.placeholder,
-  maxHeight: 19.3, // This is needed in case the user hits enter and creates new line manually in the note
+  maxHeight: 20, // This is needed in case the user hits enter and creates new line manually in the note
   overflow: 'hidden',
   width: '90%',
 });

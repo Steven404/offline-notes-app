@@ -12,9 +12,10 @@ interface SettingsItemProps {
   label: string;
   onPress: () => void;
   isLast?: boolean;
+  rightIcon?: IconProp;
 }
 
-const SettingsItem = ({ icon, label, onPress, isLast }: SettingsItemProps) => {
+const SettingsItem = ({ icon, label, onPress, isLast, rightIcon = 'chevron-right' }: SettingsItemProps) => {
   const { theme } = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
 
@@ -30,7 +31,7 @@ const SettingsItem = ({ icon, label, onPress, isLast }: SettingsItemProps) => {
         </View>
         <TextLabel text={label} style={styles.label} />
       </View>
-      <Icon name="chevron-right" size={18} color={theme.placeholder} />
+      <Icon name={rightIcon} size={18} color={theme.placeholder} />
     </TouchableOpacity>
   );
 };

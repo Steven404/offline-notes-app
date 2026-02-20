@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, ScrollView, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Alert, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../../styles/colors';
 import SettingsSection from '../components/SettingsSection';
 import SettingsItem from '../components/SettingsItem';
+import AboutModal from '../components/AboutModal';
 import SimpleBackHeader from '../../../components/simpleBackHeader/SimpleBackHeader.tsx';
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 import {
@@ -23,6 +24,7 @@ const Settings = () => {
   const [hasBiometricSensor, setHasBiometricSensor] = useState(false);
   const [isBiometricModalVisible, setIsBiometricModalVisible] = useState(false);
   const [isBiometricsEnabled, setIsBiometricsEnabledState] = useState(false);
+  const [isAboutModalVisible, setIsAboutModalVisible] = useState(false);
 
   useEffect(() => {
     const checkBiometricAvailability = async () => {
@@ -79,11 +81,11 @@ const Settings = () => {
   };
 
   const handleAboutPress = () => {
-    // TODO: Implement about logic
+    setIsAboutModalVisible(true);
   };
 
-  const handleFeedbackPress = () => {
-    // TODO: Implement feedback/feature request logic
+  const handleAboutClose = () => {
+    setIsAboutModalVisible(false);
   };
 
   return (
@@ -104,8 +106,9 @@ const Settings = () => {
           )}
           <SettingsItem
             icon="palette"
-            label="Appearance"
+            label={`Toggle ${themeName === 'light' ? 'dark' : 'light'} mode`}
             onPress={handleAppearancePress}
+            rightIcon={themeName === 'light' ? 'moon' : 'sun'}
             isLast
           />
         </SettingsSection>
@@ -116,12 +119,13 @@ const Settings = () => {
             label="About"
             onPress={handleAboutPress}
           />
-          <SettingsItem
-            icon="comment-dots"
-            label="Feedback / Feature Request"
-            onPress={handleFeedbackPress}
-            isLast
-          />
+          {/*Implement this in the future*/}
+          {/*<SettingsItem*/}
+          {/*  icon="comment-dots"*/}
+          {/*  label="Feedback / Feature Request"*/}
+          {/*  onPress={handleFeedbackPress}*/}
+          {/*  isLast*/}
+          {/*/>*/}
         </SettingsSection>
       </ScrollView>
       <SimpleConfirmModal
@@ -138,6 +142,7 @@ const Settings = () => {
         cancelText="No"
         confirmButtonColor={Colors.primary}
       />
+      <AboutModal isVisible={isAboutModalVisible} onClose={handleAboutClose} />
     </SafeAreaView>
   );
 };
