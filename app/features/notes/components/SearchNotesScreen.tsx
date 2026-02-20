@@ -16,7 +16,13 @@ import { Theme } from '../../../styles/themes.ts';
 
 type SearchNotesScreenProps = {
   onBackButtonPress: () => void;
-  renderNote: ({ item }: { item: Note }) => JSX.Element;
+  renderNote: ({
+    item,
+    searchTerm,
+  }: {
+    item: Note;
+    searchTerm?: string;
+  }) => JSX.Element;
 };
 
 const SearchNotesScreen = ({
@@ -44,6 +50,11 @@ const SearchNotesScreen = ({
   const handleSearch = useCallback(
     debounce((text: string) => setSearchTerm(text), 500),
     [],
+  );
+
+  const renderItem = useCallback(
+    ({ item }: { item: Note }) => renderNote({ item, searchTerm }),
+    [renderNote, searchTerm],
   );
 
   return (
@@ -74,7 +85,7 @@ const SearchNotesScreen = ({
       <Animated.FlatList
         itemLayoutAnimation={LinearTransition}
         data={filteredAndSortedNotes}
-        renderItem={renderNote}
+        renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
       />

@@ -9,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Note } from '../utils/NoteTypes.ts';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
+import HighlightedText from '../../../components/highlightedText/HighlightedText.tsx';
 import Fonts from '../../../styles/Fonts.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
@@ -22,6 +23,7 @@ interface NoteCardProps {
   onPress: () => void;
   setNoteToDelete: (id: string) => void;
   setReminderNote: (note: Note) => void;
+  searchTerm?: string;
 }
 
 const NoteCard = ({
@@ -29,6 +31,7 @@ const NoteCard = ({
   onPress,
   setNoteToDelete,
   setReminderNote,
+  searchTerm,
 }: NoteCardProps) => {
   const { pinNote, unpinNote } = useNotes();
   const { theme } = useTheme();
@@ -96,7 +99,12 @@ const NoteCard = ({
           </Animated.View>
         )}
         <View style={styles.topContainer}>
-          <TextLabel text={note.title} style={styles.title} />
+          <HighlightedText
+            text={note.title}
+            searchTerm={searchTerm}
+            style={styles.title}
+            highlightStyle={styles.titleHighlight}
+          />
           <View style={styles.iconContainer}>
             <IconButton
               onPress={handlePinPress}
@@ -153,6 +161,11 @@ const makeContentStyle = (theme: Theme): MixedStyleDeclaration => ({
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
+    titleHighlight: {
+      color: theme.primary,
+      fontFamily: Fonts.MontserratBold,
+      backgroundColor: theme.secondary,
+    },
     actionsView: {
       position: 'absolute',
       top: 0,

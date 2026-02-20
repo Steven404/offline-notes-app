@@ -52,11 +52,12 @@ const Notes = () => {
   const [reminderNote, setReminderNote] = useState<Note | null>(null);
 
   const renderNote = useCallback(
-    ({ item }: { item: Note }) => (
+    ({ item, searchTerm }: { item: Note; searchTerm?: string }) => (
       <NoteCard
         setNoteToDelete={setNoteToDelete}
         setReminderNote={setReminderNote}
         note={item}
+        searchTerm={searchTerm}
         onPress={() => navigation.navigate('note', { noteId: item.id })}
       />
     ),
