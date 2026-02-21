@@ -28,7 +28,6 @@ const AboutModal = ({ isVisible, onClose }: AboutModalProps) => {
     >
       <View style={styles.modalView}>
         <TextLabel text="Offline Notes App" style={styles.title} />
-
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <TextLabel text="Version:" style={styles.label} />
@@ -41,11 +40,11 @@ const AboutModal = ({ isVisible, onClose }: AboutModalProps) => {
           <View style={styles.infoRow}>
             <TextLabel text="Contact email:" style={styles.label} />
             <TextLabel
+              numberOfLines={2}
               text="stefanosmichelakis@gmail.com"
               style={[styles.value, styles.email]}
             />
           </View>
-          s
         </View>
 
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
@@ -87,6 +86,8 @@ const makeStyles = (theme: Theme) =>
       paddingVertical: 8,
       borderBottomWidth: 1,
       borderBottomColor: theme.placeholder,
+      width: '100%',
+      gap: 10,
     },
     label: {
       fontFamily: Fonts.MontserratMedium,
@@ -96,10 +97,12 @@ const makeStyles = (theme: Theme) =>
     value: {
       fontFamily: Fonts.MontserratSemiBold,
       fontSize: 14,
+      flexWrap: 'wrap',
       color: theme.textColor,
+      textAlign: 'right',
     },
     email: {
-      fontSize: 12,
+      fontSize: 10,
     },
     closeButton: {
       backgroundColor: theme.primary,

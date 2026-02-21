@@ -9,7 +9,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-1',
     title: 'Shopping List',
-    content: '<p>Milk, eggs, bread, and butter</p>',
+    content: '<html><p>Milk, eggs, bread, and butter</p></html>',
     createdAt: Date.now() - 86400000 * 2,
     updatedAt: Date.now() - 86400000 * 2,
     isPinned: true,
@@ -22,7 +22,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-2',
     title: 'Meeting Notes',
-    content: '<p>Discuss Q4 goals and budget allocation</p>',
+    content: '<html><p>Discuss Q4 goals and budget allocation</p></html>',
     createdAt: Date.now() - 86400000 * 5,
     updatedAt: Date.now() - 86400000 * 3,
     isPinned: true,
@@ -30,7 +30,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-3',
     title: 'Project Ideas',
-    content: '<ul><li>Mobile app for fitness tracking</li><li>Recipe finder with AI</li></ul>',
+    content: '<html><ul><li>Mobile app for fitness tracking</li><li>Recipe finder with AI</li></ul></html>',
     createdAt: Date.now() - 86400000 * 10,
     updatedAt: Date.now() - 86400000 * 8,
     isPinned: false,
@@ -38,7 +38,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-4',
     title: 'Book Recommendations',
-    content: '<p>Atomic Habits, Deep Work, Thinking Fast and Slow</p>',
+    content: '<html><p>Atomic Habits, Deep Work, Thinking Fast and Slow</p></html>',
     createdAt: Date.now() - 86400000 * 15,
     updatedAt: Date.now() - 86400000 * 12,
     isPinned: false,
@@ -51,7 +51,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-5',
     title: 'Travel Plans',
-    content: '<p>Visit Tokyo in spring, book flights by March</p>',
+    content: '<html><p>Visit Tokyo in spring, book flights by March</p></html>',
     createdAt: Date.now() - 86400000 * 20,
     updatedAt: Date.now() - 86400000 * 18,
     isPinned: false,
@@ -59,7 +59,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-6',
     title: 'Workout Routine',
-    content: '<p>Monday: Chest, Tuesday: Back, Wednesday: Legs</p>',
+    content: '<html><p>Monday: Chest, Tuesday: Back, Wednesday: Legs</p></html>',
     createdAt: Date.now() - 86400000 * 1,
     updatedAt: Date.now() - 86400000 * 1,
     isPinned: false,
@@ -67,7 +67,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-7',
     title: 'Gift Ideas',
-    content: '<ul><li>Mom: Spa voucher</li><li>Dad: Grilling tools</li></ul>',
+    content: '<html><ul><li>Mom: Spa voucher</li><li>Dad: Grilling tools</li></ul></html>',
     createdAt: Date.now() - 86400000 * 7,
     updatedAt: Date.now() - 86400000 * 6,
     isPinned: false,
@@ -80,7 +80,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-8',
     title: 'Password Hints',
-    content: '<p>Bank: favorite pet + birth year</p>',
+    content: '<html><p>Bank: favorite pet + birth year</p></html>',
     createdAt: Date.now() - 86400000 * 30,
     updatedAt: Date.now() - 86400000 * 25,
     isPinned: true,
@@ -88,7 +88,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-9',
     title: 'Recipe: Pasta Carbonara',
-    content: '<p>Eggs, pecorino, guanciale, black pepper</p>',
+    content: '<html><p>Eggs, pecorino, guanciale, black pepper</p></html>',
     createdAt: Date.now() - 86400000 * 4,
     updatedAt: Date.now() - 86400000 * 2,
     isPinned: false,
@@ -96,7 +96,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-10',
     title: 'Job Applications',
-    content: '<ul><li>TechCorp - applied</li><li>StartupXYZ - pending</li></ul>',
+    content: '<html><ul><li>TechCorp - applied</li><li>StartupXYZ - pending</li></ul></html>',
     createdAt: Date.now() - 86400000 * 12,
     updatedAt: Date.now() - 86400000 * 10,
     isPinned: false,
@@ -109,7 +109,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-11',
     title: 'Birthday Party Planning',
-    content: '<p>Book venue, send invites, order cake</p>',
+    content: '<html><p>Book venue, send invites, order cake</p></html>',
     createdAt: Date.now() - 86400000 * 8,
     updatedAt: Date.now() - 86400000 * 5,
     isPinned: true,
@@ -117,7 +117,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-12',
     title: 'Car Maintenance',
-    content: '<p>Oil change due at 50,000 miles</p>',
+    content: '<html><p>Oil change due at 50,000 miles</p></html>',
     createdAt: Date.now() - 86400000 * 45,
     updatedAt: Date.now() - 86400000 * 40,
     isPinned: false,
@@ -125,7 +125,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-13',
     title: 'Learning Goals',
-    content: '<ul><li>TypeScript advanced patterns</li><li>React Native animations</li></ul>',
+    content: '<html><ul><li>TypeScript advanced patterns</li><li>React Native animations</li></ul></html>',
     createdAt: Date.now() - 86400000 * 3,
     updatedAt: Date.now() - 86400000 * 1,
     isPinned: false,
@@ -138,7 +138,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-14',
     title: 'Dentist Appointment',
-    content: '<p>Dr. Smith - 123 Main St - (555) 123-4567</p>',
+    content: '<html><p>Dr. Smith - 123 Main St - (555) 123-4567</p></html>',
     createdAt: Date.now() - 86400000 * 25,
     updatedAt: Date.now() - 86400000 * 20,
     isPinned: false,
@@ -146,7 +146,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-15',
     title: 'Home Renovation Ideas',
-    content: '<p>Paint kitchen blue, new countertops, backsplash</p>',
+    content: '<html><p>Paint kitchen blue, new countertops, backsplash</p></html>',
     createdAt: Date.now() - 86400000 * 14,
     updatedAt: Date.now() - 86400000 * 10,
     isPinned: false,
@@ -154,7 +154,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-16',
     title: 'Savings Goals',
-    content: '<p>Emergency fund: $10,000 - Currently: $6,500</p>',
+    content: '<html><p>Emergency fund: $10,000 - Currently: $6,500</p></html>',
     createdAt: Date.now() - 86400000 * 60,
     updatedAt: Date.now() - 86400000 * 50,
     isPinned: true,
@@ -167,7 +167,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-17',
     title: 'Podcast Episodes',
-    content: '<ul><li>Episode 42 - AI trends</li><li>Episode 43 - Remote work</li></ul>',
+    content: '<html><ul><li>Episode 42 - AI trends</li><li>Episode 43 - Remote work</li></ul></html>',
     createdAt: Date.now() - 86400000 * 6,
     updatedAt: Date.now() - 86400000 * 4,
     isPinned: false,
@@ -175,7 +175,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-18',
     title: 'WiFi Passwords',
-    content: '<p>Home: MySecureWifi2024</p><p>Guest: WelcomeGuest</p>',
+    content: '<html><p>Home: MySecureWifi2024</p><p>Guest: WelcomeGuest</p></html>',
     createdAt: Date.now() - 86400000 * 90,
     updatedAt: Date.now() - 86400000 * 80,
     isPinned: true,
@@ -183,7 +183,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-19',
     title: 'Movie Watchlist',
-    content: '<p>Oppenheimer, Dune Part 2, Poor Things</p>',
+    content: '<html><p>Oppenheimer, Dune Part 2, Poor Things</p></html>',
     createdAt: Date.now() - 86400000 * 9,
     updatedAt: Date.now() - 86400000 * 7,
     isPinned: false,
@@ -191,7 +191,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-20',
     title: 'Conference Talk Ideas',
-    content: '<p>React Native performance optimization tips</p>',
+    content: '<html><p>React Native performance optimization tips</p></html>',
     createdAt: Date.now() - 86400000 * 11,
     updatedAt: Date.now() - 86400000 * 9,
     isPinned: false,
@@ -204,7 +204,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-21',
     title: 'Plant Care Schedule',
-    content: '<p>Monstera: water weekly, Fiddle Leaf: mist daily</p>',
+    content: '<html><p>Monstera: water weekly, Fiddle Leaf: mist daily</p></html>',
     createdAt: Date.now() - 86400000 * 13,
     updatedAt: Date.now() - 86400000 * 11,
     isPinned: false,
@@ -212,7 +212,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-22',
     title: 'Tax Documents Checklist',
-    content: '<ul><li>W-2 forms</li><li>Investment statements</li><li>Charitable donations</li></ul>',
+    content: '<html><ul><li>W-2 forms</li><li>Investment statements</li><li>Charitable donations</li></ul></html>',
     createdAt: Date.now() - 86400000 * 35,
     updatedAt: Date.now() - 86400000 * 30,
     isPinned: true,
@@ -220,7 +220,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-23',
     title: 'Restaurant Reviews',
-    content: '<p>Italian Place: 5/5, Sushi Bar: 4/5</p>',
+    content: '<html><p>Italian Place: 5/5, Sushi Bar: 4/5</p></html>',
     createdAt: Date.now() - 86400000 * 18,
     updatedAt: Date.now() - 86400000 * 15,
     isPinned: false,
@@ -233,7 +233,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-24',
     title: 'Code Snippets',
-    content: '<p>useEffect cleanup pattern, custom hooks</p>',
+    content: '<html><p>useEffect cleanup pattern, custom hooks</p></html>',
     createdAt: Date.now() - 86400000 * 2,
     updatedAt: Date.now() - 86400000,
     isPinned: false,
@@ -241,7 +241,7 @@ export const testNotes: Note[] = [
   {
     id: 'test-note-25',
     title: 'Yearly Goals Review',
-    content: '<p>Q1: Learn TypeScript ✓, Q2: Build side project</p>',
+    content: '<html><p>Q1: Learn TypeScript ✓, Q2: Build side project</p></html>',
     createdAt: Date.now() - 86400000 * 100,
     updatedAt: Date.now() - 86400000 * 50,
     isPinned: true,

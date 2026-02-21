@@ -32,7 +32,7 @@ const BottomTabsNavigator = () => {
   const styles = useMemo(() => makeStyles(theme), [theme]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.container}>
       <Tabs.Navigator
         screenOptions={{
           // animation: 'shift',
@@ -45,8 +45,8 @@ const BottomTabsNavigator = () => {
           tabBarStyle: {
             borderTopWidth: 0,
             elevation: 0,
-            height: 60 + areaInsets.bottom,
-            paddingTop: 14,
+            height: 68 + areaInsets.bottom,
+            paddingTop: 8,
             backgroundColor: theme.tabBarBackground,
           },
         }}

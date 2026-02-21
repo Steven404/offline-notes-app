@@ -13,6 +13,7 @@ import Consts from '../../../utils/consts.ts';
 import Animated from 'react-native-reanimated';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
+import NoTasks from '../components/NoTasks.tsx';
 
 const Tasks = () => {
   const { tasks, deleteTask } = useTasks();
@@ -112,10 +113,8 @@ const Tasks = () => {
     [],
   );
 
-  return (
-    <View style={styles.pageWrapper}>
-      <BottomBarHeader title={'Tasks'} showFilters={false} />
-
+  const pageContent =
+    tasks.length > 0 ? (
       <Animated.FlatList
         data={tasks}
         keyExtractor={item => item.id}
@@ -123,6 +122,15 @@ const Tasks = () => {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
+    ) : (
+      <NoTasks />
+    );
+
+  return (
+    <View style={styles.pageWrapper}>
+      <BottomBarHeader title={'Tasks'} showFilters={false} />
+
+      {pageContent}
 
       <AddItemButton
         onPress={() => {

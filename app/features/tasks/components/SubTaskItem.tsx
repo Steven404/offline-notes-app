@@ -67,6 +67,7 @@ const SubTaskItem = forwardRef<TextInput, SubTaskItemProps>(
           autoFocus={true}
           onSubmitEditing={onSubmitEditing}
           onKeyPress={handleKeyPress}
+          enterKeyHint={'next'}
           blurOnSubmit={false}
         />
       </Animated.View>

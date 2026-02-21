@@ -170,6 +170,7 @@ const makeStyles = (theme: Theme) =>
     },
     title: {
       fontSize: 16,
+      lineHeight: 16,
       fontFamily: Fonts.MontserratMedium,
       color: theme.textColor,
     },

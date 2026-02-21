@@ -101,7 +101,9 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
     }
   }, [currentNote, defaultValue]);
 
-  const hasUnsavedChanges = !isSaved && (content.trim() || title.trim());
+  const hasUnsavedChanges = Boolean(
+    !isSaved && content.trim() && content !== '<html>\n</html>' && title.trim(),
+  );
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -119,6 +121,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
 
   const handleBackPress = () => {
     if (hasUnsavedChanges) {
+      console.log(Boolean(title.trim()), title.trim());
       setIsUnsavedModalVisible(true);
     } else {
       navigation.goBack();

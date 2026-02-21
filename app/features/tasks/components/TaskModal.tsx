@@ -142,8 +142,9 @@ const TaskModal: React.FC<TaskModalProps> = ({
       style={styles.modal}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={'padding'}
         style={styles.keyboardAvoidingView}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 40 : 0}
       >
         <Animated.View layout={LinearTransition} style={styles.modalContent}>
           <TextInput
@@ -158,6 +159,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 addSubTaskField();
               }
             }}
+            enterKeyHint={'next'}
             blurOnSubmit={false}
           />
 

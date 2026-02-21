@@ -34,9 +34,9 @@ export const createReminderNotification = async (
       id: notificationId,
       title: title,
       body: body,
-      // android: {
-      //   channelId: 'your-channel-id', // Ensure you've created this channel
-      // },
+      android: {
+        channelId: 'sm-notes-app',
+      },
     },
     trigger,
   );

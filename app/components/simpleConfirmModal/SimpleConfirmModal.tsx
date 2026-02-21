@@ -40,7 +40,7 @@ const SimpleConfirmModal = ({
       onBackdropPress={onClose}
       onBackButtonPress={onClose}
       backdropOpacity={0.6}
-      useNativeDriverForBackdrop
+      useNativeDriver
     >
       <View style={styles.modalView}>
         {iconName ? (

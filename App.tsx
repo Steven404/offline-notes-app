@@ -26,6 +26,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { getDataFromStorage } from './app/utils/asyncStorage.ts';
 import SimpleLoading from './app/components/simpleLoading/SimpleLoading.tsx';
 import { TasksContextProvider } from './app/providers/TasksContext.tsx';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -43,6 +44,18 @@ function App() {
       }
       setIsAppReady(true);
     };
+
+    const createNotifeeChannel = async () => {
+      await notifee.createChannel({
+        id: 'sm-notes-app',
+        name: 'notes and tasks',
+        lights: false,
+        vibration: true,
+        importance: AndroidImportance.DEFAULT,
+      });
+    };
+
+    createNotifeeChannel();
 
     checkBiometrics();
   }, []);

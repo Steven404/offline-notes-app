@@ -35,7 +35,7 @@ const BiometricLogin = () => {
 
   useEffect(() => {
     handleBiometricAuth();
-  }, []);
+  }, [handleBiometricAuth]);
 
   return (
     <View style={styles.container}>
@@ -46,7 +46,7 @@ const BiometricLogin = () => {
           color={theme.primary}
           style={styles.icon}
         />
-        <TextLabel text="Biometric Login" style={styles.title} />
+        <TextLabel text="Biometric Unlock" style={styles.title} />
         <TextLabel
           text="Use your fingerprint or face to unlock"
           style={styles.subtitle}
