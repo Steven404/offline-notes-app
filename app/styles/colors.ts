@@ -1,3 +1,5 @@
+// deprecated, check themes.ts
+
 export default Object.freeze({
   background: '#252525',
   darkerBackground: '#1a1a1a',
