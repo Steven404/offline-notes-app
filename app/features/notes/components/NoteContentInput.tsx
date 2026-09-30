@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import {
   EnrichedTextInput,
   EnrichedTextInputInstance,
@@ -34,20 +34,21 @@ const NoteContentInput = ({
 
   const handleFocus = () => onFocusChange?.(true);
   const handleBlur = () => onFocusChange?.(false);
+  const focusContent = () => {
+    inputRef.current?.focus();
+  };
 
   //TODO: Check which text features you want to keep in the enriched text
   return (
-    <View
-      style={[
-        styles.componentWrapper,
-        isDisplay ? styles.noHorizontalPadding : styles.withHorizontalPadding,
-      ]}
-    >
+    <View style={styles.componentWrapper}>
       <EnrichedTextInput
         ref={inputRef}
         onBlur={handleBlur}
         onFocus={handleFocus}
-        style={styles.input}
+        style={[
+          styles.input,
+          isDisplay ? styles.noHorizontalPadding : styles.withHorizontalPadding,
+        ]}
         editable={!isDisplay}
         placeholder={'Content'}
         placeholderTextColor={theme.placeholder}
@@ -64,6 +65,13 @@ const NoteContentInput = ({
           defaultValue ? sanitizeNoteContent(defaultValue) : undefined
         }
       />
+      {!isDisplay && (
+        <Pressable
+          accessible={false}
+          style={styles.tapArea}
+          onPress={focusContent}
+        />
+      )}
     </View>
   );
 };
@@ -79,6 +87,7 @@ const makeStyles = (theme: Theme) =>
     },
     noHorizontalPadding: { paddingHorizontal: 0 },
     withHorizontalPadding: { paddingHorizontal: 14 },
+    tapArea: { flex: 1 },
   });
 
 export default NoteContentInput;

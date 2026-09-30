@@ -156,7 +156,10 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
           color={saveButtonDisabled ? theme.placeholder : theme.textColor}
         />
       </View>
-      <KeyboardAwareScrollView contentContainerStyle={styles.content}>
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.content}
+      >
         <NoteTitleInput title={title} setTitle={setTitle} />
         <NoteContentInput
           setContent={setContent}
