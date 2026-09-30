@@ -71,6 +71,16 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
   const [stylesState, setStylesState] =
     useState<OnChangeStateEvent>(DEFAULT_STYLES);
   const [isContentFocused, setIsContentFocused] = useState(false);
+  const scrollHeightRef = useRef(0);
+  const titleHeightRef = useRef(0);
+  const [contentAreaHeight, setContentAreaHeight] = useState(0);
+
+  const syncContentAreaHeight = () => {
+    const next = Math.max(0, scrollHeightRef.current - titleHeightRef.current);
+    setContentAreaHeight(current =>
+      Math.abs(current - next) < 1 ? current : next,
+    );
+  };
 
   const isSaved = Boolean(
     noteId && currentNote?.content === content && currentNote?.title === title,
@@ -157,16 +167,29 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
         />
       </View>
       <KeyboardAwareScrollView
+        style={styles.scroll}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.content}
+        onLayout={event => {
+          scrollHeightRef.current = event.nativeEvent.layout.height;
+          syncContentAreaHeight();
+        }}
       >
-        <NoteTitleInput title={title} setTitle={setTitle} />
+        <View
+          onLayout={event => {
+            titleHeightRef.current = event.nativeEvent.layout.height;
+            syncContentAreaHeight();
+          }}
+        >
+          <NoteTitleInput title={title} setTitle={setTitle} />
+        </View>
         <NoteContentInput
           setContent={setContent}
           defaultValue={defaultValue}
           inputRef={inputRef}
           onChangeState={setStylesState}
           onFocusChange={setIsContentFocused}
+          areaHeight={contentAreaHeight}
         />
       </KeyboardAwareScrollView>
       {isContentFocused && (
@@ -210,6 +233,9 @@ const makeStyles = (theme: Theme) =>
     },
     backButton: {
       padding: 8,
+    },
+    scroll: {
+      flex: 1,
     },
     content: {
       flexGrow: 1,
