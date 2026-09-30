@@ -45,12 +45,12 @@ const NoteContentInput = ({
 
   //TODO: Check which text features you want to keep in the enriched text
   return (
-    <View style={isDisplay ? styles.componentWrapper : undefined}>
+    <View pointerEvents={isDisplay ? 'none' : 'auto'}>
       <EnrichedTextInput
         ref={inputRef}
         onBlur={handleBlur}
         onFocus={handleFocus}
-        scrollEnabled={isDisplay}
+        scrollEnabled={false}
         style={[
           styles.input,
           isDisplay ? styles.noHorizontalPadding : styles.withHorizontalPadding,
@@ -93,7 +93,6 @@ const NoteContentInput = ({
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    componentWrapper: { flex: 1 },
     input: {
       width: '100%',
       fontSize: 20,
