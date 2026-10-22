@@ -21,12 +21,22 @@ import Navigation, {
   RootStackParamList,
 } from './app/navigation/Navigation.tsx';
 import { NotesContextProvider } from './app/providers/NotesContext.tsx';
-import { ThemeContextProvider } from './app/providers/ThemeContext.tsx';
+import { ThemeContextProvider, useTheme } from './app/providers/ThemeContext.tsx';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { getDataFromStorage } from './app/utils/asyncStorage.ts';
 import SimpleLoading from './app/components/simpleLoading/SimpleLoading.tsx';
 import { TasksContextProvider } from './app/providers/TasksContext.tsx';
 import notifee, { AndroidImportance } from '@notifee/react-native';
+
+function ThemedStatusBar() {
+  const { themeName } = useTheme();
+
+  return (
+    <StatusBar
+      barStyle={themeName === 'dark' ? 'light-content' : 'dark-content'}
+    />
+  );
+}
 
 function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -66,7 +76,7 @@ function App() {
         <SafeAreaProvider>
           <KeyboardProvider>
             <BottomSheetModalProvider>
-              <StatusBar barStyle={'light-content'} />
+              <ThemedStatusBar />
               {isAppReady && initialRouteName ? (
                 <NotesContextProvider>
                   <TasksContextProvider>
