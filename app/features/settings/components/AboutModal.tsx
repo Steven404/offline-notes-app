@@ -5,7 +5,7 @@ import TextLabel from '../../../components/textLabel/TextLabel';
 import Fonts from '../../../styles/Fonts';
 import { useTheme } from '../../../providers/ThemeContext';
 import { Theme } from '../../../styles/themes';
-import packageJson from '../../../../package.json';
+import DeviceInfo from 'react-native-device-info';
 
 interface AboutModalProps {
   isVisible: boolean;
@@ -31,7 +31,7 @@ const AboutModal = ({ isVisible, onClose }: AboutModalProps) => {
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <TextLabel text="Version:" style={styles.label} />
-            <TextLabel text={packageJson.version} style={styles.value} />
+            <TextLabel text={DeviceInfo.getVersion()} style={styles.value} />
           </View>
           <View style={styles.infoRow}>
             <TextLabel text="Created by:" style={styles.label} />

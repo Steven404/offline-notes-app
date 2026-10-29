@@ -2707,6 +2707,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - RNDeviceInfo (15.0.2):
+    - React-Core
   - RNGestureHandler (2.30.0):
     - boost
     - DoubleConversion
@@ -3125,6 +3127,7 @@ DEPENDENCIES:
   - "ReactNativeBiometrics (from `../node_modules/@sbaiahmed1/react-native-biometrics`)"
   - ReactNativeEnriched (from `../node_modules/react-native-enriched`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -3306,6 +3309,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-enriched"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNNotifee:
@@ -3405,6 +3410,7 @@ SPEC CHECKSUMS:
   ReactNativeBiometrics: 39254da9d36231602bae4928e4b8bfbc3e2a1364
   ReactNativeEnriched: 9629b9aec10826564ff403e476d1cc3354aec26b
   RNCAsyncStorage: 29f0230e1a25f36c20b05f65e2eb8958d6526e82
+  RNDeviceInfo: 4c852998208b60dc192ae3529e5867817719ad1e
   RNGestureHandler: cd4be101cfa17ea6bbd438710caa02e286a84381
   RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
   RNReanimated: 292cd58688552a22b3fc1cefcfbc49b336dfed68
