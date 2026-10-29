@@ -2,10 +2,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   SafeAreaView,
   useSafeAreaInsets,
+  Edge,
 } from 'react-native-safe-area-context';
 import Notes from '../features/notes/screens/Notes.tsx';
 import Tasks from '../features/tasks/screens/Tasks.tsx';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import Icon from '../components/icon/Icon.tsx';
 import Fonts from '../styles/Fonts.tsx';
 import { useTheme } from '../providers/ThemeContext.tsx';
@@ -32,7 +33,7 @@ const BottomTabsNavigator = () => {
   const styles = useMemo(() => makeStyles(theme), [theme]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', ...(Platform.OS === 'android' ? ['bottom'] : [])] as Edge[] }>
       <Tabs.Navigator
         screenOptions={{
           // animation: 'shift',
