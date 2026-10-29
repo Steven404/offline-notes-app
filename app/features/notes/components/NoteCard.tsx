@@ -1,5 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import Animated, {
   FadeIn,
   FadeInRight,
@@ -35,6 +40,7 @@ const NoteCard = ({
 }: NoteCardProps) => {
   const { pinNote, unpinNote } = useNotes();
   const { theme } = useTheme();
+  const { width } = useWindowDimensions();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const contentStyle = useMemo(() => makeContentStyle(theme), [theme]);
   const [isActionsMode, setIsActionsMode] = useState(false);
@@ -117,6 +123,7 @@ const NoteCard = ({
         </View>
         <View>
           <RenderHTML
+            contentWidth={width}
             source={{ html: note.content }}
             baseStyle={contentStyle}
             defaultTextProps={{
