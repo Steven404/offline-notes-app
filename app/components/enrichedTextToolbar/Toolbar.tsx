@@ -72,16 +72,6 @@ const STYLE_ITEMS = [
     icon: 'file-code',
   },
   {
-    name: 'image',
-    label: 'Image',
-    icon: 'image',
-  },
-  {
-    name: 'link',
-    label: 'Link',
-    icon: 'link',
-  },
-  {
     name: 'unordered-list',
     label: 'Bulleted list',
     icon: 'list-ul',
@@ -99,16 +89,9 @@ type StylesState = OnChangeStateEvent;
 export interface ToolbarProps {
   stylesState: StylesState;
   editorRef?: React.RefObject<EnrichedTextInputInstance | null>;
-  onOpenLinkModal: () => void;
-  onSelectImage: () => void;
 }
 
-export const Toolbar: FC<ToolbarProps> = ({
-  stylesState,
-  editorRef,
-  onOpenLinkModal,
-  onSelectImage,
-}) => {
+export const Toolbar: FC<ToolbarProps> = ({ stylesState, editorRef }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
 
@@ -153,12 +136,6 @@ export const Toolbar: FC<ToolbarProps> = ({
       case 'ordered-list':
         editorRef.current?.toggleOrderedList();
         break;
-      case 'link':
-        onOpenLinkModal();
-        break;
-      case 'image':
-        onSelectImage();
-        break;
     }
   };
 
@@ -188,10 +165,6 @@ export const Toolbar: FC<ToolbarProps> = ({
         return stylesState.unorderedList.isBlocking;
       case 'ordered-list':
         return stylesState.orderedList.isBlocking;
-      case 'link':
-        return stylesState.link.isBlocking;
-      case 'image':
-        return stylesState.image.isBlocking;
       default:
         return false;
     }
@@ -223,10 +196,6 @@ export const Toolbar: FC<ToolbarProps> = ({
         return stylesState.unorderedList.isActive;
       case 'ordered-list':
         return stylesState.orderedList.isActive;
-      case 'link':
-        return stylesState.link.isActive;
-      case 'image':
-        return stylesState.image.isActive;
       default:
         return false;
     }

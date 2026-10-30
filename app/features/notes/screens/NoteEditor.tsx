@@ -197,12 +197,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
       {isContentFocused && (
         <KeyboardStickyView>
           <Animated.View entering={FadeIn.delay(200)} exiting={FadeOut}>
-            <Toolbar
-              editorRef={inputRef}
-              stylesState={stylesState}
-              onOpenLinkModal={() => {}}
-              onSelectImage={() => {}}
-            />
+            <Toolbar editorRef={inputRef} stylesState={stylesState} />
           </Animated.View>
         </KeyboardStickyView>
       )}
