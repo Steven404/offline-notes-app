@@ -23,6 +23,7 @@ import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleCon
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
 import ScreenHeader from '../../../components/screenHeader/ScreenHeader.tsx';
+import { trimNoteHtml } from '../../../utils/functions.ts';
 
 type NoteEditorProps = StackScreenProps<RootStackParamList, 'noteEditor'>;
 
@@ -83,14 +84,22 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
     );
   };
 
+  // Notes are stored without blank lines or spaces around the text
+  const trimmedTitle = title.trim();
+  const trimmedContent = useMemo(() => trimNoteHtml(content), [content]);
+  const isContentEmpty = trimmedContent === '<html>\n</html>';
+
   const isSaved = Boolean(
-    noteId && currentNote?.content === content && currentNote?.title === title,
+    noteId &&
+      currentNote &&
+      trimNoteHtml(currentNote.content) === trimmedContent &&
+      currentNote.title === trimmedTitle,
   );
 
   const handleSave = async () => {
     let noteData = {
-      title,
-      content,
+      title: trimmedTitle,
+      content: trimmedContent,
     };
 
     if (noteId) {
@@ -113,7 +122,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
   }, [currentNote, defaultValue]);
 
   const hasUnsavedChanges = Boolean(
-    !isSaved && content.trim() && content !== '<html>\n</html>' && title.trim(),
+    !isSaved && !isContentEmpty && trimmedTitle,
   );
 
   useEffect(() => {
@@ -132,7 +141,6 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
 
   const handleBackPress = () => {
     if (hasUnsavedChanges) {
-      console.log(Boolean(title.trim()), title.trim());
       setIsUnsavedModalVisible(true);
     } else {
       navigation.goBack();
@@ -150,7 +158,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
     navigation.goBack();
   };
 
-  const saveButtonDisabled = isSaved || !content.trim() || !title.trim();
+  const saveButtonDisabled = isSaved || isContentEmpty || !trimmedTitle;
 
   return (
     <SafeAreaView style={styles.pageWrapper} edges={['top', 'left', 'right']}>
@@ -183,7 +191,11 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
             syncContentAreaHeight();
           }}
         >
-          <NoteTitleInput title={title} setTitle={setTitle} />
+          <NoteTitleInput
+            title={title}
+            setTitle={setTitle}
+            onSubmit={() => inputRef.current?.focus()}
+          />
         </View>
         <NoteContentInput
           setContent={setContent}

@@ -2,11 +2,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   SafeAreaView,
   useSafeAreaInsets,
-  Edge,
 } from 'react-native-safe-area-context';
 import Notes from '../features/notes/screens/Notes.tsx';
 import Tasks from '../features/tasks/screens/Tasks.tsx';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Icon from '../components/icon/Icon.tsx';
 import { typeStyle } from '../styles/typography.ts';
 import { useTheme } from '../providers/ThemeContext.tsx';
@@ -35,9 +34,8 @@ const BottomTabsNavigator = () => {
   return (
     <SafeAreaView
       style={styles.container}
-      edges={
-        ['top', ...(Platform.OS === 'android' ? ['bottom'] : [])] as Edge[]
-      }
+      // The tab bar pads itself for the bottom inset
+      edges={['top']}
     >
       <Tabs.Navigator
         screenOptions={{

@@ -7,15 +7,15 @@ import { Theme } from '../../../styles/themes.ts';
 interface NoteTitleInputProps {
   title: string;
   setTitle: (title: string) => void;
+  /** Called when Enter is pressed, the title never takes a line break */
+  onSubmit?: () => void;
 }
 
-const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
+const NoteTitleInput = ({ title, setTitle, onSubmit }: NoteTitleInputProps) => {
   const { theme } = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const textInputRef = useRef<TextInput>(null);
   const initialised = useRef(false);
-
-  //TODO: Enter should take you to the content input instead of a new line in the title
 
   return (
     <TextInput
@@ -25,7 +25,9 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
       accessibilityLabel="Note title"
       placeholderTextColor={theme.placeholder}
       value={title}
-      onChangeText={text => {
+      onChangeText={rawText => {
+        // Pasted text can still carry line breaks, flatten them
+        const text = rawText.replace(/[\r\n]+/g, ' ');
         setTitle(text);
         // The following if statements fixes input not growing on iOS devices (applies when multiline={true})
         if (!initialised.current && text?.trim()) {
@@ -37,6 +39,10 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
       maxLength={50}
       multiline={true}
       numberOfLines={4}
+      // Long titles still wrap, but Enter submits instead of adding a line
+      submitBehavior="submit"
+      returnKeyType="next"
+      onSubmitEditing={onSubmit}
     />
   );
 };

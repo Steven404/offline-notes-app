@@ -21,7 +21,10 @@ import Navigation, {
   RootStackParamList,
 } from './app/navigation/Navigation.tsx';
 import { NotesContextProvider } from './app/providers/NotesContext.tsx';
-import { ThemeContextProvider, useTheme } from './app/providers/ThemeContext.tsx';
+import {
+  ThemeContextProvider,
+  useTheme,
+} from './app/providers/ThemeContext.tsx';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { getDataFromStorage } from './app/utils/asyncStorage.ts';
 import SimpleLoading from './app/components/simpleLoading/SimpleLoading.tsx';
