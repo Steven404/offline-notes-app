@@ -46,7 +46,11 @@ const BiometricLogin = () => {
           color={theme.primary}
           style={styles.icon}
         />
-        <TextLabel text="Biometric Unlock" style={styles.title} />
+        <TextLabel
+          text="Biometric Unlock"
+          style={styles.title}
+          accessibilityRole="header"
+        />
         <TextLabel
           text="Use your fingerprint or face to unlock"
           style={styles.subtitle}
@@ -56,6 +60,7 @@ const BiometricLogin = () => {
           style={styles.button}
           onPress={handleBiometricAuth}
           activeOpacity={0.7}
+          accessibilityRole="button"
         >
           <TextLabel text="Unlock" style={styles.buttonText} />
         </TouchableOpacity>
@@ -105,7 +110,7 @@ const makeStyles = (theme: Theme) =>
     buttonText: {
       fontFamily: Fonts.MontserratSemiBold,
       fontSize: 18,
-      color: theme.black,
+      color: theme.onPrimary,
     },
   });
 

@@ -6,6 +6,7 @@ import { useTheme } from '../../providers/ThemeContext.tsx';
 import { Theme } from '../../styles/themes.ts';
 
 interface ToolbarButtonIconProps {
+  label: string;
   text?: never;
   icon: IconName;
   isActive: boolean;
@@ -14,6 +15,7 @@ interface ToolbarButtonIconProps {
 }
 
 interface ToolbarButtonTextProps {
+  label: string;
   text: string;
   icon?: never;
   isActive: boolean;
@@ -26,6 +28,7 @@ export type ToolbarButtonProps =
   | ToolbarButtonTextProps;
 
 export const ToolbarButton: FC<ToolbarButtonProps> = ({
+  label,
   icon,
   text,
   isActive,
@@ -44,6 +47,9 @@ export const ToolbarButton: FC<ToolbarButtonProps> = ({
       ]}
       disabled={isDisabled}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: isActive, disabled: isDisabled }}
     >
       {icon ? (
         <Icon
@@ -75,7 +81,7 @@ const makeStyles = (theme: Theme) =>
       marginHorizontal: 2,
     },
     containerActive: {
-      backgroundColor: 'rgba(255, 208, 72, 0.15)',
+      backgroundColor: theme.primary + '26',
       borderRadius: 8,
       marginVertical: 6,
     },

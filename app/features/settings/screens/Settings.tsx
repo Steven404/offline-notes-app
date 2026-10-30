@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView, Alert, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Colors from '../../../styles/colors';
 import SettingsSection from '../components/SettingsSection';
 import SettingsItem from '../components/SettingsItem';
 import AboutModal from '../components/AboutModal';
@@ -140,7 +139,7 @@ const Settings = () => {
         iconName={'fingerprint'}
         confirmText="Yes"
         cancelText="No"
-        confirmButtonColor={Colors.primary}
+        tone="primary"
       />
       <AboutModal isVisible={isAboutModalVisible} onClose={handleAboutClose} />
     </SafeAreaView>

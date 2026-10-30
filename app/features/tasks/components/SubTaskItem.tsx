@@ -47,7 +47,14 @@ const SubTaskItem = forwardRef<TextInput, SubTaskItemProps>(
         exiting={FadeOutDown.duration(200)}
         style={styles.subTaskContainer}
       >
-        <TouchableOpacity onPress={onToggle} style={styles.checkbox}>
+        <TouchableOpacity
+          onPress={onToggle}
+          style={styles.checkbox}
+          hitSlop={12}
+          accessibilityRole="checkbox"
+          accessibilityLabel={title || 'Subtask'}
+          accessibilityState={{ checked: completed }}
+        >
           <Icon
             name={completed ? ['fas', 'check-square'] : ['far', 'square']}
             size={20}
@@ -61,6 +68,7 @@ const SubTaskItem = forwardRef<TextInput, SubTaskItemProps>(
             completed && styles.subTaskInputCompleted,
           ]}
           placeholder="Add subtask..."
+          accessibilityLabel="Subtask"
           placeholderTextColor={theme.placeholder}
           value={title}
           onChangeText={onChangeText}

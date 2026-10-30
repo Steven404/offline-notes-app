@@ -186,12 +186,18 @@ const ReminderBottomSheet = ({
       handleIndicatorStyle={styles.handleIndicator}
     >
       <BottomSheetView style={styles.content}>
-        <TextLabel text="Set Reminder" style={styles.title} />
+        <TextLabel
+          text="Set Reminder"
+          style={styles.title}
+          accessibilityRole="header"
+        />
 
         <View style={styles.inputsContainer}>
           <TouchableOpacity
             style={styles.inputTouchable}
             onPress={() => setShowDatePicker(true)}
+            accessibilityRole="button"
+            accessibilityLabel={`Date, ${formatDate(selectedDate)}`}
           >
             <Icon name={'calendar-alt'} size={20} color={theme.placeholder} />
             <TextLabel
@@ -206,6 +212,8 @@ const ReminderBottomSheet = ({
           <TouchableOpacity
             style={styles.inputTouchable}
             onPress={() => setShowTimePicker(true)}
+            accessibilityRole="button"
+            accessibilityLabel={`Time, ${formatTime(selectedTime)}`}
           >
             <Icon name={'clock'} size={20} color={theme.placeholder} />
             <TextLabel
@@ -220,7 +228,12 @@ const ReminderBottomSheet = ({
 
         <View style={styles.buttonsContainer}>
           {reminder && reminder.time > Date.now() ? (
-            <Pressable style={styles.removeButton} onPress={handleRemove}>
+            <Pressable
+              style={styles.removeButton}
+              onPress={handleRemove}
+              accessibilityRole="button"
+              accessibilityLabel="Remove reminder"
+            >
               <Icon name={'trash-alt'} size={20} color={theme.deleteRed} />
               <TextLabel text="Remove" style={styles.removeButtonText} />
             </Pressable>
@@ -228,10 +241,15 @@ const ReminderBottomSheet = ({
             <View />
           )}
           <View style={styles.rightButtons}>
-            <Pressable onPress={resetAndClose}>
+            <Pressable onPress={resetAndClose} accessibilityRole="button">
               <TextLabel text="Cancel" style={styles.textButton} />
             </Pressable>
-            <Pressable onPress={handleSave} disabled={isSaveDisabled}>
+            <Pressable
+              onPress={handleSave}
+              disabled={isSaveDisabled}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: isSaveDisabled }}
+            >
               <TextLabel
                 text="Save"
                 style={[

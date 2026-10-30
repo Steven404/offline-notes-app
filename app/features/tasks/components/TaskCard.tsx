@@ -72,12 +72,21 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
       <View style={styles.mainRow}>
         <IconButton
           onPress={() => toggleTaskComplete(task.id)}
-          name={task.completed ? 'square-check' : 'square'}
+          label={task.title}
+          role="checkbox"
+          accessibilityState={{ checked: task.completed }}
+          // Unchecked is an outline: a filled dark square was 1.3:1 on the card
+          name={task.completed ? ['fas', 'square-check'] : ['far', 'square']}
           size={24}
-          color={task.completed ? theme.primary : theme.darkerBackground}
+          color={task.completed ? theme.primary : theme.placeholder}
           iconStyle={styles.checkbox}
         />
-        <TouchableOpacity onPress={onEdit} style={styles.titleTouchableOpacity}>
+        <TouchableOpacity
+          onPress={onEdit}
+          style={styles.titleTouchableOpacity}
+          accessibilityRole="button"
+          accessibilityHint="Opens the task editor"
+        >
           <TextLabel
             text={task.title}
             style={[styles.title, task.completed && styles.completedText]}
@@ -97,6 +106,9 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
             onPress={handleToggleExpand}
             style={styles.rightContainer}
             activeOpacity={0.9}
+            accessibilityRole="button"
+            accessibilityLabel={`Subtasks, ${completedSubTasks} of ${totalSubTasks} done`}
+            accessibilityState={{ expanded: !isCollapsed }}
           >
             <TextLabel
               text={`${completedSubTasks}/${totalSubTasks}`}
@@ -119,11 +131,14 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
                 onPress={() =>
                   updateSubTask(task.id, index, !subTask.completed)
                 }
-                name={subTask.completed ? 'square-check' : 'square'}
-                size={20}
-                color={
-                  subTask.completed ? theme.primary : theme.darkerBackground
+                label={subTask.title}
+                role="checkbox"
+                accessibilityState={{ checked: subTask.completed }}
+                name={
+                  subTask.completed ? ['fas', 'square-check'] : ['far', 'square']
                 }
+                size={20}
+                color={subTask.completed ? theme.primary : theme.placeholder}
                 iconStyle={styles.subCheckbox}
               />
               <TextLabel
@@ -193,6 +208,8 @@ const makeStyles = (theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
+      minHeight: 44,
+      paddingLeft: 12,
     },
     subTaskCount: {
       fontSize: 14,

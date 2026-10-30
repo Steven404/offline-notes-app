@@ -22,6 +22,7 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
       ref={textInputRef}
       style={[styles.input]}
       placeholder={'Title'}
+      accessibilityLabel="Note title"
       placeholderTextColor={theme.placeholder}
       value={title}
       onChangeText={text => {

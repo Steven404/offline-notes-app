@@ -27,7 +27,11 @@ const AboutModal = ({ isVisible, onClose }: AboutModalProps) => {
       animationOut="fadeOutDown"
     >
       <View style={styles.modalView}>
-        <TextLabel text="Offline Notes App" style={styles.title} />
+        <TextLabel
+          text="Offline Notes App"
+          style={styles.title}
+          accessibilityRole="header"
+        />
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
             <TextLabel text="Version:" style={styles.label} />
@@ -47,7 +51,11 @@ const AboutModal = ({ isVisible, onClose }: AboutModalProps) => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={onClose}
+          accessibilityRole="button"
+        >
           <TextLabel text="Close" style={styles.closeButtonText} />
         </TouchableOpacity>
       </View>
@@ -115,7 +123,7 @@ const makeStyles = (theme: Theme) =>
     closeButtonText: {
       fontFamily: Fonts.MontserratSemiBold,
       fontSize: 16,
-      color: theme.black,
+      color: theme.onPrimary,
     },
   });
 

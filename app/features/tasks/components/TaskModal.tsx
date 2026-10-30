@@ -151,6 +151,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
             ref={titleRef}
             style={[styles.input, taskCompleted && styles.completedText]}
             placeholder="Press enter to create subtasks"
+            accessibilityLabel="Task title"
+            accessibilityHint="Press return to add a subtask"
             placeholderTextColor={theme.placeholder}
             value={taskTitle}
             onChangeText={setTaskTitle}
@@ -189,6 +191,11 @@ const TaskModal: React.FC<TaskModalProps> = ({
             <View style={styles.leftButtons}>
               <IconButton
                 onPress={handleOpenReminderSheet}
+                label={
+                  reminder && !isReminderInThePast
+                    ? 'Edit reminder'
+                    : 'Set reminder'
+                }
                 name="bell"
                 size={20}
                 color={
@@ -200,6 +207,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
               {taskToEdit && onDelete && (
                 <IconButton
                   onPress={onDelete}
+                  label="Delete task"
                   name="trash"
                   size={20}
                   color={theme.deleteRed}
@@ -210,6 +218,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
               <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={handleClose}
+                accessibilityRole="button"
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
@@ -220,6 +229,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 ]}
                 onPress={handleSaveTask}
                 disabled={!taskTitle.trim()}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: !taskTitle.trim() }}
               >
                 <Text style={styles.saveButtonText}>
                   {taskToEdit ? 'Update' : 'Add'}
@@ -307,7 +318,8 @@ const makeStyles = (theme: Theme) =>
       opacity: 0.5,
     },
     saveButtonText: {
-      color: '#FFFFFF',
+      // White on the dark-theme yellow was 1.5:1
+      color: theme.onPrimary,
       fontSize: 16,
       fontFamily: 'Montserrat-Bold',
     },

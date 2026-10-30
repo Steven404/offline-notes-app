@@ -25,9 +25,14 @@ const BottomBarHeader = ({
   return (
     <View style={styles.container}>
       <BottomBarHeaderDropdown showFilters={showFilters} />
-      <TextLabel text={title} style={styles.text} />
+      <TextLabel
+        text={title}
+        style={styles.text}
+        accessibilityRole="header"
+      />
       {onSearchPress ? (
         <IconButton
+          label={`Search ${title.toLowerCase()}`}
           name={'search'}
           size={24}
           color={theme.textColor}

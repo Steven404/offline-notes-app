@@ -76,6 +76,7 @@ const SearchNotesScreen = ({
             style={styles.input}
             selectionColor={theme.secondary}
             placeholder="Search notes..."
+            accessibilityLabel="Search notes by title"
             placeholderTextColor={theme.placeholder}
             onChangeText={handleSearch}
             autoFocus

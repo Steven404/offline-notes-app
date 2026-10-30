@@ -20,7 +20,11 @@ const SimpleBackHeader = ({ title, onBackPress }: Props) => {
       <View style={styles.backButtonView}>
         <BackButton onPress={onBackPress} />
       </View>
-      <TextLabel text={title} style={styles.headerTitle} />
+      <TextLabel
+        text={title}
+        style={styles.headerTitle}
+        accessibilityRole="header"
+      />
     </View>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  AccessibilityActionEvent,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
@@ -18,6 +19,7 @@ import HighlightedText from '../../../components/highlightedText/HighlightedText
 import Fonts from '../../../styles/Fonts.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
+import { stripHtmlTags } from '../../../utils/reminders.ts';
 import { useNotes } from '../../../providers/NotesContext.tsx';
 import RenderHTML, { MixedStyleDeclaration } from 'react-native-render-html';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
@@ -68,6 +70,50 @@ const NoteCard = ({
     }
   };
 
+  const hasActiveReminder = Boolean(
+    note.reminder && note.reminder.time > Date.now(),
+  );
+
+  // The card is a single VoiceOver element, so its inner buttons are exposed
+  // as custom actions (swipe up/down on iOS, actions menu on Android).
+  const accessibilityLabel = [
+    note.isPinned ? `Pinned. ${note.title}` : note.title,
+    stripHtmlTags(note.content).trim(),
+    `Edited ${formatDateTime(note.updatedAt)}`,
+    hasActiveReminder
+      ? `Reminder ${formatDateTime(note.reminder!.time)}`
+      : undefined,
+  ]
+    .filter(Boolean)
+    .join('. ');
+
+  const accessibilityActions = [
+    { name: 'activate', label: 'Open note' },
+    { name: 'togglePin', label: note.isPinned ? 'Unpin' : 'Pin' },
+    {
+      name: 'reminder',
+      label: hasActiveReminder ? 'Edit reminder' : 'Set reminder',
+    },
+    { name: 'delete', label: 'Delete' },
+  ];
+
+  const handleAccessibilityAction = (event: AccessibilityActionEvent) => {
+    switch (event.nativeEvent.actionName) {
+      case 'activate':
+        onPress();
+        break;
+      case 'togglePin':
+        handlePinPress();
+        break;
+      case 'reminder':
+        handleReminderPress();
+        break;
+      case 'delete':
+        handleDeletePress();
+        break;
+    }
+  };
+
   return (
     <Animated.View
       layout={LinearTransition}
@@ -79,6 +125,10 @@ const NoteCard = ({
         onPress={!isActionsMode ? onPress : () => {}}
         onLongPress={handleLongPress}
         activeOpacity={1}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+        accessibilityActions={accessibilityActions}
+        onAccessibilityAction={handleAccessibilityAction}
       >
         {isActionsMode && (
           <Animated.View
@@ -89,17 +139,19 @@ const NoteCard = ({
             <View style={styles.actionButton}>
               <IconButton
                 onPress={handleReminderPress}
+                label={hasActiveReminder ? 'Edit reminder' : 'Set reminder'}
                 name={'bell'}
                 size={25}
-                color={theme.textColor}
+                color={theme.onSecondary}
               />
             </View>
             <View style={[styles.actionButton, styles.deleteActionButton]}>
               <IconButton
                 onPress={handleDeletePress}
+                label="Delete note"
                 name={'trash'}
                 size={25}
-                color={theme.textColor}
+                color={theme.onDanger}
               />
             </View>
           </Animated.View>
@@ -114,10 +166,11 @@ const NoteCard = ({
           <View style={styles.iconContainer}>
             <IconButton
               onPress={handlePinPress}
+              label={note.isPinned ? 'Unpin note' : 'Pin note'}
+              accessibilityState={{ selected: note.isPinned }}
               name={'thumbtack'}
               size={20}
-              color={theme.primary}
-              iconStyle={!note.isPinned && styles.unpinnedThumbstack}
+              color={note.isPinned ? theme.primary : theme.placeholder}
             />
           </View>
         </View>
@@ -137,13 +190,14 @@ const NoteCard = ({
             text={formatDateTime(note.updatedAt)}
             style={styles.lastEditedText}
           />
-          {note.reminder && note.reminder.time > Date.now() && (
+          {hasActiveReminder && (
             <Animated.View
               exiting={FadeOutRight.duration(300)}
               entering={FadeInRight.duration(300)}
               style={styles.iconContainer}
             >
               <IconButton
+                label="Edit reminder"
                 name="bell"
                 size={20}
                 color={theme.secondary}
@@ -169,9 +223,9 @@ const makeContentStyle = (theme: Theme): MixedStyleDeclaration => ({
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     titleHighlight: {
-      color: theme.primary,
+      color: theme.onPrimary,
       fontFamily: Fonts.MontserratBold,
-      backgroundColor: theme.secondary,
+      backgroundColor: theme.primary,
     },
     actionsView: {
       position: 'absolute',
@@ -189,7 +243,7 @@ const makeStyles = (theme: Theme) =>
       backgroundColor: theme.secondary,
     },
     deleteActionButton: {
-      backgroundColor: theme.deleteRed,
+      backgroundColor: theme.deleteRedFill,
     },
     container: {
       gap: 4,
@@ -212,9 +266,6 @@ const makeStyles = (theme: Theme) =>
       maxWidth: '85%',
     },
     iconContainer: { maxHeight: 15 },
-    unpinnedThumbstack: {
-      opacity: 0.5,
-    },
     lastEdited: {
       flexDirection: 'row',
       alignItems: 'flex-start',

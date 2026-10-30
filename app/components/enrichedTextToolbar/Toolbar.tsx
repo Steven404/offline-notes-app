@@ -23,58 +23,72 @@ import { Theme } from '../../styles/themes.ts';
 const STYLE_ITEMS = [
   {
     name: 'bold',
+    label: 'Bold',
     icon: 'bold',
   },
   {
     name: 'italic',
+    label: 'Italic',
     icon: 'italic',
   },
   {
     name: 'underline',
+    label: 'Underline',
     icon: 'underline',
   },
   {
     name: 'strikethrough',
+    label: 'Strikethrough',
     icon: 'strikethrough',
   },
   {
     name: 'inline-code',
+    label: 'Inline code',
     icon: 'code',
   },
   {
     name: 'heading-1',
+    label: 'Heading 1',
     text: 'H1',
   },
   {
     name: 'heading-2',
+    label: 'Heading 2',
     text: 'H2',
   },
   {
     name: 'heading-3',
+    label: 'Heading 3',
     text: 'H3',
   },
   {
     name: 'quote',
+    label: 'Quote',
     icon: 'quote-right',
   },
   {
     name: 'code-block',
+    label: 'Code block',
     icon: 'file-code',
   },
   {
     name: 'image',
+    label: 'Image',
     icon: 'image',
   },
   {
     name: 'link',
+    label: 'Link',
     icon: 'link',
   },
   {
     name: 'unordered-list',
+    label: 'Bulleted list',
     icon: 'list-ul',
   },
   {
     name: 'ordered-list',
+    label: 'Numbered list',
     icon: 'list-ol',
   },
 ] as const;
@@ -250,7 +264,7 @@ const makeStyles = (theme: Theme) =>
       backgroundColor:
         Platform.OS === 'android' ? theme.tabBarBackground : theme.background,
       borderTopWidth: StyleSheet.hairlineWidth,
-      borderTopColor: 'rgba(255, 255, 255, 0.1)',
+      borderTopColor: theme.placeholder + '40',
     },
     contentContainer: {
       paddingHorizontal: 8,

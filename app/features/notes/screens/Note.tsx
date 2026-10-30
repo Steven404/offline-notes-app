@@ -46,6 +46,7 @@ const Note = ({ route }: NoteProps) => {
         <View style={styles.headerButtons}>
           <IconButton
             onPress={() => setIsDeleteModalVisible(true)}
+            label="Delete note"
             name="trash"
             size={24}
             color={theme.deleteRed}
@@ -53,6 +54,7 @@ const Note = ({ route }: NoteProps) => {
           />
           <IconButton
             onPress={() => navigation.navigate('noteEditor', { noteId })}
+            label="Edit note"
             name="pen-to-square"
             size={24}
             color={theme.textColor}
@@ -60,7 +62,11 @@ const Note = ({ route }: NoteProps) => {
           />
         </View>
       </View>
-      <TextLabel text={note?.title} style={styles.title} />
+      <TextLabel
+        text={note?.title}
+        style={styles.title}
+        accessibilityRole="header"
+      />
       <View style={styles.dateContainer}>
         <View style={styles.dateTag}>
           <TextLabel text="Created: " style={styles.dateLabel} />
