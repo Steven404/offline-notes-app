@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Task } from '../TaskTypes.tsx';
@@ -9,7 +9,6 @@ import { typeStyle } from '../../../styles/typography.ts';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
-import { AnimatedView } from 'react-native-reanimated/src/component/View.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
 
@@ -23,15 +22,6 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
   const { theme } = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const animatedViewRef = useRef<AnimatedView>(null);
-  const [animatedViewStyles, setAnimatedViewStyles] = useState<ViewStyle[]>([
-    styles.cardWrapper,
-  ]);
-
-  useEffect(() => {
-    // the background colour of the wrapper does not change on theme change without this
-    setAnimatedViewStyles([styles.cardWrapper]);
-  }, [styles.cardWrapper, theme]);
 
   const completedSubTasks = task.subTasks.filter(st => st.completed).length;
   const totalSubTasks = task.subTasks.length;
@@ -46,28 +36,11 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
     }
   };
 
-  useEffect(() => {
-    if (!isCollapsed) {
-      setAnimatedViewStyles([
-        styles.cardWrapper,
-        hasActiveReminder
-          ? styles.cardWrapperPaddingVerticalWithReminder
-          : styles.cardWrapperPaddingVertical,
-      ]);
-    } else {
-      // Removing this timeout makes the collapse animation junky/note smooth
-      setTimeout(() => {
-        setAnimatedViewStyles([styles.cardWrapper]);
-      }, 300);
-    }
-  }, [isCollapsed]);
-
   return (
     <Animated.View
-      ref={animatedViewRef}
       entering={FadeIn.duration(500)}
       exiting={FadeOut.duration(500)}
-      style={animatedViewStyles}
+      style={styles.cardWrapper}
     >
       <View style={styles.mainRow}>
         <Checkbox
@@ -148,24 +121,21 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
+    // One padding for every state: the main row is at least 44pt (the
+    // subtask toggle's touch target), so collapsed cards come out 60pt tall
+    // and expanding only adds the subtask list below, never above.
     cardWrapper: {
       backgroundColor: theme.tabBarBackground,
       paddingHorizontal: 16,
-      justifyContent: 'center',
+      paddingVertical: 8,
       borderRadius: 10,
       overflow: 'hidden',
       marginBottom: 12,
-      minHeight: 60,
-    },
-    cardWrapperPaddingVertical: {
-      paddingVertical: 18,
-    },
-    cardWrapperPaddingVerticalWithReminder: {
-      paddingVertical: 11,
     },
     mainRow: {
       flexDirection: 'row',
       alignItems: 'center',
+      minHeight: 44,
     },
     checkbox: {
       marginRight: 14,
@@ -206,17 +176,21 @@ const makeStyles = (theme: Theme) =>
       color: theme.placeholder,
       fontVariant: ['tabular-nums'],
     },
+    // The 44pt main row already centers its text with ~10pt to spare, so the
+    // divider sits close; paddingBottom + the card's 8pt match the ~18pt
+    // above the title text.
     subTasksContainer: {
       paddingLeft: 16,
-      paddingTop: 16,
-      borderTopWidth: 0.5,
+      paddingTop: 14,
+      paddingBottom: 10,
+      gap: 10,
+      borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: theme.placeholder + '40',
-      marginTop: 12,
+      marginTop: 4,
     },
     subTaskRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 8,
     },
     subCheckbox: {
       marginRight: 12,
