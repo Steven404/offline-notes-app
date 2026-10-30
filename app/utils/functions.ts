@@ -136,77 +136,7 @@ export const formatDateTime = (dateInput: Date | number): string => {
   return `${day}/${month}/${year} - ${strHours}:${minutes} ${ampm}`;
 };
 
-const EMPTY_LIST_ITEM = /^<li>\s*(?:<br\s*\/?>)?\s*<\/li>$/i;
 const LIST_OPEN = /^<(ol|ul)\b[^>]*>$/i;
-// The editor drops blank lines at the end of a value it is given, a
-// zero-width space keeps the paragraph (it is trimmed again on save)
-const EMPTY_PARAGRAPH = '<p>\u200B</p>';
-
-/**
- * Ends a list when Enter is pressed on an empty list item.
- *
- * `react-native-enriched` keeps adding list items on every Enter, so the
- * editor calls this with the HTML from before and after the second Enter.
- * The editor writes one element per line, so the Enter shows up as a single
- * added `<li></li>` line right after the empty item the cursor was in. Both
- * are dropped and an empty paragraph takes their place, splitting the list
- * if items follow. The paragraph holds a zero-width space so the editor
- * keeps it, which also leaves the cursor position unchanged.
- *
- * @param before - Editor HTML before the Enter.
- * @param after - Editor HTML after the Enter.
- * @returns The HTML to set, or `null` when the change is not that Enter.
- */
-export const exitEmptyListItem = (
-  before: string,
-  after: string,
-): string | null => {
-  const prevLines = before.split('\n');
-  const nextLines = after.split('\n');
-  if (nextLines.length !== prevLines.length + 1) {
-    return null;
-  }
-
-  // Lines before the insertion point are shared by both versions
-  let shared = 0;
-  while (shared < prevLines.length && prevLines[shared] === nextLines[shared]) {
-    shared++;
-  }
-  const insertedOnlyOneLine = prevLines
-    .slice(shared)
-    .every((line, i) => line === nextLines[shared + 1 + i]);
-  const itemIndex = shared - 1;
-  if (
-    !insertedOnlyOneLine ||
-    !EMPTY_LIST_ITEM.test(nextLines[shared]?.trim() ?? '') ||
-    !EMPTY_LIST_ITEM.test(prevLines[itemIndex]?.trim() ?? '')
-  ) {
-    return null;
-  }
-
-  let openIndex = itemIndex - 1;
-  while (openIndex >= 0 && !LIST_OPEN.test(prevLines[openIndex].trim())) {
-    openIndex--;
-  }
-  const tag = openIndex >= 0 && LIST_OPEN.exec(prevLines[openIndex].trim());
-  if (!tag) {
-    return null;
-  }
-  const listTag = tag[1].toLowerCase();
-
-  const head = prevLines.slice(0, itemIndex);
-  const tail = prevLines.slice(itemIndex + 1);
-  const result = [
-    ...(head.length - 1 === openIndex
-      ? head.slice(0, -1)
-      : [...head, `</${listTag}>`]),
-    EMPTY_PARAGRAPH,
-    ...(tail[0]?.trim().toLowerCase() === `</${listTag}>`
-      ? tail.slice(1)
-      : [`<${listTag}>`, ...tail]),
-  ];
-  return result.join('\n');
-};
 
 // Whitespace as the editor writes it: spaces, non-breaking spaces (named or
 // numeric), zero-width spaces and line breaks

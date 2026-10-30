@@ -1,15 +1,12 @@
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   EnrichedTextInput,
   EnrichedTextInputInstance,
   OnChangeStateEvent,
 } from 'react-native-enriched';
 import { typeStyle } from '../../../styles/typography.ts';
-import {
-  exitEmptyListItem,
-  sanitizeNoteContent,
-} from '../../../utils/functions.ts';
+import { sanitizeNoteContent } from '../../../utils/functions.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
 
@@ -39,80 +36,6 @@ const NoteContentInput = ({
   const inputRef = externalRef || internalRef;
   const [inputHeight, setInputHeight] = useState(0);
 
-  // Enter on an empty list item should end the list, but the editor keeps
-  // adding items on Android. These refs follow the cursor so a second Enter
-  // on an item that is still empty can be undone, see `exitEmptyListItem`.
-  // iOS ends the list natively (patches/react-native-enriched+0.3.0.patch).
-  const htmlRef = useRef(defaultValue ?? '');
-  const isListActiveRef = useRef(false);
-  const cursorRef = useRef(0);
-  const awaitingNewItemRef = useRef(false);
-  const emptyItemCursorRef = useRef<number | null>(null);
-  const pendingExitRef = useRef<{ html: string; cursor: number } | null>(null);
-  const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const clearExitTimeout = () => {
-    if (exitTimeoutRef.current) {
-      clearTimeout(exitTimeoutRef.current);
-    }
-  };
-
-  useEffect(() => clearExitTimeout, []);
-
-  const handleKeyPress = (key: string) => {
-    if (Platform.OS !== 'android') {
-      return;
-    }
-    if (key !== 'Enter' || !isListActiveRef.current) {
-      awaitingNewItemRef.current = false;
-      emptyItemCursorRef.current = null;
-      return;
-    }
-    if (emptyItemCursorRef.current === cursorRef.current) {
-      pendingExitRef.current = {
-        html: htmlRef.current,
-        cursor: cursorRef.current,
-      };
-      emptyItemCursorRef.current = null;
-      return;
-    }
-    awaitingNewItemRef.current = true;
-  };
-
-  const handleSelectionChange = (start: number) => {
-    cursorRef.current = start;
-    if (awaitingNewItemRef.current) {
-      // The cursor just landed on the item that Enter created
-      awaitingNewItemRef.current = false;
-      emptyItemCursorRef.current = start;
-    } else if (start !== emptyItemCursorRef.current) {
-      emptyItemCursorRef.current = null;
-    }
-  };
-
-  // The editor sends a few HTML updates per Enter, act once they settle
-  const exitListIfPending = () => {
-    if (!pendingExitRef.current) {
-      return;
-    }
-    clearExitTimeout();
-    exitTimeoutRef.current = setTimeout(async () => {
-      const pending = pendingExitRef.current;
-      pendingExitRef.current = null;
-      const editor = inputRef.current;
-      if (!pending || !editor) {
-        return;
-      }
-      const html = await editor.getHTML();
-      const next = exitEmptyListItem(pending.html, html);
-      if (next) {
-        editor.setValue(next);
-        // The new paragraph keeps a zero-width space where the item had its
-        // marker, so the cursor goes back to the same spot
-        editor.setSelection(pending.cursor, pending.cursor);
-      }
-    }, 30);
-  };
-
   const handleFocus = () => onFocusChange?.(true);
   const handleBlur = () => onFocusChange?.(false);
   const focusContent = () => {
@@ -135,18 +58,9 @@ const NoteContentInput = ({
         editable={!isDisplay}
         placeholder={'Content'}
         placeholderTextColor={theme.placeholder}
-        onChangeState={e => {
-          isListActiveRef.current =
-            e.nativeEvent.orderedList.isActive ||
-            e.nativeEvent.unorderedList.isActive;
-          onChangeState?.(e.nativeEvent);
-        }}
-        onKeyPress={e => handleKeyPress(e.nativeEvent.key)}
-        onChangeSelection={e => handleSelectionChange(e.nativeEvent.start)}
+        onChangeState={e => onChangeState?.(e.nativeEvent)}
         onChangeHtml={e => {
-          htmlRef.current = e.nativeEvent.value;
           setContent?.(e.nativeEvent.value);
-          exitListIfPending();
         }}
         htmlStyle={{
           h1: { fontSize: 26, bold: true },

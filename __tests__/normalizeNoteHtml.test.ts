@@ -1,5 +1,4 @@
 import {
-  exitEmptyListItem,
   normalizeNoteHtml,
   sanitizeNoteContent,
   trimNoteHtml,
@@ -47,68 +46,6 @@ describe('sanitizeNoteContent', () => {
     expect(sanitizeNoteContent('<ul><li><h3>a</h3></li></ul>')).toBe(
       '<html>\n<ul><li>a</li></ul>\n</html>',
     );
-  });
-});
-
-describe('exitEmptyListItem', () => {
-  const wrap = (...lines: string[]) =>
-    ['<html>', ...lines, '</html>'].join('\n');
-
-  it('ends the list when Enter is pressed on the last, empty item', () => {
-    const before = wrap('<ol>', '<li>Test</li>', '<li></li>', '</ol>');
-    const after = wrap(
-      '<ol>',
-      '<li>Test</li>',
-      '<li></li>',
-      '<li></li>',
-      '</ol>',
-    );
-    expect(exitEmptyListItem(before, after)).toBe(
-      wrap('<ol>', '<li>Test</li>', '</ol>', '<p>\u200B</p>'),
-    );
-  });
-
-  it('splits the list when items follow', () => {
-    const before = wrap(
-      '<ul>',
-      '<li>a</li>',
-      '<li></li>',
-      '<li>b</li>',
-      '</ul>',
-    );
-    const after = wrap(
-      '<ul>',
-      '<li>a</li>',
-      '<li></li>',
-      '<li></li>',
-      '<li>b</li>',
-      '</ul>',
-    );
-    expect(exitEmptyListItem(before, after)).toBe(
-      wrap(
-        '<ul>',
-        '<li>a</li>',
-        '</ul>',
-        '<p>\u200B</p>',
-        '<ul>',
-        '<li>b</li>',
-        '</ul>',
-      ),
-    );
-  });
-
-  it('drops the list entirely when its only item was empty', () => {
-    const before = wrap('<p>x</p>', '<ul>', '<li></li>', '</ul>');
-    const after = wrap('<p>x</p>', '<ul>', '<li></li>', '<li></li>', '</ul>');
-    expect(exitEmptyListItem(before, after)).toBe(
-      wrap('<p>x</p>', '<p>\u200B</p>'),
-    );
-  });
-
-  it('ignores an Enter that left a non-empty item', () => {
-    const before = wrap('<ol>', '<li>Test</li>', '</ol>');
-    const after = wrap('<ol>', '<li>Test</li>', '<li></li>', '</ol>');
-    expect(exitEmptyListItem(before, after)).toBeNull();
   });
 });
 

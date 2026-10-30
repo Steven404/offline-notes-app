@@ -1,3 +1,58 @@
+diff --git a/node_modules/react-native-enriched/android/src/main/java/com/swmansion/enriched/styles/ListStyles.kt b/node_modules/react-native-enriched/android/src/main/java/com/swmansion/enriched/styles/ListStyles.kt
+index e4488ec..d420c88 100644
+--- a/node_modules/react-native-enriched/android/src/main/java/com/swmansion/enriched/styles/ListStyles.kt
++++ b/node_modules/react-native-enriched/android/src/main/java/com/swmansion/enriched/styles/ListStyles.kt
+@@ -189,11 +189,50 @@ class ListStyles(
+     }
+   }
+ 
++  // Enter on an empty list item ends the list instead of adding another item
++  private fun handleNewlineOnEmptyItem(
++    s: Editable,
++    endCursorPosition: Int,
++    previousTextLength: Int,
++  ): Boolean {
++    if (s.length != previousTextLength + 1) return false
++    val cursorPosition = endCursorPosition.coerceAtMost(s.length)
++    val newLinePosition = cursorPosition - 1
++    if (newLinePosition < 0 || s[newLinePosition] != '\n') return false
++
++    // an empty item only holds zero width spaces, and so does the line Enter created
++    val (itemStart, _) = s.getParagraphBounds(newLinePosition)
++    val (_, newLineEnd) = s.getParagraphBounds(cursorPosition)
++    if (itemStart == newLinePosition) return false
++    for (i in itemStart until newLineEnd) {
++      if (i != newLinePosition && s[i] != EnrichedConstants.ZWS) return false
++    }
++
++    val spans =
++      EnrichedSpans.listSpans.values.flatMap {
++        s.getSpans(itemStart, newLinePosition, it.clazz).toList()
++      }
++    if (spans.isEmpty()) return false
++
++    for (span in spans) {
++      s.removeSpan(span)
++    }
++    view.runAsATransaction {
++      s.delete(itemStart, newLineEnd)
++    }
++    view.setSelection(itemStart)
++    // the delete already moved the cursor, so the selection may not have been told about it
++    view.selection?.onSelection(itemStart, itemStart)
++    view.selection?.validateStyles()
++    return true
++  }
++
+   fun afterTextChanged(
+     s: Editable,
+     endCursorPosition: Int,
+     previousTextLength: Int,
+   ) {
++    if (handleNewlineOnEmptyItem(s, endCursorPosition, previousTextLength)) return
+     handleAfterTextChanged(s, EnrichedSpans.ORDERED_LIST, endCursorPosition, previousTextLength)
+     handleAfterTextChanged(s, EnrichedSpans.UNORDERED_LIST, endCursorPosition, previousTextLength)
+   }
 diff --git a/node_modules/react-native-enriched/ios/EnrichedTextInputView.mm b/node_modules/react-native-enriched/ios/EnrichedTextInputView.mm
 index b4d608b..b9954d1 100644
 --- a/node_modules/react-native-enriched/ios/EnrichedTextInputView.mm
