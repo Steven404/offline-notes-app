@@ -133,6 +133,7 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
   return (
     <View>
       <IconButton
+        label="More options"
         name={'ellipsis-vertical'}
         size={24}
         color={theme.textColor}

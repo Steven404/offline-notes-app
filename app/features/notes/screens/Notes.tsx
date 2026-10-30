@@ -101,6 +101,7 @@ const Notes = () => {
       />
       {isLoading ? <SimpleLoading centered /> : pageContent}
       <AddItemButton
+        label="New note"
         onPress={() => navigation.navigate('noteEditor', { noteId: undefined })}
       />
       <SimpleConfirmModal

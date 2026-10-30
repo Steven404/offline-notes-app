@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, View, TouchableOpacity, ColorValue } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import TextLabel from '../textLabel/TextLabel.tsx';
 import Fonts from '../../styles/Fonts.tsx';
@@ -15,7 +15,8 @@ interface SimpleConfirmModalProps {
   text: string;
   confirmText: string;
   cancelText: string;
-  confirmButtonColor?: ColorValue;
+  /** 'danger' (default) for destructive confirms, 'primary' for neutral ones */
+  tone?: 'danger' | 'primary';
   title?: string;
   iconName?: IconProp;
 }
@@ -27,12 +28,15 @@ const SimpleConfirmModal = ({
   text,
   confirmText,
   cancelText,
-  confirmButtonColor,
+  tone = 'danger',
   title,
   iconName,
 }: SimpleConfirmModalProps) => {
   const { theme } = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
+  const confirmFill = tone === 'primary' ? theme.primary : theme.deleteRedFill;
+  const confirmTextColor =
+    tone === 'primary' ? theme.onPrimary : theme.onDanger;
 
   return (
     <Modal
@@ -45,15 +49,22 @@ const SimpleConfirmModal = ({
       <View style={styles.modalView}>
         {iconName ? (
           <View style={styles.iconCircle}>
-            <Icon name={iconName} size={20} color={theme.black} />
+            <Icon name={iconName} size={20} color={theme.onPrimary} />
           </View>
         ) : null}
-        {title ? <TextLabel text={title} style={styles.title} /> : null}
+        {title ? (
+          <TextLabel
+            text={title}
+            style={styles.title}
+            accessibilityRole="header"
+          />
+        ) : null}
         <TextLabel text={text} style={styles.modalText} />
         <View style={styles.modalButtons}>
           <TouchableOpacity
             style={[styles.modalButton, styles.cancelButton]}
             onPress={onClose}
+            accessibilityRole="button"
           >
             <TextLabel text={cancelText} style={styles.cancelButtonText} />
           </TouchableOpacity>
@@ -61,11 +72,15 @@ const SimpleConfirmModal = ({
             style={[
               styles.modalButton,
               styles.confirmButton,
-              { backgroundColor: confirmButtonColor || theme.deleteRed },
+              { backgroundColor: confirmFill },
             ]}
             onPress={onConfirm}
+            accessibilityRole="button"
           >
-            <TextLabel text={confirmText} style={styles.confirmButtonText} />
+            <TextLabel
+              text={confirmText}
+              style={[styles.confirmButtonText, { color: confirmTextColor }]}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -137,7 +152,6 @@ const makeStyles = (theme: Theme) =>
     },
     confirmButtonText: {
       fontFamily: Fonts.MontserratSemiBold,
-      color: theme.textColor,
     },
   });
 

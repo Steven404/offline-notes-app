@@ -133,6 +133,7 @@ const Tasks = () => {
       {pageContent}
 
       <AddItemButton
+        label="New task"
         onPress={() => {
           setTaskToEdit(undefined);
           setReminder(undefined);

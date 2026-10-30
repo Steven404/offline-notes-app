@@ -6,6 +6,7 @@ import { useTheme } from '../../providers/ThemeContext.tsx';
 
 interface AddItemButtonProps {
   onPress: () => void;
+  label: string;
   iconName?: IconProp;
   size?: number;
   buttonColor?: string;
@@ -15,6 +16,7 @@ interface AddItemButtonProps {
 
 const AddItemButton: React.FC<AddItemButtonProps> = ({
   onPress,
+  label,
   iconName = ['fas', 'plus'] as IconProp,
   size = 30,
   buttonColor,
@@ -32,6 +34,8 @@ const AddItemButton: React.FC<AddItemButtonProps> = ({
         style,
       ]}
       onPress={onPress}
+      accessibilityLabel={label}
+      accessibilityRole="button"
     >
       <Icon
         name={iconName}

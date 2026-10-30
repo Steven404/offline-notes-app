@@ -161,6 +161,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
             style: styles.backButton,
             disabled: saveButtonDisabled,
           }}
+          label={isSaved ? 'Saved' : 'Save note'}
           name="floppy-disk"
           size={24}
           color={saveButtonDisabled ? theme.placeholder : theme.textColor}
@@ -211,7 +212,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
         text="You have unsaved changes, would you like to save before leaving this screen?"
         confirmText="Yes"
         cancelText="No"
-        confirmButtonColor={theme.primary}
+        tone="primary"
       />
     </SafeAreaView>
   );

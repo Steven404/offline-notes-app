@@ -38,7 +38,7 @@ const BottomTabsNavigator = () => {
         screenOptions={{
           // animation: 'shift',
           headerShown: false,
-          tabBarInactiveTintColor: theme.placeholder2,
+          tabBarInactiveTintColor: theme.placeholder,
           tabBarActiveTintColor: theme.textColor,
           tabBarLabelStyle: {
             fontFamily: Fonts.MontserratRegular,

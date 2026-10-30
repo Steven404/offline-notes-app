@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import IconButton from '../iconButton/IconButton.tsx';
-import Colors from '../../styles/colors.ts';
 import { useTheme } from '../../providers/ThemeContext.tsx';
 import { Theme } from '../../styles/themes.ts';
 
@@ -41,6 +40,7 @@ const BackButton = ({
     <IconButton
       onPress={handlePress}
       touchableOpacityProps={{ style: [styles.backButton, style] }}
+      label="Back"
       name="arrow-left"
       size={size}
       color={color ? color : theme.textColor}

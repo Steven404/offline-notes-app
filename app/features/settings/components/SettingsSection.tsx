@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import TextLabel from '../../../components/textLabel/TextLabel';
-import Colors from '../../../styles/colors';
 import Fonts from '../../../styles/Fonts';
 import { Theme } from '../../../styles/themes.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
@@ -17,7 +16,11 @@ const SettingsSection = ({ title, children }: SettingsSectionProps) => {
 
   return (
     <View style={styles.container}>
-      <TextLabel text={title} style={styles.title} />
+      <TextLabel
+        text={title}
+        style={styles.title}
+        accessibilityRole="header"
+      />
       <View style={styles.content}>{children}</View>
     </View>
   );

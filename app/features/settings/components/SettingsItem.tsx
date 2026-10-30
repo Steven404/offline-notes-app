@@ -24,6 +24,8 @@ const SettingsItem = ({ icon, label, onPress, isLast, rightIcon = 'chevron-right
       style={[styles.container, !isLast && styles.borderBottom]}
       onPress={onPress}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={label}
     >
       <View style={styles.leftContent}>
         <View style={styles.iconContainer}>
