@@ -2,7 +2,6 @@ import React, { forwardRef, useMemo } from 'react';
 import {
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   NativeSyntheticEvent,
   TextInputKeyPressEventData,
 } from 'react-native';
@@ -11,7 +10,8 @@ import Animated, {
   FadeOutDown,
   LinearTransition,
 } from 'react-native-reanimated';
-import Icon from '../../../components/icon/Icon.tsx';
+import Checkbox from '../../../components/checkbox/Checkbox.tsx';
+import { typeStyle } from '../../../styles/typography.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
 
@@ -47,20 +47,13 @@ const SubTaskItem = forwardRef<TextInput, SubTaskItemProps>(
         exiting={FadeOutDown.duration(200)}
         style={styles.subTaskContainer}
       >
-        <TouchableOpacity
-          onPress={onToggle}
+        <Checkbox
+          checked={completed}
+          onToggle={onToggle}
+          label={title || 'Subtask'}
+          size="sm"
           style={styles.checkbox}
-          hitSlop={12}
-          accessibilityRole="checkbox"
-          accessibilityLabel={title || 'Subtask'}
-          accessibilityState={{ checked: completed }}
-        >
-          <Icon
-            name={completed ? ['fas', 'check-square'] : ['far', 'square']}
-            size={20}
-            color={completed ? theme.primary : theme.placeholder}
-          />
-        </TouchableOpacity>
+        />
         <TextInput
           ref={ref}
           style={[
@@ -88,18 +81,17 @@ const makeStyles = (theme: Theme) =>
     subTaskContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 5,
-      paddingLeft: 10,
+      paddingVertical: 4,
+      paddingLeft: 2,
     },
     checkbox: {
-      marginRight: 10,
+      marginRight: 12,
     },
     subTaskInput: {
+      ...typeStyle('preview'),
       flex: 1,
-      fontSize: 16,
       color: theme.textColor,
-      fontFamily: 'Montserrat-Regular',
-      paddingVertical: 5,
+      paddingVertical: 6,
     },
     subTaskInputCompleted: {
       textDecorationLine: 'line-through',

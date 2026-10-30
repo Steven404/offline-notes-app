@@ -10,9 +10,46 @@
  * @returns The sanitized HTML string.
  */
 export const sanitizeNoteContent = (content: string): string =>
-  content.replace(/<li\b[^>]*>([\s\S]*?)<\/li>/gi, match =>
+  normalizeNoteHtml(content).replace(/<li\b[^>]*>([\s\S]*?)<\/li>/gi, match =>
     match.replace(/<\/?h3\b[^>]*>/gi, ''),
   );
+
+const escapeHtml = (text: string): string =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * Brings stored note content into the shape `react-native-enriched` parses.
+ *
+ * The editor only treats its value as HTML when the trimmed string starts with
+ * `<html>` and ends with `</html>`; anything else is shown as literal text, tags
+ * included. Notes saved by older versions were stored as bare fragments such as
+ * `<p>…</p>` or `<ul>…</ul>`, and very old ones as plain text, so both are
+ * converted here on the way in. The stored note is left untouched; it is
+ * rewritten in the wrapped form the next time the editor saves it.
+ *
+ * @param content - The note content as stored.
+ * @returns HTML wrapped in `<html>` tags, ready for the editor.
+ */
+export const normalizeNoteHtml = (content: string): string => {
+  const trimmed = content.trim();
+
+  if (!trimmed) {
+    return '<html>\n<p></p>\n</html>';
+  }
+  if (trimmed.startsWith('<html>') && trimmed.endsWith('</html>')) {
+    return trimmed;
+  }
+
+  // Any tag means it is already HTML, just missing the wrapper
+  const body = /<[a-z][\s\S]*>/i.test(trimmed)
+    ? trimmed
+    : trimmed
+        .split(/\r?\n/)
+        .map(line => `<p>${escapeHtml(line)}</p>`)
+        .join('\n');
+
+  return `<html>\n${body}\n</html>`;
+};
 
 /**
  * Returns a relative time string from a timestamp.

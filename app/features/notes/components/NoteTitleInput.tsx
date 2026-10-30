@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput } from 'react-native';
 import { useMemo, useRef } from 'react';
-import Fonts from '../../../styles/Fonts.tsx';
+import { Type, typeStyle } from '../../../styles/typography.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
 
@@ -33,6 +33,7 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
           textInputRef.current?.setNativeProps({ text });
         }
       }}
+      maxFontSizeMultiplier={Type.title.maxFontSizeMultiplier}
       maxLength={50}
       multiline={true}
       numberOfLines={4}
@@ -43,10 +44,11 @@ const NoteTitleInput = ({ title, setTitle }: NoteTitleInputProps) => {
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     input: {
+      ...typeStyle('title'),
       width: '100%',
-      padding: 14,
-      fontSize: 32,
-      fontFamily: Fonts.MontserratSemiBold,
+      paddingHorizontal: 14,
+      paddingTop: 12,
+      paddingBottom: 8,
       color: theme.textColor,
     },
   });

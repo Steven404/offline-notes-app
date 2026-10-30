@@ -13,6 +13,7 @@ import { debounce } from 'lodash';
 import { sortNotes } from '../utils/noteUtils.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
+import { typeStyle } from '../../../styles/typography.ts';
 
 type SearchNotesScreenProps = {
   onBackButtonPress: () => void;
@@ -64,7 +65,7 @@ const SearchNotesScreen = ({
       style={styles.container}
     >
       <View style={styles.header}>
-        <BackButton onPress={onBackButtonPress} />
+        <BackButton onPress={onBackButtonPress} style={styles.backButton} />
         <View style={styles.searchBar}>
           <Icon
             name={['fas', 'magnifying-glass']}
@@ -113,8 +114,12 @@ const makeStyles = (theme: Theme) =>
       width: '100%',
       alignItems: 'center',
     },
+    backButton: {
+      marginHorizontal: 12,
+    },
     searchBar: {
-      width: '87.5%',
+      flex: 1,
+      marginRight: 10,
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: theme.tabBarBackground,
@@ -128,8 +133,8 @@ const makeStyles = (theme: Theme) =>
     },
     input: {
       flex: 1,
+      ...typeStyle('label'),
       color: theme.textColor,
-      fontSize: 16,
       height: '100%',
     },
     listContent: {

@@ -21,9 +21,16 @@ import IconButton from '../../../components/iconButton/IconButton.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
 import { stripHtmlTags } from '../../../utils/reminders.ts';
 import { useNotes } from '../../../providers/NotesContext.tsx';
-import RenderHTML, { MixedStyleDeclaration } from 'react-native-render-html';
+import RenderHTML, {
+  defaultSystemFonts,
+  MixedStyleDeclaration,
+} from 'react-native-render-html';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
+import { typeStyle } from '../../../styles/typography.ts';
+
+// RenderHTML drops any fontFamily it hasn't been told about
+const HTML_FONTS = [...defaultSystemFonts, Fonts.LiterataRegular];
 
 interface NoteCardProps {
   note: Note;
@@ -179,6 +186,7 @@ const NoteCard = ({
             contentWidth={width}
             source={{ html: note.content }}
             baseStyle={contentStyle}
+            systemFonts={HTML_FONTS}
             defaultTextProps={{
               numberOfLines: 1,
               ellipsizeMode: 'tail',
@@ -212,10 +220,11 @@ const NoteCard = ({
 };
 
 const makeContentStyle = (theme: Theme): MixedStyleDeclaration => ({
-  fontSize: 16,
-  fontFamily: Fonts.MontserratRegular,
+  fontFamily: Fonts.LiterataRegular,
+  fontSize: 15,
+  lineHeight: 22,
   color: theme.placeholder,
-  maxHeight: 20, // This is needed in case the user hits enter and creates new line manually in the note
+  maxHeight: 22, // One line, even when the note starts with manual line breaks
   overflow: 'hidden',
   width: '90%',
 });
@@ -224,7 +233,6 @@ const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     titleHighlight: {
       color: theme.onPrimary,
-      fontFamily: Fonts.MontserratBold,
       backgroundColor: theme.primary,
     },
     actionsView: {
@@ -246,7 +254,7 @@ const makeStyles = (theme: Theme) =>
       backgroundColor: theme.deleteRedFill,
     },
     container: {
-      gap: 4,
+      gap: 6,
       backgroundColor: theme.tabBarBackground,
       padding: 16,
       borderRadius: 10,
@@ -259,9 +267,7 @@ const makeStyles = (theme: Theme) =>
       maxHeight: 30,
     },
     title: {
-      fontSize: 18,
-      lineHeight: 20,
-      fontFamily: Fonts.MontserratSemiBold,
+      ...typeStyle('itemTitle'),
       color: theme.textColor,
       maxWidth: '85%',
     },
@@ -272,8 +278,7 @@ const makeStyles = (theme: Theme) =>
       justifyContent: 'space-between',
     },
     lastEditedText: {
-      fontSize: 14,
-      fontFamily: Fonts.MontserratRegular,
+      ...typeStyle('meta'),
       color: theme.placeholder,
     },
   });

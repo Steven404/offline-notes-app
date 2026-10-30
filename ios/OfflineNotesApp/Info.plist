@@ -34,7 +34,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -54,12 +54,14 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-Medium.ttf</string>
-		<string>Montserrat-Light.ttf</string>
-		<string>Montserrat-Thin.ttf</string>
-		<string>Montserrat-Bold.ttf</string>
 		<string>Montserrat-SemiBold.ttf</string>
 		<string>Montserrat-Regular.ttf</string>
-		<string>Montserrat-Italic.ttf</string>
+		<string>Literata-Italic.ttf</string>
+		<string>Literata-Regular.ttf</string>
+		<string>Literata-SemiBold.ttf</string>
+		<string>Literata36pt-SemiBold.ttf</string>
+		<string>Literata-BoldItalic.ttf</string>
+		<string>Literata-Bold.ttf</string>
 	</array>
 </dict>
 </plist>

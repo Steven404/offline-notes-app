@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import TextLabel from '../../../components/textLabel/TextLabel';
-import Fonts from '../../../styles/Fonts';
 import { Theme } from '../../../styles/themes.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 
@@ -18,6 +17,8 @@ const SettingsSection = ({ title, children }: SettingsSectionProps) => {
     <View style={styles.container}>
       <TextLabel
         text={title}
+        variant="sectionLabel"
+        tone="secondary"
         style={styles.title}
         accessibilityRole="header"
       />
@@ -32,13 +33,8 @@ const makeStyles = (theme: Theme) =>
       marginBottom: 32,
     },
     title: {
-      fontSize: 14,
-      fontFamily: Fonts.MontserratSemiBold,
-      color: theme.placeholder,
-      textTransform: 'uppercase',
-      letterSpacing: 1,
-      marginBottom: 12,
-      paddingHorizontal: 4,
+      marginBottom: 8,
+      paddingHorizontal: 16,
     },
     content: {
       backgroundColor: theme.tabBarBackground,

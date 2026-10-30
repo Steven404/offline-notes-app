@@ -4,6 +4,7 @@ import Icon from '../icon/Icon.tsx';
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '../../providers/ThemeContext.tsx';
 import { Theme } from '../../styles/themes.ts';
+import Fonts from '../../styles/Fonts.tsx';
 
 interface ToolbarButtonIconProps {
   label: string;
@@ -58,14 +59,7 @@ export const ToolbarButton: FC<ToolbarButtonProps> = ({
           color={isActive ? theme.primary : theme.textColor}
         />
       ) : (
-        <Text
-          style={[
-            styles.text,
-            isActive && { color: theme.primary, fontWeight: 'bold' },
-          ]}
-        >
-          {text}
-        </Text>
+        <Text style={[styles.text, isActive && styles.textActive]}>{text}</Text>
       )}
     </Pressable>
   );
@@ -89,7 +83,11 @@ const makeStyles = (theme: Theme) =>
       opacity: 0.3,
     },
     text: {
+      fontFamily: Fonts.MontserratSemiBold,
       color: theme.textColor,
-      fontSize: 16,
+      fontSize: 15,
+    },
+    textActive: {
+      color: theme.primary,
     },
   });

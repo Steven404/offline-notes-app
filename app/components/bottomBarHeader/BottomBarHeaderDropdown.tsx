@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/Navigation.tsx';
 import { useTheme } from '../../providers/ThemeContext.tsx';
 import { Theme } from '../../styles/themes.ts';
+import { typeStyle } from '../../styles/typography.ts';
 
 type Props = {
   showFilters?: boolean;
@@ -135,7 +136,7 @@ const BottomBarHeaderDropdown = ({ showFilters }: Props) => {
       <IconButton
         label="More options"
         name={'ellipsis-vertical'}
-        size={24}
+        size={22}
         color={theme.textColor}
         onPress={() => {
           dropdownRef.current?.open();
@@ -171,7 +172,7 @@ const makeStyles = (theme: Theme) =>
       width: 160,
       backgroundColor: theme.tabBarBackground,
     },
-    itemText: { fontSize: 14, color: theme.textColor },
+    itemText: { ...typeStyle('label'), color: theme.textColor },
   });
 
 export default BottomBarHeaderDropdown;

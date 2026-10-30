@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import TextLabel from '../../../components/textLabel/TextLabel';
 import Icon from '../../../components/icon/Icon';
-import Fonts from '../../../styles/Fonts';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { Theme } from '../../../styles/themes.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
@@ -15,7 +14,13 @@ interface SettingsItemProps {
   rightIcon?: IconProp;
 }
 
-const SettingsItem = ({ icon, label, onPress, isLast, rightIcon = 'chevron-right' }: SettingsItemProps) => {
+const SettingsItem = ({
+  icon,
+  label,
+  onPress,
+  isLast,
+  rightIcon = 'chevron-right',
+}: SettingsItemProps) => {
   const { theme } = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
 
@@ -31,7 +36,7 @@ const SettingsItem = ({ icon, label, onPress, isLast, rightIcon = 'chevron-right
         <View style={styles.iconContainer}>
           <Icon name={icon} size={20} color={theme.primary} />
         </View>
-        <TextLabel text={label} style={styles.label} />
+        <TextLabel text={label} />
       </View>
       <Icon name={rightIcon} size={18} color={theme.placeholder} />
     </TouchableOpacity>
@@ -44,7 +49,8 @@ const makeStyles = (theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingVertical: 16,
+      minHeight: 56,
+      paddingVertical: 10,
       paddingHorizontal: 16,
     },
     borderBottom: {
@@ -63,11 +69,6 @@ const makeStyles = (theme: Theme) =>
       backgroundColor: theme.background,
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    label: {
-      fontSize: 16,
-      fontFamily: Fonts.MontserratRegular,
-      color: theme.textColor,
     },
   });
 

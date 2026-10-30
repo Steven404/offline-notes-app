@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -13,7 +13,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import DatePicker from 'react-native-date-picker';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
-import Fonts from '../../../styles/Fonts.tsx';
+import Button from '../../../components/button/Button.tsx';
 import {
   createReminderNotification,
   removeReminderNotification,
@@ -21,7 +21,7 @@ import {
 import Icon from '../../../components/icon/Icon.tsx';
 import { Reminder } from '../../../utils/types.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
-import { Theme, ThemeName } from '../../../styles/themes.ts';
+import { Theme } from '../../../styles/themes.ts';
 
 interface ReminderBottomSheetProps {
   title: string;
@@ -188,6 +188,7 @@ const ReminderBottomSheet = ({
       <BottomSheetView style={styles.content}>
         <TextLabel
           text="Set Reminder"
+          variant="heading"
           style={styles.title}
           accessibilityRole="header"
         />
@@ -228,37 +229,25 @@ const ReminderBottomSheet = ({
 
         <View style={styles.buttonsContainer}>
           {reminder && reminder.time > Date.now() ? (
-            <Pressable
-              style={styles.removeButton}
+            <Button
+              label="Remove"
+              variant="plain"
+              destructive
+              icon="trash-alt"
               onPress={handleRemove}
-              accessibilityRole="button"
-              accessibilityLabel="Remove reminder"
-            >
-              <Icon name={'trash-alt'} size={20} color={theme.deleteRed} />
-              <TextLabel text="Remove" style={styles.removeButtonText} />
-            </Pressable>
+              accessibilityHint="Removes this reminder"
+              style={styles.removeButton}
+            />
           ) : (
             <View />
           )}
           <View style={styles.rightButtons}>
-            <Pressable onPress={resetAndClose} accessibilityRole="button">
-              <TextLabel text="Cancel" style={styles.textButton} />
-            </Pressable>
-            <Pressable
+            <Button label="Cancel" variant="plain" onPress={resetAndClose} />
+            <Button
+              label="Save"
               onPress={handleSave}
               disabled={isSaveDisabled}
-              accessibilityRole="button"
-              accessibilityState={{ disabled: isSaveDisabled }}
-            >
-              <TextLabel
-                text="Save"
-                style={[
-                  styles.textButton,
-                  styles.saveTextButton,
-                  isSaveDisabled && styles.saveTextButtonDisabled,
-                ]}
-              />
-            </Pressable>
+            />
           </View>
         </View>
 
@@ -308,9 +297,6 @@ const makeStyles = (theme: Theme) =>
       paddingBottom: 42,
     },
     title: {
-      fontSize: 20,
-      fontFamily: Fonts.MontserratSemiBold,
-      color: theme.textColor,
       textAlign: 'center',
       marginBottom: 24,
     },
@@ -327,8 +313,6 @@ const makeStyles = (theme: Theme) =>
       gap: 12,
     },
     inputText: {
-      fontSize: 16,
-      fontFamily: Fonts.MontserratMedium,
       color: theme.textColor,
     },
     placeholderText: {
@@ -341,31 +325,12 @@ const makeStyles = (theme: Theme) =>
     },
     rightButtons: {
       flexDirection: 'row',
-      gap: 16,
+      gap: 4,
       alignItems: 'center',
     },
-    textButton: {
-      fontSize: 16,
-      fontFamily: Fonts.MontserratSemiBold,
-      color: theme.placeholder,
-      padding: 8,
-    },
-    saveTextButton: {
-      color: theme.primary,
-    },
-    saveTextButtonDisabled: {
-      color: theme.placeholder,
-      opacity: 0.5,
-    },
+    // Pull the plain button's padding back so its icon aligns with the inputs
     removeButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-    },
-    removeButtonText: {
-      fontSize: 16,
-      fontFamily: Fonts.MontserratSemiBold,
-      color: theme.deleteRed,
+      marginLeft: -12,
     },
   });
 

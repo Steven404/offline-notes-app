@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Task } from '../TaskTypes.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
-import Fonts from '../../../styles/Fonts.tsx';
-import IconButton from '../../../components/iconButton/IconButton.tsx';
+import Checkbox from '../../../components/checkbox/Checkbox.tsx';
+import { typeStyle } from '../../../styles/typography.ts';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
-import { AnimatedView } from 'react-native-reanimated/src/component/View.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
 
@@ -23,15 +22,6 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
   const { theme } = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const animatedViewRef = useRef<AnimatedView>(null);
-  const [animatedViewStyles, setAnimatedViewStyles] = useState<ViewStyle[]>([
-    styles.cardWrapper,
-  ]);
-
-  useEffect(() => {
-    // the background colour of the wrapper does not change on theme change without this
-    setAnimatedViewStyles([styles.cardWrapper]);
-  }, [styles.cardWrapper, theme]);
 
   const completedSubTasks = task.subTasks.filter(st => st.completed).length;
   const totalSubTasks = task.subTasks.length;
@@ -46,40 +36,18 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
     }
   };
 
-  useEffect(() => {
-    if (!isCollapsed) {
-      setAnimatedViewStyles([
-        styles.cardWrapper,
-        hasActiveReminder
-          ? styles.cardWrapperPaddingVerticalWithReminder
-          : styles.cardWrapperPaddingVertical,
-      ]);
-    } else {
-      // Removing this timeout makes the collapse animation junky/note smooth
-      setTimeout(() => {
-        setAnimatedViewStyles([styles.cardWrapper]);
-      }, 300);
-    }
-  }, [isCollapsed]);
-
   return (
     <Animated.View
-      ref={animatedViewRef}
       entering={FadeIn.duration(500)}
       exiting={FadeOut.duration(500)}
-      style={animatedViewStyles}
+      style={styles.cardWrapper}
     >
       <View style={styles.mainRow}>
-        <IconButton
-          onPress={() => toggleTaskComplete(task.id)}
+        <Checkbox
+          checked={task.completed}
+          onToggle={() => toggleTaskComplete(task.id)}
           label={task.title}
-          role="checkbox"
-          accessibilityState={{ checked: task.completed }}
-          // Unchecked is an outline: a filled dark square was 1.3:1 on the card
-          name={task.completed ? ['fas', 'square-check'] : ['far', 'square']}
-          size={24}
-          color={task.completed ? theme.primary : theme.placeholder}
-          iconStyle={styles.checkbox}
+          style={styles.checkbox}
         />
         <TouchableOpacity
           onPress={onEdit}
@@ -127,19 +95,14 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
         <View style={styles.subTasksContainer}>
           {task.subTasks.map((subTask, index) => (
             <View key={`${task.id}-sub-${index}`} style={styles.subTaskRow}>
-              <IconButton
-                onPress={() =>
+              <Checkbox
+                checked={subTask.completed}
+                onToggle={() =>
                   updateSubTask(task.id, index, !subTask.completed)
                 }
                 label={subTask.title}
-                role="checkbox"
-                accessibilityState={{ checked: subTask.completed }}
-                name={
-                  subTask.completed ? ['fas', 'square-check'] : ['far', 'square']
-                }
-                size={20}
-                color={subTask.completed ? theme.primary : theme.placeholder}
-                iconStyle={styles.subCheckbox}
+                size="sm"
+                style={styles.subCheckbox}
               />
               <TextLabel
                 text={subTask.title}
@@ -158,35 +121,33 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
+    // One padding for every state: the main row is at least 44pt (the
+    // subtask toggle's touch target), so collapsed cards come out 60pt tall
+    // and expanding only adds the subtask list below, never above.
     cardWrapper: {
       backgroundColor: theme.tabBarBackground,
       paddingHorizontal: 16,
-      justifyContent: 'center',
+      paddingVertical: 8,
       borderRadius: 10,
       overflow: 'hidden',
       marginBottom: 12,
-      minHeight: 60,
-    },
-    cardWrapperPaddingVertical: {
-      paddingVertical: 18,
-    },
-    cardWrapperPaddingVerticalWithReminder: {
-      paddingVertical: 11,
     },
     mainRow: {
       flexDirection: 'row',
       alignItems: 'center',
+      minHeight: 44,
     },
     checkbox: {
-      marginRight: 12,
+      marginRight: 14,
     },
     titleTouchableOpacity: {
       flex: 1,
     },
+    // Task titles are the user's words, so they take the serif. Body size,
+    // tighter leading: these are single list lines, not paragraphs.
     title: {
-      fontSize: 16,
-      lineHeight: 16,
-      fontFamily: Fonts.MontserratMedium,
+      ...typeStyle('body'),
+      lineHeight: 23,
       color: theme.textColor,
     },
     completedText: {
@@ -200,8 +161,7 @@ const makeStyles = (theme: Theme) =>
       gap: 4,
     },
     reminderText: {
-      fontSize: 12,
-      fontFamily: Fonts.MontserratRegular,
+      ...typeStyle('meta'),
       color: theme.secondary,
     },
     rightContainer: {
@@ -212,28 +172,31 @@ const makeStyles = (theme: Theme) =>
       paddingLeft: 12,
     },
     subTaskCount: {
-      fontSize: 14,
-      fontFamily: Fonts.MontserratRegular,
+      ...typeStyle('meta'),
       color: theme.placeholder,
+      fontVariant: ['tabular-nums'],
     },
+    // The 44pt main row already centers its text with ~10pt to spare, so the
+    // divider sits close; paddingBottom + the card's 8pt match the ~18pt
+    // above the title text.
     subTasksContainer: {
       paddingLeft: 16,
-      paddingTop: 16,
-      borderTopWidth: 0.5,
+      paddingTop: 14,
+      paddingBottom: 10,
+      gap: 10,
+      borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: theme.placeholder + '40',
-      marginTop: 12,
+      marginTop: 4,
     },
     subTaskRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 8,
     },
     subCheckbox: {
-      marginRight: 10,
+      marginRight: 12,
     },
     subTaskTitle: {
-      fontSize: 14,
-      fontFamily: Fonts.MontserratRegular,
+      ...typeStyle('preview'),
       color: theme.textColor,
     },
   });

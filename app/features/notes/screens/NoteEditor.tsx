@@ -22,6 +22,7 @@ import { useNavigation } from '@react-navigation/native';
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
+import ScreenHeader from '../../../components/screenHeader/ScreenHeader.tsx';
 
 type NoteEditorProps = StackScreenProps<RootStackParamList, 'noteEditor'>;
 
@@ -153,20 +154,20 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
 
   return (
     <SafeAreaView style={styles.pageWrapper} edges={['top', 'left', 'right']}>
-      <View style={styles.header}>
-        <BackButton onPress={handleBackPress} />
-        <IconButton
-          onPress={handleSave}
-          touchableOpacityProps={{
-            style: styles.backButton,
-            disabled: saveButtonDisabled,
-          }}
-          label={isSaved ? 'Saved' : 'Save note'}
-          name="floppy-disk"
-          size={24}
-          color={saveButtonDisabled ? theme.placeholder : theme.textColor}
-        />
-      </View>
+      <ScreenHeader
+        style={styles.header}
+        leading={<BackButton onPress={handleBackPress} />}
+        trailing={
+          <IconButton
+            onPress={handleSave}
+            touchableOpacityProps={{ disabled: saveButtonDisabled }}
+            label={isSaved ? 'Saved' : 'Save note'}
+            name="floppy-disk"
+            size={22}
+            color={saveButtonDisabled ? theme.placeholder : theme.textColor}
+          />
+        }
+      />
       <KeyboardAwareScrollView
         style={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -196,12 +197,7 @@ const NoteEditor = ({ route }: NoteEditorProps) => {
       {isContentFocused && (
         <KeyboardStickyView>
           <Animated.View entering={FadeIn.delay(200)} exiting={FadeOut}>
-            <Toolbar
-              editorRef={inputRef}
-              stylesState={stylesState}
-              onOpenLinkModal={() => {}}
-              onSelectImage={() => {}}
-            />
+            <Toolbar editorRef={inputRef} stylesState={stylesState} />
           </Animated.View>
         </KeyboardStickyView>
       )}
@@ -226,14 +222,7 @@ const makeStyles = (theme: Theme) =>
       paddingBottom: 0,
     },
     header: {
-      padding: 14,
-      width: '100%',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    backButton: {
-      padding: 8,
+      paddingHorizontal: 14,
     },
     scroll: {
       flex: 1,

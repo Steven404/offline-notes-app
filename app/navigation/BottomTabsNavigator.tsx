@@ -8,7 +8,7 @@ import Notes from '../features/notes/screens/Notes.tsx';
 import Tasks from '../features/tasks/screens/Tasks.tsx';
 import { Platform, StyleSheet } from 'react-native';
 import Icon from '../components/icon/Icon.tsx';
-import Fonts from '../styles/Fonts.tsx';
+import { typeStyle } from '../styles/typography.ts';
 import { useTheme } from '../providers/ThemeContext.tsx';
 import { Theme } from '../styles/themes.ts';
 import { useMemo } from 'react';
@@ -33,16 +33,20 @@ const BottomTabsNavigator = () => {
   const styles = useMemo(() => makeStyles(theme), [theme]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', ...(Platform.OS === 'android' ? ['bottom'] : [])] as Edge[] }>
+    <SafeAreaView
+      style={styles.container}
+      edges={
+        ['top', ...(Platform.OS === 'android' ? ['bottom'] : [])] as Edge[]
+      }
+    >
       <Tabs.Navigator
         screenOptions={{
           // animation: 'shift',
           headerShown: false,
           tabBarInactiveTintColor: theme.placeholder,
           tabBarActiveTintColor: theme.textColor,
-          tabBarLabelStyle: {
-            fontFamily: Fonts.MontserratRegular,
-          },
+          tabBarLabelStyle: typeStyle('tab'),
+          tabBarAllowFontScaling: true,
           tabBarStyle: {
             borderTopWidth: 0,
             elevation: 0,

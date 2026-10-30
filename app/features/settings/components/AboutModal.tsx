@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Modal from 'react-native-modal';
 import TextLabel from '../../../components/textLabel/TextLabel';
-import Fonts from '../../../styles/Fonts';
+import Button from '../../../components/button/Button';
 import { useTheme } from '../../../providers/ThemeContext';
 import { Theme } from '../../../styles/themes';
 import DeviceInfo from 'react-native-device-info';
@@ -29,35 +29,36 @@ const AboutModal = ({ isVisible, onClose }: AboutModalProps) => {
       <View style={styles.modalView}>
         <TextLabel
           text="Offline Notes App"
+          variant="heading"
           style={styles.title}
           accessibilityRole="header"
         />
         <View style={styles.infoContainer}>
           <View style={styles.infoRow}>
-            <TextLabel text="Version:" style={styles.label} />
+            <TextLabel text="Version" tone="secondary" style={styles.label} />
             <TextLabel text={DeviceInfo.getVersion()} style={styles.value} />
           </View>
           <View style={styles.infoRow}>
-            <TextLabel text="Created by:" style={styles.label} />
+            <TextLabel
+              text="Created by"
+              tone="secondary"
+              style={styles.label}
+            />
             <TextLabel text="S.Michelakis" style={styles.value} />
           </View>
-          <View style={styles.infoRow}>
-            <TextLabel text="Contact email:" style={styles.label} />
+          {/* Stacked: the address is too long to share a line with its label */}
+          <View style={[styles.infoRow, styles.infoRowStacked]}>
+            <TextLabel text="Contact email" tone="secondary" />
             <TextLabel
-              numberOfLines={2}
+              numberOfLines={1}
               text="stefanosmichelakis@gmail.com"
-              style={[styles.value, styles.email]}
+              adjustsFontSizeToFit
+              minimumFontScale={0.85}
             />
           </View>
         </View>
 
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={onClose}
-          accessibilityRole="button"
-        >
-          <TextLabel text="Close" style={styles.closeButtonText} />
-        </TouchableOpacity>
+        <Button label="Close" onPress={onClose} style={styles.closeButton} />
       </View>
     </Modal>
   );
@@ -77,10 +78,7 @@ const makeStyles = (theme: Theme) =>
       elevation: 8,
     },
     title: {
-      fontFamily: Fonts.MontserratBold,
-      fontSize: 20,
-      color: theme.textColor,
-      marginBottom: 24,
+      marginBottom: 20,
       textAlign: 'center',
     },
     infoContainer: {
@@ -92,38 +90,26 @@ const makeStyles = (theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingVertical: 8,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.placeholder,
+      minHeight: 44,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: theme.placeholder + '66',
       width: '100%',
       gap: 10,
     },
+    infoRowStacked: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      gap: 2,
+    },
     label: {
-      fontFamily: Fonts.MontserratMedium,
-      fontSize: 14,
-      color: theme.placeholder,
+      flexShrink: 0,
     },
     value: {
-      fontFamily: Fonts.MontserratSemiBold,
-      fontSize: 14,
-      flexWrap: 'wrap',
-      color: theme.textColor,
+      flex: 1,
       textAlign: 'right',
     },
-    email: {
-      fontSize: 10,
-    },
     closeButton: {
-      backgroundColor: theme.primary,
-      paddingVertical: 12,
-      paddingHorizontal: 32,
-      borderRadius: 12,
-      width: '100%',
-      alignItems: 'center',
-    },
-    closeButtonText: {
-      fontFamily: Fonts.MontserratSemiBold,
-      fontSize: 16,
-      color: theme.onPrimary,
+      alignSelf: 'stretch',
     },
   });
 
