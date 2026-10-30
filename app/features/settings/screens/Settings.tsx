@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, ScrollView, Alert, Linking } from 'react-native';
+import { StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SettingsSection from '../components/SettingsSection';
 import SettingsItem from '../components/SettingsItem';
 import AboutModal from '../components/AboutModal';
-import SimpleBackHeader from '../../../components/simpleBackHeader/SimpleBackHeader.tsx';
+import ScreenHeader from '../../../components/screenHeader/ScreenHeader.tsx';
+import BackButton from '../../../components/backButton/BackButton.tsx';
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 import {
   enableBiometricsWithPrompt,
@@ -89,7 +90,12 @@ const Settings = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <SimpleBackHeader title={'Settings'} />
+      <ScreenHeader
+        title="Settings"
+        leading={<BackButton />}
+        divider
+        style={styles.header}
+      />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -151,6 +157,9 @@ const makeStyles = (theme: Theme) =>
     container: {
       flex: 1,
       backgroundColor: theme.background,
+    },
+    header: {
+      paddingHorizontal: 14,
     },
     scrollView: {
       flex: 1,

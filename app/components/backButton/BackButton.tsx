@@ -1,14 +1,8 @@
-import React, { useMemo } from 'react';
-import {
-  TouchableOpacity,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import React from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import IconButton from '../iconButton/IconButton.tsx';
 import { useTheme } from '../../providers/ThemeContext.tsx';
-import { Theme } from '../../styles/themes.ts';
 
 interface BackButtonProps {
   style?: StyleProp<ViewStyle>;
@@ -17,15 +11,15 @@ interface BackButtonProps {
   onPress?: () => void;
 }
 
+// No padding: IconButton's hitSlop supplies the 44pt target, so the arrow
+// lines up with the screen's text edge.
 const BackButton = ({
   style,
   color = '',
-  size = 24,
+  size = 22,
   onPress,
 }: BackButtonProps) => {
   const { theme } = useTheme();
-  const styles = useMemo(() => makeStyles(theme), [theme]);
-
   const navigation = useNavigation();
 
   const handlePress = () => {
@@ -39,7 +33,7 @@ const BackButton = ({
   return (
     <IconButton
       onPress={handlePress}
-      touchableOpacityProps={{ style: [styles.backButton, style] }}
+      touchableOpacityProps={{ style }}
       label="Back"
       name="arrow-left"
       size={size}
@@ -47,12 +41,5 @@ const BackButton = ({
     />
   );
 };
-
-const makeStyles = (theme: Theme) =>
-  StyleSheet.create({
-    backButton: {
-      padding: 8,
-    },
-  });
 
 export default BackButton;

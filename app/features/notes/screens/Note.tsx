@@ -12,7 +12,7 @@ import NoteContentInput from '../components/NoteContentInput.tsx';
 import SimpleConfirmModal from '../../../components/simpleConfirmModal/SimpleConfirmModal.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
 import { formatDate } from '../../../utils/functions.ts';
-import Fonts from '../../../styles/Fonts.tsx';
+import ScreenHeader from '../../../components/screenHeader/ScreenHeader.tsx';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
 
@@ -41,54 +41,46 @@ const Note = ({ route }: NoteProps) => {
 
   return (
     <SafeAreaView style={styles.pageWrapper}>
-      <View style={styles.header}>
-        <BackButton />
-        <View style={styles.headerButtons}>
-          <IconButton
-            onPress={() => setIsDeleteModalVisible(true)}
-            label="Delete note"
-            name="trash"
-            size={24}
-            color={theme.deleteRed}
-            touchableOpacityProps={{ style: styles.deleteButton }}
-          />
-          <IconButton
-            onPress={() => navigation.navigate('noteEditor', { noteId })}
-            label="Edit note"
-            name="pen-to-square"
-            size={24}
-            color={theme.textColor}
-            touchableOpacityProps={{ style: styles.editButton }}
-          />
-        </View>
-      </View>
+      <ScreenHeader
+        leading={<BackButton />}
+        trailing={
+          <>
+            <IconButton
+              onPress={() => setIsDeleteModalVisible(true)}
+              label="Delete note"
+              name="trash"
+              size={22}
+              color={theme.deleteRed}
+            />
+            <IconButton
+              onPress={() => navigation.navigate('noteEditor', { noteId })}
+              label="Edit note"
+              name="pen-to-square"
+              size={22}
+              color={theme.textColor}
+            />
+          </>
+        }
+      />
       <TextLabel
         text={note?.title}
+        variant="title"
         style={styles.title}
         accessibilityRole="header"
       />
       <View style={styles.dateContainer}>
         <View style={styles.dateTag}>
-          <TextLabel text="Created: " style={styles.dateLabel} />
-          <TextLabel
-            text={formatDate(note.createdAt)}
-            style={styles.dateValue}
-          />
+          <TextLabel text="Created " variant="meta" tone="secondary" />
+          <TextLabel text={formatDate(note.createdAt)} variant="meta" />
         </View>
         <View style={styles.dateTag}>
-          <TextLabel text="Edited: " style={styles.dateLabel} />
-          <TextLabel
-            text={formatDate(note.updatedAt)}
-            style={styles.dateValue}
-          />
+          <TextLabel text="Edited " variant="meta" tone="secondary" />
+          <TextLabel text={formatDate(note.updatedAt)} variant="meta" />
         </View>
         {note.reminder && note.reminder.time > Date.now() && (
           <View style={styles.dateTag}>
-            <TextLabel text="Reminder: " style={styles.dateLabel} />
-            <TextLabel
-              text={formatDate(note.reminder.time)}
-              style={styles.dateValue}
-            />
+            <TextLabel text="Reminder " variant="meta" tone="secondary" />
+            <TextLabel text={formatDate(note.reminder.time)} variant="meta" />
           </View>
         )}
       </View>
@@ -115,35 +107,15 @@ const makeStyles = (theme: Theme) =>
       backgroundColor: theme.background,
       padding: 14,
     },
-    header: {
-      width: '100%',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    headerButtons: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    editButton: {
-      padding: 8,
-    },
-    deleteButton: {
-      padding: 8,
-      marginRight: 8,
-    },
     content: {
-      paddingTop: 14,
-      borderTopWidth: 0.5,
-      borderTopColor: theme.placeholder,
+      paddingTop: 16,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: theme.placeholder + '66',
       flex: 1,
     },
     title: {
       width: '100%',
-      paddingTop: 14,
-      fontSize: 32,
-      fontFamily: Fonts.MontserratSemiBold,
-      color: theme.textColor,
+      paddingTop: 12,
     },
     dateContainer: {
       flexDirection: 'row',
@@ -159,15 +131,6 @@ const makeStyles = (theme: Theme) =>
       paddingVertical: 4,
       borderRadius: 20,
       alignItems: 'center',
-    },
-    dateLabel: {
-      fontSize: 12,
-      color: theme.placeholder,
-      fontWeight: '600',
-    },
-    dateValue: {
-      fontSize: 13,
-      color: theme.textColor,
     },
   });
 

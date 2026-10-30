@@ -4,8 +4,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  TouchableOpacity,
-  Text,
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
@@ -13,6 +11,8 @@ import { useTasks } from '../../../providers/TasksContext.tsx';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import SubTaskItem from './SubTaskItem.tsx';
 import IconButton from '../../../components/iconButton/IconButton.tsx';
+import Button from '../../../components/button/Button.tsx';
+import { typeStyle } from '../../../styles/typography.ts';
 import { Reminder } from '../../../utils/types.ts';
 
 import { Task } from '../TaskTypes.tsx';
@@ -215,27 +215,12 @@ const TaskModal: React.FC<TaskModalProps> = ({
               )}
             </View>
             <View style={styles.rightButtons}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={handleClose}
-                accessibilityRole="button"
-              >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.saveButton,
-                  !taskTitle.trim() && styles.saveButtonDisabled,
-                ]}
+              <Button label="Cancel" variant="plain" onPress={handleClose} />
+              <Button
+                label={taskToEdit ? 'Update' : 'Add'}
                 onPress={handleSaveTask}
                 disabled={!taskTitle.trim()}
-                accessibilityRole="button"
-                accessibilityState={{ disabled: !taskTitle.trim() }}
-              >
-                <Text style={styles.saveButtonText}>
-                  {taskToEdit ? 'Update' : 'Add'}
-                </Text>
-              </TouchableOpacity>
+              />
             </View>
           </Animated.View>
         </Animated.View>
@@ -270,13 +255,13 @@ const makeStyles = (theme: Theme) =>
       elevation: 5,
     },
     input: {
+      ...typeStyle('body'),
       fontSize: 18,
       color: theme.textColor,
       borderBottomWidth: 1,
       borderBottomColor: theme.primary,
       paddingVertical: 10,
       marginBottom: 10,
-      fontFamily: 'Montserrat-Regular',
     },
     completedText: {
       textDecorationLine: 'line-through',
@@ -291,37 +276,12 @@ const makeStyles = (theme: Theme) =>
     leftButtons: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 10,
+      gap: 24,
     },
     rightButtons: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 10,
-    },
-    cancelButton: {
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-    },
-    cancelButtonText: {
-      color: theme.placeholder,
-      fontSize: 16,
-      fontFamily: 'Montserrat-Medium',
-    },
-    saveButton: {
-      backgroundColor: theme.primary,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 8,
-    },
-    saveButtonDisabled: {
-      backgroundColor: theme.placeholder,
-      opacity: 0.5,
-    },
-    saveButtonText: {
-      // White on the dark-theme yellow was 1.5:1
-      color: theme.onPrimary,
-      fontSize: 16,
-      fontFamily: 'Montserrat-Bold',
+      gap: 4,
     },
   });
 

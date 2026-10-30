@@ -5,7 +5,7 @@ import {
   EnrichedTextInputInstance,
   OnChangeStateEvent,
 } from 'react-native-enriched';
-import Fonts from '../../../styles/Fonts.tsx';
+import { typeStyle } from '../../../styles/typography.ts';
 import { sanitizeNoteContent } from '../../../utils/functions.ts';
 import { useTheme } from '../../../providers/ThemeContext.tsx';
 import { Theme } from '../../../styles/themes.ts';
@@ -63,6 +63,9 @@ const NoteContentInput = ({
           setContent?.(e.nativeEvent.value);
         }}
         htmlStyle={{
+          h1: { fontSize: 26, bold: true },
+          h2: { fontSize: 22, bold: true },
+          h3: { fontSize: 19, bold: true },
           ul: {
             bulletColor: theme.textColor,
           },
@@ -94,9 +97,8 @@ const NoteContentInput = ({
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     input: {
+      ...typeStyle('body'),
       width: '100%',
-      fontSize: 20,
-      fontFamily: Fonts.MontserratRegular,
       color: theme.textColor,
     },
     noHorizontalPadding: { paddingHorizontal: 0 },

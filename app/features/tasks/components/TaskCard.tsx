@@ -4,8 +4,8 @@ import Collapsible from 'react-native-collapsible';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Task } from '../TaskTypes.tsx';
 import TextLabel from '../../../components/textLabel/TextLabel.tsx';
-import Fonts from '../../../styles/Fonts.tsx';
-import IconButton from '../../../components/iconButton/IconButton.tsx';
+import Checkbox from '../../../components/checkbox/Checkbox.tsx';
+import { typeStyle } from '../../../styles/typography.ts';
 import { useTasks } from '../../../providers/TasksContext.tsx';
 import Icon from '../../../components/icon/Icon.tsx';
 import { formatDateTime } from '../../../utils/functions.ts';
@@ -70,16 +70,11 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
       style={animatedViewStyles}
     >
       <View style={styles.mainRow}>
-        <IconButton
-          onPress={() => toggleTaskComplete(task.id)}
+        <Checkbox
+          checked={task.completed}
+          onToggle={() => toggleTaskComplete(task.id)}
           label={task.title}
-          role="checkbox"
-          accessibilityState={{ checked: task.completed }}
-          // Unchecked is an outline: a filled dark square was 1.3:1 on the card
-          name={task.completed ? ['fas', 'square-check'] : ['far', 'square']}
-          size={24}
-          color={task.completed ? theme.primary : theme.placeholder}
-          iconStyle={styles.checkbox}
+          style={styles.checkbox}
         />
         <TouchableOpacity
           onPress={onEdit}
@@ -127,19 +122,14 @@ const TaskCard = ({ task, onEdit }: TaskCardProps) => {
         <View style={styles.subTasksContainer}>
           {task.subTasks.map((subTask, index) => (
             <View key={`${task.id}-sub-${index}`} style={styles.subTaskRow}>
-              <IconButton
-                onPress={() =>
+              <Checkbox
+                checked={subTask.completed}
+                onToggle={() =>
                   updateSubTask(task.id, index, !subTask.completed)
                 }
                 label={subTask.title}
-                role="checkbox"
-                accessibilityState={{ checked: subTask.completed }}
-                name={
-                  subTask.completed ? ['fas', 'square-check'] : ['far', 'square']
-                }
-                size={20}
-                color={subTask.completed ? theme.primary : theme.placeholder}
-                iconStyle={styles.subCheckbox}
+                size="sm"
+                style={styles.subCheckbox}
               />
               <TextLabel
                 text={subTask.title}
@@ -178,15 +168,16 @@ const makeStyles = (theme: Theme) =>
       alignItems: 'center',
     },
     checkbox: {
-      marginRight: 12,
+      marginRight: 14,
     },
     titleTouchableOpacity: {
       flex: 1,
     },
+    // Task titles are the user's words, so they take the serif. Body size,
+    // tighter leading: these are single list lines, not paragraphs.
     title: {
-      fontSize: 16,
-      lineHeight: 16,
-      fontFamily: Fonts.MontserratMedium,
+      ...typeStyle('body'),
+      lineHeight: 23,
       color: theme.textColor,
     },
     completedText: {
@@ -200,8 +191,7 @@ const makeStyles = (theme: Theme) =>
       gap: 4,
     },
     reminderText: {
-      fontSize: 12,
-      fontFamily: Fonts.MontserratRegular,
+      ...typeStyle('meta'),
       color: theme.secondary,
     },
     rightContainer: {
@@ -212,9 +202,9 @@ const makeStyles = (theme: Theme) =>
       paddingLeft: 12,
     },
     subTaskCount: {
-      fontSize: 14,
-      fontFamily: Fonts.MontserratRegular,
+      ...typeStyle('meta'),
       color: theme.placeholder,
+      fontVariant: ['tabular-nums'],
     },
     subTasksContainer: {
       paddingLeft: 16,
@@ -229,11 +219,10 @@ const makeStyles = (theme: Theme) =>
       marginBottom: 8,
     },
     subCheckbox: {
-      marginRight: 10,
+      marginRight: 12,
     },
     subTaskTitle: {
-      fontSize: 14,
-      fontFamily: Fonts.MontserratRegular,
+      ...typeStyle('preview'),
       color: theme.textColor,
     },
   });

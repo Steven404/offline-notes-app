@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import {
   isBiometricSensorAvailable,
   promptBiometricAuth,
 } from '../../../utils/biometrics';
-import Fonts from '../../../styles/Fonts';
+import Button from '../../../components/button/Button';
 import Icon from '../../../components/icon/Icon';
 import TextLabel from '../../../components/textLabel/TextLabel';
 import { faFingerprint } from '@fortawesome/free-solid-svg-icons';
@@ -48,22 +48,21 @@ const BiometricLogin = () => {
         />
         <TextLabel
           text="Biometric Unlock"
+          variant="title"
           style={styles.title}
           accessibilityRole="header"
         />
         <TextLabel
           text="Use your fingerprint or face to unlock"
+          tone="secondary"
           style={styles.subtitle}
         />
 
-        <TouchableOpacity
-          style={styles.button}
+        <Button
+          label="Unlock"
           onPress={handleBiometricAuth}
-          activeOpacity={0.7}
-          accessibilityRole="button"
-        >
-          <TextLabel text="Unlock" style={styles.buttonText} />
-        </TouchableOpacity>
+          style={styles.button}
+        />
       </View>
     </View>
   );
@@ -86,31 +85,15 @@ const makeStyles = (theme: Theme) =>
       marginBottom: 30,
     },
     title: {
-      fontFamily: Fonts.MontserratBold,
-      fontSize: 24,
       marginBottom: 10,
       textAlign: 'center',
-      color: theme.textColor,
     },
     subtitle: {
-      fontFamily: Fonts.MontserratRegular,
-      fontSize: 16,
-      color: theme.placeholder,
       textAlign: 'center',
-      marginBottom: 50,
+      marginBottom: 48,
     },
     button: {
-      backgroundColor: theme.primary,
-      paddingVertical: 15,
-      paddingHorizontal: 30,
-      borderRadius: 12,
-      width: '100%',
-      alignItems: 'center',
-    },
-    buttonText: {
-      fontFamily: Fonts.MontserratSemiBold,
-      fontSize: 18,
-      color: theme.onPrimary,
+      alignSelf: 'stretch',
     },
   });
 
