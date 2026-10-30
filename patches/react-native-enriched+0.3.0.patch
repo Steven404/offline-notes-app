@@ -1,0 +1,106 @@
+diff --git a/node_modules/react-native-enriched/ios/EnrichedTextInputView.mm b/node_modules/react-native-enriched/ios/EnrichedTextInputView.mm
+index b4d608b..b9954d1 100644
+--- a/node_modules/react-native-enriched/ios/EnrichedTextInputView.mm
++++ b/node_modules/react-native-enriched/ios/EnrichedTextInputView.mm
+@@ -1783,7 +1783,9 @@ - (bool)textView:(UITextView *)textView
+   // cause a crash so here I rely on short circuiting evaluation of the logical
+   // expression either way it's not possible to have two of them come off at the
+   // same time
+-  if ([uStyle handleBackspaceInRange:range replacementText:text] ||
++  if ([uStyle handleNewlineOnEmptyItemInRange:range replacementText:text] ||
++      [oStyle handleNewlineOnEmptyItemInRange:range replacementText:text] ||
++      [uStyle handleBackspaceInRange:range replacementText:text] ||
+       [uStyle tryHandlingListShorcutInRange:range replacementText:text] ||
+       [oStyle handleBackspaceInRange:range replacementText:text] ||
+       [oStyle tryHandlingListShorcutInRange:range replacementText:text] ||
+diff --git a/node_modules/react-native-enriched/ios/interfaces/StyleHeaders.h b/node_modules/react-native-enriched/ios/interfaces/StyleHeaders.h
+index 6352420..adafe63 100644
+--- a/node_modules/react-native-enriched/ios/interfaces/StyleHeaders.h
++++ b/node_modules/react-native-enriched/ios/interfaces/StyleHeaders.h
+@@ -83,12 +83,16 @@
+ - (BOOL)handleBackspaceInRange:(NSRange)range replacementText:(NSString *)text;
+ - (BOOL)tryHandlingListShorcutInRange:(NSRange)range
+                       replacementText:(NSString *)text;
++- (BOOL)handleNewlineOnEmptyItemInRange:(NSRange)range
++                        replacementText:(NSString *)text;
+ @end
+ 
+ @interface OrderedListStyle : NSObject <BaseStyleProtocol>
+ - (BOOL)handleBackspaceInRange:(NSRange)range replacementText:(NSString *)text;
+ - (BOOL)tryHandlingListShorcutInRange:(NSRange)range
+                       replacementText:(NSString *)text;
++- (BOOL)handleNewlineOnEmptyItemInRange:(NSRange)range
++                        replacementText:(NSString *)text;
+ @end
+ 
+ @interface BlockQuoteStyle : NSObject <BaseStyleProtocol>
+diff --git a/node_modules/react-native-enriched/ios/styles/OrderedListStyle.mm b/node_modules/react-native-enriched/ios/styles/OrderedListStyle.mm
+index 933b57e..4ca5ba9 100644
+--- a/node_modules/react-native-enriched/ios/styles/OrderedListStyle.mm
++++ b/node_modules/react-native-enriched/ios/styles/OrderedListStyle.mm
+@@ -198,6 +198,30 @@ - (BOOL)handleBackspaceInRange:(NSRange)range replacementText:(NSString *)text {
+   return NO;
+ }
+ 
++- (BOOL)handleNewlineOnEmptyItemInRange:(NSRange)range
++                        replacementText:(NSString *)text {
++  // Enter on an empty list item ends the list instead of adding another item
++  if (![text isEqualToString:@"\n"] || range.length > 0) {
++    return NO;
++  }
++  NSString *string = _input->textView.textStorage.string;
++  NSRange paragraphRange = [string paragraphRangeForRange:range];
++  if (paragraphRange.length == 0 || ![self detectStyle:paragraphRange]) {
++    return NO;
++  }
++  // an empty item only holds zero width spaces and its trailing newline
++  for (NSUInteger i = paragraphRange.location; i < NSMaxRange(paragraphRange);
++       i++) {
++    unichar character = [string characterAtIndex:i];
++    if (character != 0x200B &&
++        ![[NSCharacterSet newlineCharacterSet] characterIsMember:character]) {
++      return NO;
++    }
++  }
++  [self removeAttributes:paragraphRange];
++  return YES;
++}
++
+ - (BOOL)tryHandlingListShorcutInRange:(NSRange)range
+                       replacementText:(NSString *)text {
+   NSRange paragraphRange =
+diff --git a/node_modules/react-native-enriched/ios/styles/UnorderedListStyle.mm b/node_modules/react-native-enriched/ios/styles/UnorderedListStyle.mm
+index d2aa150..cb41d00 100644
+--- a/node_modules/react-native-enriched/ios/styles/UnorderedListStyle.mm
++++ b/node_modules/react-native-enriched/ios/styles/UnorderedListStyle.mm
+@@ -197,6 +197,30 @@ - (BOOL)handleBackspaceInRange:(NSRange)range replacementText:(NSString *)text {
+   return NO;
+ }
+ 
++- (BOOL)handleNewlineOnEmptyItemInRange:(NSRange)range
++                        replacementText:(NSString *)text {
++  // Enter on an empty list item ends the list instead of adding another item
++  if (![text isEqualToString:@"\n"] || range.length > 0) {
++    return NO;
++  }
++  NSString *string = _input->textView.textStorage.string;
++  NSRange paragraphRange = [string paragraphRangeForRange:range];
++  if (paragraphRange.length == 0 || ![self detectStyle:paragraphRange]) {
++    return NO;
++  }
++  // an empty item only holds zero width spaces and its trailing newline
++  for (NSUInteger i = paragraphRange.location; i < NSMaxRange(paragraphRange);
++       i++) {
++    unichar character = [string characterAtIndex:i];
++    if (character != 0x200B &&
++        ![[NSCharacterSet newlineCharacterSet] characterIsMember:character]) {
++      return NO;
++    }
++  }
++  [self removeAttributes:paragraphRange];
++  return YES;
++}
++
+ - (BOOL)tryHandlingListShorcutInRange:(NSRange)range
+                       replacementText:(NSString *)text {
+   NSRange paragraphRange =

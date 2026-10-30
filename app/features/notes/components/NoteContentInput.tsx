@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   EnrichedTextInput,
@@ -40,8 +40,9 @@ const NoteContentInput = ({
   const [inputHeight, setInputHeight] = useState(0);
 
   // Enter on an empty list item should end the list, but the editor keeps
-  // adding items. These refs follow the cursor so a second Enter on an item
-  // that is still empty can be undone, see `exitEmptyListItem`.
+  // adding items on Android. These refs follow the cursor so a second Enter
+  // on an item that is still empty can be undone, see `exitEmptyListItem`.
+  // iOS ends the list natively (patches/react-native-enriched+0.3.0.patch).
   const htmlRef = useRef(defaultValue ?? '');
   const isListActiveRef = useRef(false);
   const cursorRef = useRef(0);
@@ -58,6 +59,9 @@ const NoteContentInput = ({
   useEffect(() => clearExitTimeout, []);
 
   const handleKeyPress = (key: string) => {
+    if (Platform.OS !== 'android') {
+      return;
+    }
     if (key !== 'Enter' || !isListActiveRef.current) {
       awaitingNewItemRef.current = false;
       emptyItemCursorRef.current = null;
